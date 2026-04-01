@@ -7,6 +7,10 @@ _規範/
 _進度/
 素材/
 
+# 編輯器與工具設定
+.claude/
+.vscode/
+
 # 系統檔案
 .DS_Store
 *.DS_Store
