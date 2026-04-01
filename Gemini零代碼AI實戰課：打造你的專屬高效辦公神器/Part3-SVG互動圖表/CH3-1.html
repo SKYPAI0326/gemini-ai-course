@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH3-1 什麼是 SVG 互動圖？｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a3);border:1px solid rgba(90,122,90,.3);background:rgba(90,122,90,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a3);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a3);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a3);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a3);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a3);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a3);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a3);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.inline-code{font-family:'Courier New',monospace;font-size:.85em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+
+/* ── 對比格 ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0;}
+.compare-card{padding:22px 24px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);}
+.compare-card.good{border-color:rgba(90,122,90,.35);background:rgba(90,122,90,.04);}
+.compare-label{font-size:.7rem;font-weight:500;letter-spacing:1px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--c-border);color:var(--c-muted);}
+.compare-card.good .compare-label{color:var(--c-a3);}
+.compare-item{display:flex;align-items:flex-start;gap:8px;font-size:.84rem;color:var(--c-text);margin-bottom:8px;line-height:1.6;}
+
+/* ── SVG 互動示範 ── */
+.svg-demo-wrap{margin:32px 0;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;}
+.svg-demo-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+.svg-demo-title{font-size:.72rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;}
+.svg-demo-hint{font-size:.7rem;color:var(--c-a3);font-weight:500;}
+.svg-demo-body{padding:24px;display:flex;justify-content:center;}
+
+/* ── 圖表類型卡 ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:28px 0;}
+.chart-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:20px;display:flex;gap:16px;align-items:flex-start;transition:transform .2s ease,box-shadow .2s ease;}
+.chart-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.08);}
+.chart-icon{font-size:1.6rem;flex-shrink:0;}
+.chart-body{}
+.chart-name{font-size:.9rem;font-weight:700;color:var(--c-text);margin-bottom:4px;}
+.chart-desc{font-size:.78rem;color:var(--c-muted);line-height:1.65;}
+.chart-use{margin-top:6px;font-size:.72rem;color:var(--c-a3);font-weight:500;}
+
+/* ── Prompt 要素清單 ── */
+.prompt-element-list{display:flex;flex-direction:column;gap:12px;margin:24px 0;}
+.pe-item{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:16px 20px;display:flex;gap:16px;align-items:flex-start;}
+.pe-num{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:var(--c-a3);flex-shrink:0;width:24px;}
+.pe-body{}
+.pe-title{font-size:.88rem;font-weight:700;color:var(--c-text);margin-bottom:4px;}
+.pe-desc{font-size:.8rem;color:var(--c-muted);line-height:1.7;}
+.pe-example{margin-top:8px;font-family:'Courier New',monospace;font-size:.75rem;color:var(--c-text);background:var(--c-surface);padding:8px 12px;border-radius:var(--radius-sm);line-height:1.6;}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(90,122,90,.07);border:1px solid rgba(90,122,90,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 動態進場 ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.lesson-hero .back-link      {animation:fadeUp .4s ease both;}
+.lesson-hero .hero-meta      {animation:fadeUp .45s .08s ease both;}
+.lesson-hero .lesson-title   {animation:fadeUp .55s .15s ease both;}
+.lesson-hero .lesson-tagline {animation:fadeUp .5s .26s ease both;}
+.lesson-hero .outcomes       {animation:fadeUp .45s .36s ease both;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+.section-rule{transform-origin:left center;opacity:0;transition:opacity .4s ease,transform .6s cubic-bezier(.16,1,.3,1);transform:scaleX(.3);}
+.section-rule.in{opacity:1;transform:scaleX(1);}
+.section-dots{position:fixed;left:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40;opacity:0;transition:opacity .4s ease;}
+.section-dots.visible{opacity:1;}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--c-border);cursor:pointer;transition:background .3s ease,transform .3s ease;border:none;padding:0;}
+.sdot.active{background:var(--c-a3);transform:scale(1.5);}
+@media(max-width:1100px){.section-dots{display:none;}}
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a3);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">CH3-1</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="section-dots" id="sectionDots" aria-label="章節導航"></nav>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 返回課程目錄</a>
+  <div class="hero-meta">
+    <span class="hero-part">PART 3 · 讓數據「動」起來的視覺魔法</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">3.1</span>
+  </div>
+  <h1 class="lesson-title">什麼是 SVG 互動圖？<br>為什麼你需要它，<br>而不是一張 JPG 截圖</h1>
+  <p class="lesson-tagline">每次開會，你是不是從 Excel 截一張圖貼進 PowerPoint？那張圖放大就糊、沒辦法互動、數字一改就要重截。SVG 圖表讓你一勞永逸——永遠清晰、可以 hover 看細節、動畫讓數據說話。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">學完這節，你會</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>理解 SVG 和一般圖片的根本差異，以及在商業簡報中的優勢</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>認識辦公室最常用的四種互動圖表類型</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>掌握讓 AI 生成 SVG 互動圖時最關鍵的 Prompt 要素</div>
+  </div>
+</section>
+
+<main class="lesson-body">
+
+  <!-- S1 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 01</div>
+    <h2 class="section-heading">JPG 截圖的<em>三個天花板</em></h2>
+    <p class="body-text">你花了半小時在 Excel 裡做好一張圖，截圖、貼進簡報、傳給老闆——然後老闆說「這個數字能點開看明細嗎？」你只能回答：「那只是一張圖。」</p>
+    <p class="body-text">圖片格式（JPG / PNG）在商業圖表的使用上有幾個根本限制，而這些限制在用 SVG 做互動圖後都可以解決：</p>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-label">❌ JPG / PNG 靜態圖片</div>
+        <div class="compare-item"><span>·</span>放大就模糊，投影時像素化</div>
+        <div class="compare-item"><span>·</span>數字改了就要重新截圖</div>
+        <div class="compare-item"><span>·</span>只能「看」，不能「點」</div>
+        <div class="compare-item"><span>·</span>細節看不清楚，無法 zoom in</div>
+        <div class="compare-item"><span>·</span>無法展示動態趨勢</div>
+      </div>
+      <div class="compare-card good">
+        <div class="compare-label">✦ SVG 互動圖表</div>
+        <div class="compare-item"><span>·</span>無限縮放永遠清晰，印刷品質</div>
+        <div class="compare-item"><span>·</span>直接修改數字，圖表即時更新</div>
+        <div class="compare-item"><span>·</span>hover 顯示詳細資料、點擊展開</div>
+        <div class="compare-item"><span>·</span>任何尺寸都完美顯示</div>
+        <div class="compare-item"><span>·</span>進場動畫讓簡報更有衝擊力</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">✦</div>
+      <div class="callout-body">
+        <strong>實際應用場景：</strong>把你的互動圖表 HTML 檔案在簡報時直接開在瀏覽器——比 PowerPoint 的靜態圖更有說服力，老闆問細節你可以直接 hover 給他看，而不是說「這個我等一下查給你」。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S2 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 02</div>
+    <h2 class="section-heading"><em>SVG</em> 是什麼？用一句話理解</h2>
+    <p class="body-text">SVG 是「Scalable Vector Graphics（可縮放向量圖形）」的縮寫。和 JPG 靠像素點構成不同，SVG 用數學描述圖形——所以放多大都不會糊。</p>
+    <p class="body-text">更重要的是：SVG 是文字格式，可以直接放在 HTML 裡，然後用 CSS 控制樣式、用 JavaScript 加入互動。這表示你可以讓圖表的每一個元素都「活起來」：</p>
+
+    <div class="svg-demo-wrap">
+      <div class="svg-demo-head">
+        <span class="svg-demo-title">互動示範 · 移到圖形上試試看</span>
+        <span class="svg-demo-hint">↑ 可以 hover 互動</span>
+      </div>
+      <div class="svg-demo-body">
+        <svg width="520" height="180" viewBox="0 0 520 180" id="demoSvg" style="font-family:'Noto Sans TC',sans-serif;">
+          <!-- 長條圖示範 -->
+          <g id="barGroup">
+            <text x="30" y="20" font-size="11" fill="#8c8880" letter-spacing="1">Q1–Q4 營收（示意）</text>
+            <!-- Q1 -->
+            <g class="bar-item" data-label="Q1" data-val="NT$1,200萬" data-note="年度最低，行銷費用偏高">
+              <rect x="40" y="140" width="80" height="0" fill="#5a7a5a" rx="3" opacity=".8"/>
+              <text x="80" y="160" text-anchor="middle" font-size="10" fill="#8c8880">Q1</text>
+            </g>
+            <!-- Q2 -->
+            <g class="bar-item" data-label="Q2" data-val="NT$1,580萬" data-note="新產品上市帶動成長">
+              <rect x="155" y="140" width="80" height="0" fill="#5a7a5a" rx="3" opacity=".8"/>
+              <text x="195" y="160" text-anchor="middle" font-size="10" fill="#8c8880">Q2</text>
+            </g>
+            <!-- Q3 -->
+            <g class="bar-item" data-label="Q3" data-val="NT$2,100萬" data-note="旺季效應，超越目標 12%">
+              <rect x="270" y="140" width="80" height="0" fill="#5a7a5a" rx="3" opacity=".8"/>
+              <text x="310" y="160" text-anchor="middle" font-size="10" fill="#8c8880">Q3</text>
+            </g>
+            <!-- Q4 -->
+            <g class="bar-item" data-label="Q4" data-val="NT$1,950萬" data-note="年終旺季，庫存調整影響">
+              <rect x="385" y="140" width="80" height="0" fill="#5a7a5a" rx="3" opacity=".8"/>
+              <text x="425" y="160" text-anchor="middle" font-size="10" fill="#8c8880">Q4</text>
+            </g>
+            <!-- 目標線 -->
+            <line x1="30" y1="65" x2="490" y2="65" stroke="#c9963a" stroke-width="1.5" stroke-dasharray="6,4" opacity=".7"/>
+            <text x="492" y="69" font-size="9" fill="#c9963a" font-weight="600">目標</text>
+          </g>
+          <!-- Tooltip -->
+          <g id="svgTooltip" opacity="0" pointer-events="none">
+            <rect id="ttBg" x="0" y="0" width="160" height="56" rx="5" fill="#2c2b28" opacity=".92"/>
+            <text id="ttLabel" x="10" y="18" font-size="11" fill="#c9963a" font-weight="700"></text>
+            <text id="ttVal" x="10" y="34" font-size="12" fill="#ffffff" font-weight="700"></text>
+            <text id="ttNote" x="10" y="49" font-size="9" fill="#8c8880"></text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <p class="body-text">上面的長條圖是真實的 SVG——每個長條有進場動畫，滑鼠移上去會顯示詳細資料。這就是 SVG 互動圖和靜態截圖的差距。</p>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S3 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 03</div>
+    <h2 class="section-heading">辦公室最常用的<em>四種圖表</em></h2>
+    <p class="body-text">以下是最容易產生說服力、也最常出現在商業報告中的四種互動圖表類型：</p>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-icon">🔀</div>
+        <div class="chart-body">
+          <div class="chart-name">流程 / 路徑圖</div>
+          <div class="chart-desc">節點與連線組成，展示步驟、決策樹、專案流程。hover 顯示每個節點的說明。</div>
+          <div class="chart-use">→ 適合：專案計劃、SOP 流程、決策說明</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-icon">📊</div>
+        <div class="chart-body">
+          <div class="chart-name">銷售 / 轉換漏斗</div>
+          <div class="chart-desc">由上而下的漸縮形狀，展示各階段數量與轉換率。動畫讓流失感更直觀。</div>
+          <div class="chart-use">→ 適合：行銷報告、業務追蹤、電商分析</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-icon">📈</div>
+        <div class="chart-body">
+          <div class="chart-name">折線 / 長條圖</div>
+          <div class="chart-desc">傳統圖表的升級版：hover 顯示精確數值，可切換時間維度，支援目標線對比。</div>
+          <div class="chart-use">→ 適合：業績報告、趨勢分析、預算追蹤</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-icon">🗓</div>
+        <div class="chart-body">
+          <div class="chart-name">時間軸 / 甘特圖</div>
+          <div class="chart-desc">橫向時間軸搭配任務條，展示專案進度。可拖曳調整、點擊看任務詳情。</div>
+          <div class="chart-use">→ 適合：專案管理、產品路線圖、上市計劃</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S4 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 04</div>
+    <h2 class="section-heading">告訴 AI 做 SVG 圖的<em>五個關鍵要素</em></h2>
+    <p class="body-text">製作 SVG 互動圖的 Prompt，除了黃金公式的四元素之外，還需要額外說明以下五個面向，AI 才能輸出品質穩定的互動圖表：</p>
+
+    <div class="prompt-element-list">
+      <div class="pe-item">
+        <div class="pe-num">01</div>
+        <div class="pe-body">
+          <div class="pe-title">圖表類型與資料結構</div>
+          <div class="pe-desc">說明要做什麼圖，以及資料的形狀——是幾個節點？幾條資料？橫軸是時間還是類別？</div>
+          <div class="pe-example">「製作一個有 5 個節點的流程圖，節點之間用箭頭連接，資料從左到右排列」</div>
+        </div>
+      </div>
+      <div class="pe-item">
+        <div class="pe-num">02</div>
+        <div class="pe-body">
+          <div class="pe-title">互動行為</div>
+          <div class="pe-desc">明確說出每個互動動作要做什麼——不說的話 AI 可能做出完全靜態的圖。</div>
+          <div class="pe-example">「滑鼠移到節點上時顯示 tooltip 說明卡，移開時隱藏；點擊節點時高亮該節點及其連線」</div>
+        </div>
+      </div>
+      <div class="pe-item">
+        <div class="pe-num">03</div>
+        <div class="pe-body">
+          <div class="pe-title">進場動畫</div>
+          <div class="pe-desc">說明圖表元素是否要有進場動畫、動畫的方向和時序。</div>
+          <div class="pe-example">「頁面載入時，長條圖從底部往上生長（height 從 0 動畫到最終值），各欄依序延遲 0.1s」</div>
+        </div>
+      </div>
+      <div class="pe-item">
+        <div class="pe-num">04</div>
+        <div class="pe-body">
+          <div class="pe-title">資料可編輯性</div>
+          <div class="pe-desc">說明圖表的數字是寫死在程式碼裡，還是讓使用者在頁面上自行修改。</div>
+          <div class="pe-example">「圖表上方提供輸入框，使用者可直接修改每個階段的數值，圖表即時更新」</div>
+        </div>
+      </div>
+      <div class="pe-item">
+        <div class="pe-num">05</div>
+        <div class="pe-body">
+          <div class="pe-title">色彩與風格</div>
+          <div class="pe-desc">SVG 的色彩系統獨立於 HTML，要另外說明使用哪些顏色、整體風格調性。</div>
+          <div class="pe-example">「主色使用深綠 #2e7d32，強調色橘 #e65100，背景白色，整體風格簡潔現代」</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <div class="callout-icon">★</div>
+      <div class="callout-body">
+        <strong>最重要的一條限制：</strong>在 Prompt 裡一定要加上「<strong>不引入任何外部圖表套件（如 D3.js、Chart.js）</strong>，只使用原生 SVG 和 JavaScript」。外部套件在沒有網路的環境下無法載入，你的工具就會壞掉。
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a class="nav-btn prev" href="../Part2-商務軍火庫/CH2-3.html">
+    <span>←</span>
+    <div>
+      <div class="nav-btn-label">上一節</div>
+      <div class="nav-btn-title">2.3 UI/UX 美學升級</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="CH3-2.html">
+    <div>
+      <div class="nav-btn-label">下一節</div>
+      <div class="nav-btn-title">3.2 動態專案路徑圖</div>
+    </div>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Part 3 · 1 of 3</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollHeight - d.clientHeight > 0 ? (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.1, rootMargin:'0px 0px -48px 0px'});
+  document.querySelectorAll('.lesson-section, .section-rule').forEach(el => { el.classList.add('reveal'); io.observe(el); });
+})();
+(function(){
+  const sections = Array.from(document.querySelectorAll('.lesson-section'));
+  const nav = document.getElementById('sectionDots');
+  if(!sections.length||!nav) return;
+  sections.forEach((sec,i) => {
+    const btn = document.createElement('button');
+    btn.className='sdot';
+    btn.title = sec.querySelector('.section-heading')?.textContent?.trim().slice(0,20)||('第'+(i+1)+'節');
+    btn.addEventListener('click',()=>sec.scrollIntoView({behavior:'smooth',block:'start'}));
+    nav.appendChild(btn);
+  });
+  const dotIo = new IntersectionObserver(entries => {
+    entries.forEach(e => { const i=sections.indexOf(e.target); if(i>=0) nav.children[i]?.classList.toggle('active',e.isIntersecting); });
+    nav.classList.toggle('visible', Array.from(nav.children).some(d=>d.classList.contains('active')));
+  },{threshold:.3});
+  sections.forEach(s=>dotIo.observe(s));
+})();
+
+// SVG 互動長條圖
+(function(){
+  const bars = [
+    {el: document.querySelector('.bar-item:nth-child(2) rect'), h: 70},
+    {el: document.querySelector('.bar-item:nth-child(3) rect'), h: 92},
+    {el: document.querySelector('.bar-item:nth-child(4) rect'), h: 120},
+    {el: document.querySelector('.bar-item:nth-child(5) rect'), h: 112},
+  ];
+  const tooltip = document.getElementById('svgTooltip');
+  const ttBg = document.getElementById('ttBg');
+  const ttLabel = document.getElementById('ttLabel');
+  const ttVal = document.getElementById('ttVal');
+  const ttNote = document.getElementById('ttNote');
+  const svg = document.getElementById('demoSvg');
+
+  // 進場動畫（IntersectionObserver 觸發）
+  const barWrap = document.querySelector('.svg-demo-wrap');
+  let animated = false;
+  const svgObs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && !animated) {
+      animated = true;
+      bars.forEach((b, i) => {
+        if (!b.el) return;
+        const finalH = b.h;
+        const finalY = 140 - finalH;
+        setTimeout(() => {
+          b.el.setAttribute('y', finalY);
+          b.el.style.transition = 'height .6s cubic-bezier(.16,1,.3,1), y .6s cubic-bezier(.16,1,.3,1)';
+          b.el.setAttribute('height', finalH);
+        }, i * 100);
+      });
+    }
+  }, {threshold:.3});
+  if (barWrap) svgObs.observe(barWrap);
+
+  // hover tooltip
+  document.querySelectorAll('.bar-item').forEach(g => {
+    g.style.cursor = 'pointer';
+    g.addEventListener('mouseenter', (e) => {
+      const label = g.dataset.label;
+      const val = g.dataset.val;
+      const note = g.dataset.note;
+      ttLabel.textContent = label;
+      ttVal.textContent = val;
+      ttNote.textContent = note;
+      const svgRect = svg.getBoundingClientRect();
+      const gRect = g.getBoundingClientRect();
+      let tx = (gRect.left - svgRect.left) - 10;
+      let ty = (gRect.top - svgRect.top) - 70;
+      if (tx + 170 > 520) tx = 520 - 175;
+      if (ty < 0) ty = 5;
+      tooltip.setAttribute('transform', `translate(${tx},${ty})`);
+      tooltip.setAttribute('opacity', '1');
+      g.querySelector('rect').setAttribute('opacity', '1');
+    });
+    g.addEventListener('mouseleave', () => {
+      tooltip.setAttribute('opacity', '0');
+      g.querySelector('rect').setAttribute('opacity', '.8');
+    });
+  });
+})();
+</script>
+</body>
+</html>

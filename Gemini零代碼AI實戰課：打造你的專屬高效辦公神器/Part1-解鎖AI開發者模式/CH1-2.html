@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH1-2 黃金公式｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a1);border:1px solid rgba(181,112,58,.3);background:rgba(181,112,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a1);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a1);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a1);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a1);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a1);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a1);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a1);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.inline-code{font-family:'Courier New',monospace;font-size:.85em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+
+/* ── 四元素格 ── */
+.formula-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:32px 0;}
+.formula-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;}
+.formula-card-head{padding:16px 20px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:12px;}
+.formula-tag{font-size:.68rem;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:99px;}
+.tag-role{background:rgba(181,112,58,.12);color:var(--c-a1);}
+.tag-task{background:rgba(201,150,58,.12);color:var(--c-a2);}
+.tag-limit{background:rgba(107,127,163,.12);color:var(--c-a4);}
+.tag-format{background:rgba(90,122,90,.12);color:var(--c-a3);}
+.formula-name{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-text);}
+.formula-body{padding:18px 20px;}
+.formula-desc{font-size:.85rem;color:var(--c-text);line-height:1.75;margin-bottom:12px;}
+.formula-example{font-size:.8rem;color:var(--c-muted);line-height:1.7;padding:10px 14px;background:var(--c-surface);border-radius:var(--radius-sm);}
+.formula-example-label{font-size:.65rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;margin-bottom:4px;}
+
+/* ── Prompt 框 ── */
+.prompt-wrap{margin:32px 0;}
+.prompt-label{font-size:.7rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.prompt-dot{width:6px;height:6px;border-radius:50%;}
+.dot-bad{background:#c0392b;}
+.dot-good{background:var(--c-a3);}
+.prompt-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.8;padding:24px 28px;border-radius:var(--radius);white-space:pre-wrap;word-break:break-word;}
+.prompt-box.bad{border:1px solid rgba(192,57,43,.3);}
+.prompt-box.good{border:1px solid rgba(90,122,90,.3);}
+.prompt-comment{color:#8c8880;font-family:'Noto Sans TC',sans-serif;font-size:.75rem;font-style:normal;}
+.prompt-highlight{color:var(--c-a2);}
+.prompt-highlight-blue{color:#7a9ea3;}
+.prompt-highlight-green{color:#8ab48a;}
+
+/* ── 對比框 ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0;}
+.compare-card{padding:22px 24px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);}
+.compare-card.good{border-color:rgba(90,122,90,.35);background:rgba(90,122,90,.04);}
+.compare-label{font-size:.7rem;font-weight:500;letter-spacing:1px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--c-border);color:var(--c-muted);}
+.compare-card.good .compare-label{color:var(--c-a3);}
+.compare-text{font-size:.85rem;color:var(--c-text);line-height:1.75;}
+.compare-result{margin-top:12px;padding:10px 14px;background:var(--c-surface);border-radius:var(--radius-sm);font-size:.8rem;color:var(--c-muted);line-height:1.6;}
+.compare-result strong{color:var(--c-text);}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(181,112,58,.07);border:1px solid rgba(181,112,58,.25);}
+.callout.warn{background:rgba(201,150,58,.07);border:1px solid rgba(201,150,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 公式大字展示 ── */
+.formula-banner{padding:32px 36px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);margin:28px 0;text-align:center;}
+.formula-banner-label{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;font-weight:500;margin-bottom:16px;}
+.formula-big{font-family:'Shippori Mincho',serif;font-size:1.5rem;font-weight:700;color:var(--c-text);line-height:1.8;}
+.formula-big .f-role{color:var(--c-a1);}
+.formula-big .f-task{color:var(--c-a2);}
+.formula-big .f-limit{color:var(--c-a4);}
+.formula-big .f-format{color:var(--c-a3);}
+.formula-big .f-plus{color:var(--c-border);margin:0 12px;}
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a1);}
+.nav-btn.prev{}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+
+/* ── 動態進場系統 ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.lesson-hero .back-link      { animation:fadeUp .4s ease both; }
+.lesson-hero .hero-meta      { animation:fadeUp .45s .08s ease both; }
+.lesson-hero .lesson-title   { animation:fadeUp .55s .15s ease both; }
+.lesson-hero .lesson-tagline { animation:fadeUp .5s  .26s ease both; }
+.lesson-hero .outcomes       { animation:fadeUp .45s .36s ease both; }
+
+.reveal {
+  opacity:0; transform:translateY(22px);
+  transition:opacity .65s cubic-bezier(.16,1,.3,1), transform .65s cubic-bezier(.16,1,.3,1);
+}
+.reveal.in { opacity:1; transform:translateY(0); }
+
+.section-rule {
+  transform-origin:left center; opacity:0;
+  transition:opacity .4s ease, transform .6s cubic-bezier(.16,1,.3,1);
+  transform:scaleX(.3);
+}
+.section-rule.in { opacity:1; transform:scaleX(1); }
+
+.formula-card {
+  transition:transform .22s cubic-bezier(.16,1,.3,1), box-shadow .22s ease;
+}
+.formula-card:hover {
+  transform:translateY(-4px);
+  box-shadow:0 12px 28px rgba(0,0,0,.09);
+}
+.compare-card { transition:transform .2s ease, box-shadow .2s ease; }
+.compare-card:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,.07); }
+
+.section-dots {
+  position:fixed; left:20px; top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:10px; z-index:40;
+  opacity:0; transition:opacity .4s ease;
+}
+.section-dots.visible { opacity:1; }
+.sdot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--c-border); cursor:pointer;
+  transition:background .3s ease, transform .3s ease;
+  border:none; padding:0;
+}
+.sdot.active { background:var(--c-a1); transform:scale(1.5); }
+@media (max-width:1100px) { .section-dots { display:none; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">CH1-2</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="section-dots" id="sectionDots" aria-label="章節導航"></nav>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 返回課程目錄</a>
+  <div class="hero-meta">
+    <span class="hero-part">PART 1 · 解鎖 AI 開發者模式</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">1.2</span>
+  </div>
+  <h1 class="lesson-title">溝通心法：<br>聽懂 AI 的語言——<br>「角色＋任務＋限制＋呈現」黃金公式</h1>
+  <p class="lesson-tagline">為什麼同樣是「請 AI 做工具」，有人得到一個精美、直接可用的程式，有人卻只得到一堆無法執行的說明文字？差距不在 AI，在於你怎麼問。這一節，我們拆解讓輸出品質倍增的四元素黃金公式。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">學完這節，你會</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>理解為什麼「模糊的指令」會得到「模糊的結果」</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>掌握黃金公式的四個元素：角色、任務、限制、呈現</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>看懂好 Prompt 與爛 Prompt 的實際差距，並能自己套用</div>
+  </div>
+</section>
+
+<main class="lesson-body">
+
+  <!-- S1 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 01</div>
+    <h2 class="section-heading">為什麼你之前沒得到<em>想要的結果</em>？</h2>
+    <p class="body-text">大多數人第一次叫 AI 做工具，輸入的大概是這樣：「幫我做一個計算器」。然後 AI 可能給你一段解釋計算器是什麼的文字，或者給了一個很基本的程式碼，完全不是你腦袋裡想的那個樣子。</p>
+    <p class="body-text">這不是 AI 不夠聰明——是因為<strong>你給的資訊不夠讓它做出你真正要的東西</strong>。「幫我做一個計算器」對 AI 來說，就像你走進一家餐廳說「幫我做一份食物」——廚師沒辦法從這句話裡知道你要吃什麼。</p>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-label">❌ 模糊的指令</div>
+        <div class="compare-text">「幫我做一個計算器」</div>
+        <div class="compare-result">
+          AI 自由發揮，可能給你一個最基本的四則運算介面，或者只給你說明文字，完全不符合你的使用場景。
+        </div>
+      </div>
+      <div class="compare-card good">
+        <div class="compare-label">✦ 使用黃金公式</div>
+        <div class="compare-text">「你是一個專業的前端工程師。幫我製作一個『多層次報價計算機』網頁，讓使用者輸入產品數量與單價，自動計算含稅金額與利潤。只使用純 HTML/CSS/JavaScript，輸出完整可執行的單一 HTML 檔案。」</div>
+        <div class="compare-result">
+          AI 按照你的規格輸出——<strong>欄位正確、邏輯正確、格式正確，直接可用。</strong>
+        </div>
+      </div>
+    </div>
+
+    <p class="body-text">同樣的需求，差距來自你提供的資訊量。黃金公式就是幫你確保每次都把四個關鍵資訊告訴 AI。</p>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S2 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 02</div>
+    <h2 class="section-heading"><em>黃金公式</em>的四個元素</h2>
+
+    <div class="formula-banner">
+      <div class="formula-banner-label">黃金公式</div>
+      <div class="formula-big">
+        <span class="f-role">角色</span>
+        <span class="f-plus">＋</span>
+        <span class="f-task">任務</span>
+        <span class="f-plus">＋</span>
+        <span class="f-limit">限制</span>
+        <span class="f-plus">＋</span>
+        <span class="f-format">呈現</span>
+      </div>
+    </div>
+
+    <div class="formula-grid">
+      <div class="formula-card">
+        <div class="formula-card-head">
+          <span class="formula-tag tag-role">角色 Role</span>
+          <span class="formula-name">告訴 AI 它是誰</span>
+        </div>
+        <div class="formula-body">
+          <div class="formula-desc">給 AI 一個專業身份，它會用那個身份的標準來思考和輸出。說「你是前端工程師」，它就會寫出工整、符合慣例的程式碼；說「你是 UI 設計師」，它就會更注重視覺排版。</div>
+          <div class="formula-example">
+            <div class="formula-example-label">範例</div>
+            你是一位熟悉商業應用的資深前端工程師
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-card">
+        <div class="formula-card-head">
+          <span class="formula-tag tag-task">任務 Task</span>
+          <span class="formula-name">清楚描述要做什麼</span>
+        </div>
+        <div class="formula-body">
+          <div class="formula-desc">說明工具的功能、使用者是誰、要解決什麼問題。越具體越好——「製作一個讓業務人員輸入品項與數量後自動計算含稅報價的工具」遠比「做一個計算器」好。</div>
+          <div class="formula-example">
+            <div class="formula-example-label">範例</div>
+            製作一個多層次報價計算機，使用者可輸入品項、數量、單價，系統自動計算小計、稅金與總金額
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-card">
+        <div class="formula-card-head">
+          <span class="formula-tag tag-limit">限制 Constraint</span>
+          <span class="formula-name">設定邊界條件</span>
+        </div>
+        <div class="formula-body">
+          <div class="formula-desc">告訴 AI 哪些東西不能做、要避開什麼。這是這門課最重要的一條限制：<strong>只用純 HTML/CSS/JS，不引入任何外部套件或框架</strong>——這樣輸出的檔案才能在沒網路的環境下也能用。</div>
+          <div class="formula-example">
+            <div class="formula-example-label">範例</div>
+            只使用純 HTML、CSS 與原生 JavaScript，不引入任何外部函式庫或框架
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-card">
+        <div class="formula-card-head">
+          <span class="formula-tag tag-format">呈現 Format</span>
+          <span class="formula-name">指定輸出格式</span>
+        </div>
+        <div class="formula-body">
+          <div class="formula-desc">告訴 AI 輸出應該是什麼形式。如果你想要一個可以直接用的檔案，就要明確說「輸出完整的單一 HTML 檔案」；如果不說，AI 可能只給你部分程式碼或摻著說明文字。</div>
+          <div class="formula-example">
+            <div class="formula-example-label">範例</div>
+            輸出完整、可直接在瀏覽器執行的單一 HTML 檔案，不要加任何說明文字
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S3 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 03</div>
+    <h2 class="section-heading">實際看看<em>完整 Prompt</em> 長什麼樣</h2>
+    <p class="body-text">以「會議倒數計時器」為例，以下是用黃金公式寫出來的完整 Prompt。注意每個元素是怎麼自然地串接在一起的：</p>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label">
+        <span class="prompt-dot dot-good"></span>
+        使用黃金公式的完整 Prompt
+      </div>
+      <div class="prompt-box good">
+<span class="prompt-comment">// 角色</span>
+<span class="prompt-highlight">你是一位熟悉商業應用的資深前端工程師。</span>
+
+<span class="prompt-comment">// 任務</span>
+<span class="prompt-highlight-green">請製作一個「會議倒數計時器」網頁工具。
+功能如下：
+- 使用者可以輸入會議時長（分鐘）
+- 點擊「開始」後進入倒數
+- 剩餘時間以大字體顯示，格式為「分:秒」
+- 時間到時自動出現警告提示</span>
+
+<span class="prompt-comment">// 限制</span>
+<span class="prompt-highlight-blue">只使用純 HTML、CSS 與原生 JavaScript，
+不引入任何外部函式庫或框架。
+介面風格簡潔，以白色為主色調。</span>
+
+<span class="prompt-comment">// 呈現</span>
+<span class="prompt-highlight">輸出完整、可直接在瀏覽器開啟執行的單一 HTML 檔案，
+程式碼之外不需要任何說明文字。</span></div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">✦</div>
+      <div class="callout-body">
+        <strong>提示：</strong>四個元素不需要加標籤或標題，只要內容包含了這四個方向的資訊，AI 就能理解。上面用 <span class="inline-code">// 角色</span> 的格式只是為了讓你看清楚結構，實際使用時不需要寫這些。
+      </div>
+    </div>
+
+    <p class="body-text">現在來看看，如果只是隨手問，會得到什麼——</p>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label">
+        <span class="prompt-dot dot-bad"></span>
+        沒有使用公式的隨手問法
+      </div>
+      <div class="prompt-box bad">幫我做一個計時器</div>
+    </div>
+
+    <div class="callout warn">
+      <div class="callout-icon">⚠</div>
+      <div class="callout-body">
+        這樣的指令，AI 可能給你一個只有數字的基本計時器、可能摻著大量說明文字、可能用了需要安裝的外部套件——而且你得不到任何可以直接存成 .html 使用的東西。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S4 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 04</div>
+    <h2 class="section-heading">辦公室情境的<em>Prompt 範本</em></h2>
+    <p class="body-text">以下提供兩個辦公室/行銷情境的黃金公式範本，你可以直接借用或修改後使用：</p>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label">
+        <span class="prompt-dot dot-good"></span>
+        範本 A · 計算工具類（以薪資試算為例）
+      </div>
+      <div class="prompt-box good">
+你是一位熟悉台灣勞動法規的前端工程師。
+
+請製作一個「薪資試算工具」網頁，功能如下：
+- 使用者輸入月薪基本薪資
+- 自動計算勞健保費用（員工負擔部分）
+- 顯示實拿金額
+- 介面清楚顯示每個項目的金額明細
+
+只使用純 HTML、CSS 與原生 JavaScript，
+不引入任何外部套件，介面簡潔專業。
+
+輸出完整可執行的單一 HTML 檔案，不需要附說明。</div>
+    </div>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label">
+        <span class="prompt-dot dot-good"></span>
+        範本 B · 視覺展示類（以行銷漏斗為例）
+      </div>
+      <div class="prompt-box good">
+你是一位擅長數據視覺化的前端工程師。
+
+請製作一個「互動式行銷漏斗圖」網頁，功能如下：
+- 顯示曝光、點擊、詢問、成交四個漏斗階段
+- 每個階段可以輸入數字，自動計算轉換率
+- 滑鼠移到各段時顯示詳細數字
+- 視覺風格現代簡潔，適合報告使用
+
+只使用純 HTML、CSS 與原生 JavaScript（可使用 SVG 繪圖），
+不引入任何外部套件。
+
+輸出完整可執行的單一 HTML 檔案，不需要附說明。</div>
+    </div>
+
+    <div class="callout key">
+      <div class="callout-icon">★</div>
+      <div class="callout-body">
+        <strong>建立你的 Prompt 庫：</strong>每次做出一個好用的工具，把對應的 Prompt 存起來，加到你自己的 Prompt 庫。用過的好指令就是你的資產——這個概念在 Part 4 會詳細說明。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S5 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 05</div>
+    <h2 class="section-heading">調整與<em>迭代</em>：第一次不完美沒關係</h2>
+    <p class="body-text">黃金公式能大幅提升第一次輸出的品質，但很多時候你還是需要調整。這完全正常——就連有經驗的工程師也常常需要反覆修改才能得到理想結果。</p>
+    <p class="body-text">好消息是：在 AI Studio 裡，你可以在同一個對話視窗直接繼續修改，不需要重新寫整個 Prompt：</p>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ</div>
+      <div class="callout-body" style="display:flex;flex-direction:column;gap:10px;">
+        <div><strong>常用的後續調整指令：</strong></div>
+        <div>「把計算按鈕改成橘色」</div>
+        <div>「在結果下方增加一個『複製到剪貼簿』的按鈕」</div>
+        <div>「把字體放大，行距也稍微加寬」</div>
+        <div>「如果輸入負數，顯示錯誤提示」</div>
+      </div>
+    </div>
+
+    <p class="body-text">每次調整，AI 都會輸出更新後的完整 HTML，你只需要重新複製、貼到原本的檔案並存檔，工具就更新了。不需要自己改任何程式碼。</p>
+
+    <div class="callout tip">
+      <div class="callout-icon">✦</div>
+      <div class="callout-body">
+        <strong>一個實用技巧：</strong>如果調整了幾輪之後，AI 開始出現奇怪的結果或遺忘之前的設定，可以在同一個對話視窗傳這句話：「請根據目前的最新版本，重新輸出完整的 HTML 檔案」——這會讓它重新整合所有修改，重新輸出一個乾淨的版本。
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a class="nav-btn prev" href="CH1-1.html">
+    <span>←</span>
+    <div>
+      <div class="nav-btn-label">上一節</div>
+      <div class="nav-btn-title">1.1 顛覆認知</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="CH1-3.html">
+    <div>
+      <div class="nav-btn-label">下一節</div>
+      <div class="nav-btn-title">1.3 暖身實作：倒數計時器</div>
+    </div>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Part 1 · 2 of 3</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollHeight - d.clientHeight > 0
+    ? (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: .1, rootMargin: '0px 0px -48px 0px' });
+  document.querySelectorAll('.lesson-section, .section-rule').forEach(el => {
+    el.classList.add('reveal'); io.observe(el);
+  });
+})();
+
+(function(){
+  const sections = Array.from(document.querySelectorAll('.lesson-section'));
+  const nav = document.getElementById('sectionDots');
+  if (!sections.length || !nav) return;
+  sections.forEach((sec, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'sdot';
+    btn.title = sec.querySelector('.section-heading')?.textContent?.trim().slice(0, 20) || ('第 ' + (i+1) + ' 節');
+    btn.addEventListener('click', () => sec.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    nav.appendChild(btn);
+  });
+  const dotIo = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      const i = sections.indexOf(e.target);
+      if (i >= 0) nav.children[i]?.classList.toggle('active', e.isIntersecting);
+    });
+    nav.classList.toggle('visible', Array.from(nav.children).some(d => d.classList.contains('active')));
+  }, { threshold: .3 });
+  sections.forEach(s => dotIo.observe(s));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>打造你的商務軍火庫 · 實例演練 3｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a2);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a2);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a2);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a2);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.tool-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:32px 0;}
+.tool-topbar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.tool-dot{width:10px;height:10px;border-radius:50%;}
+.tool-dot-r{background:#ff6058;} .tool-dot-y{background:#ffbd2e;} .tool-dot-g{background:#28c840;}
+.tool-label{flex:1;font-size:.72rem;color:var(--c-muted);font-family:'Courier New',monospace;}
+.tool-body{padding:32px 36px;}
+.copy-btn{font-size:.72rem;color:var(--c-a2);background:none;border:1px solid rgba(201,150,58,.3);padding:3px 12px;border-radius:99px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.copy-btn:hover{background:rgba(201,150,58,.08);}
+
+/* ── 配色器 ── */
+.color-input-row{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.color-picker-wrap{position:relative;}
+.color-swatch{width:44px;height:44px;border-radius:var(--radius-sm);border:1px solid var(--c-border);cursor:pointer;overflow:hidden;}
+.color-swatch input[type=color]{position:absolute;width:200%;height:200%;top:-50%;left:-50%;opacity:0;cursor:pointer;}
+.hex-input{padding:11px 13px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Courier New',monospace;font-size:.9rem;color:var(--c-text);background:var(--c-bg);width:110px;}
+.hex-input:focus{outline:none;border-color:var(--c-a2);}
+.style-select{flex:1;padding:11px 13px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.87rem;color:var(--c-text);background:var(--c-bg);appearance:none;cursor:pointer;}
+.gen-scheme-btn{padding:12px 24px;background:var(--c-a2);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.87rem;font-weight:500;cursor:pointer;white-space:nowrap;}
+.gen-scheme-btn:hover{opacity:.88;}
+.scheme-result{display:none;margin-top:4px;}
+.scheme-label{font-size:.72rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:12px;}
+.palette-row{display:flex;gap:0;height:64px;border-radius:var(--radius-sm);overflow:hidden;margin-bottom:16px;border:1px solid var(--c-border);}
+.palette-swatch{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:6px;cursor:pointer;transition:flex .2s;}
+.palette-swatch:hover{flex:2;}
+.palette-hex{font-size:.65rem;font-family:'Courier New',monospace;font-weight:700;}
+.colors-detail{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.color-chip{background:var(--c-bg);border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:10px 12px;}
+.chip-swatch{height:32px;border-radius:3px;margin-bottom:6px;}
+.chip-role{font-size:.68rem;color:var(--c-muted);font-weight:500;margin-bottom:2px;}
+.chip-hex{font-size:.72rem;font-family:'Courier New',monospace;color:var(--c-text);display:flex;align-items:center;justify-content:space-between;}
+.chip-copy{font-size:.65rem;color:var(--c-a2);cursor:pointer;border:none;background:none;font-family:'Noto Sans TC',sans-serif;padding:0;}
+
+.steps-list{display:flex;flex-direction:column;gap:0;margin:32px 0;}
+.step-item{display:flex;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:20px;top:44px;bottom:0;width:1px;background:var(--c-border);}
+.step-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px;padding-top:4px;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--c-card);border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-text);}
+.step-body{flex:1;padding:4px 0 32px 24px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+.step-desc strong{color:var(--c-text);font-weight:700;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+.result-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.82rem;line-height:1.85;padding:22px 24px;border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;}
+.challenge-box{padding:28px 32px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);margin:28px 0;}
+.challenge-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.challenge-list{display:flex;flex-direction:column;gap:12px;}
+.challenge-item{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;line-height:1.7;}
+.ci-num{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-a2);flex-shrink:0;width:20px;}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a2);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">實例演練</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回課程目錄</a>
+  <div class="hero-meta">
+    <div class="hero-part">PART 2 · 打造你的商務軍火庫</div>
+    <div class="hero-divider-v"></div>
+    <div class="hero-num">實例演練 3</div>
+  </div>
+  <h1 class="lesson-title">介面配色方案速查器</h1>
+  <p class="lesson-tagline">選一個主色，選擇風格偏好，工具自動生成五色配色方案，包含背景、卡片、邊框、主色、強調色，每個色票都可以一鍵複製 HEX 碼。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">PRACTICE GOALS</div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>理解「輸入一個變數，輸出一套規則」類工具的設計邏輯</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>練習用 AI 製作帶有色彩計算的視覺工具</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>拿到一套可直接用在你的 Gemini 工具上的配色方案</span></div>
+  </div>
+</div>
+
+<div class="lesson-body">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">TOOL · 互動工具</div>
+    <h2 class="section-heading">選主色與風格，一鍵生成配色方案</h2>
+    <p class="body-text">輸入你喜歡的主色 HEX 碼，或直接點選色盤選色，再選擇你的設計風格，工具會自動生成一套五色配色方案，符合視覺和諧原則。</p>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">color-scheme-generator.html</div>
+      </div>
+      <div class="tool-body">
+        <div class="color-input-row">
+          <div class="color-picker-wrap">
+            <div class="color-swatch" id="swatch-preview" style="background:#b5703a;">
+              <input type="color" id="color-picker" value="#b5703a" oninput="onPickerChange()">
+            </div>
+          </div>
+          <input class="hex-input" type="text" id="hex-input" value="#b5703a" placeholder="#hex" oninput="onHexInput()" maxlength="7">
+          <select class="style-select" id="style-select">
+            <option value="muji">無印良品風（自然、簡約）</option>
+            <option value="pro">商務專業風（沉穩、有力）</option>
+            <option value="fresh">清新現代風（明亮、輕盈）</option>
+            <option value="dark">深色質感風（厚重、精緻）</option>
+          </select>
+          <button class="gen-scheme-btn" onclick="generateScheme()">生成配色 →</button>
+        </div>
+        <div class="scheme-result" id="scheme-result">
+          <div class="scheme-label">GENERATED COLOR SCHEME</div>
+          <div class="palette-row" id="palette-row"></div>
+          <div class="colors-detail" id="colors-detail"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>配色方案的設計邏輯：</strong>好的 UI 配色通常只需要「背景 × 卡片 × 邊框 × 主色 × 強調色」五個角色，主色決定個性，其餘四色服務於主色。這個工具示範了「一個輸入 → 一套規則」的典型 UI 工具模型。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">HOW TO REPLICATE · 如何自己做出這個工具</div>
+    <h2 class="section-heading">讓 Gemini 幫你做一個配色生成工具</h2>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">決定你的色彩系統有幾個角色</div>
+          <div class="step-desc">在寫指令之前，先想清楚你的工具需要幾種顏色角色，例如：背景/卡片/邊框/主色/強調色，或是更簡化的版本。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">複製以下指令貼入 Gemini</div>
+          <div class="step-desc">注意指令中如何描述「<strong>色彩計算規則</strong>」——這是告訴 AI 用什麼邏輯從主色衍生出其他顏色，而不是讓 AI 隨機決定。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">測試不同主色，確認生成結果合理</div>
+          <div class="step-desc">用幾個你工作上常用的品牌色測試，確認生成的配色方案視覺上好看且實用，再存檔。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">→ 複製這段 Prompt 貼入 Gemini</div>
+        <button class="copy-btn" style="margin-left:auto;" onclick="copyInstructions()">複製指令</button>
+      </div>
+      <div class="tool-body" style="padding:24px 28px;">
+        <div class="result-box" id="instruction-box">你是一位擅長製作互動工具的前端工程師，同時熟悉 UI 配色理論。
+
+請製作一個「介面配色方案速查器」的單頁 HTML 工具，功能如下：
+
+【功能需求】
+- 一個顏色選擇器（color picker）+ HEX 輸入框，讓使用者選定主色
+- 一個風格下拉選單（無印良品風/商務專業風/清新現代風/深色質感風）
+- 「生成配色」按鈕，按下後用 JavaScript 計算並生成一套五色配色方案：
+  · 背景色（主色加深度低飽和度版本）
+  · 卡片背景色（比背景稍亮）
+  · 邊框色（介於背景與卡片之間）
+  · 主色（使用者選定的顏色）
+  · 強調色（主色的互補或類比色，依風格調整）
+- 以色帶（五色並排長條）視覺化顯示配色方案
+- 詳細展示每個顏色的：色票預覽、角色標籤（背景/卡片/邊框/主色/強調）、HEX 碼、「複製」按鈕
+
+【色彩計算規則】
+使用 HSL 色彩空間進行計算：
+- 背景色：主色的色相 H，飽和度降至 15–20%，亮度提至 93–95%
+- 卡片色：比背景亮度再高 2–3%，飽和度再低 3–5%
+- 邊框色：比背景亮度低 5%，飽和度與背景相同
+- 強調色：依風格決定（無印良品：類比色偏暖；商務：互補色降飽和；清新：高亮類比色；深色：主色加深）
+
+【設計要求】
+- 工具本身使用無印良品風格：背景 #f5f3ee，卡片 #ffffff，邊框 #d8d4cb
+- 強調色 #c9963a，字體 Shippori Mincho + Noto Sans TC（Google Fonts）
+- 圓角 6px，無陰影，無漸層
+
+請生成完整的單一 HTML 檔案。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">CHALLENGE · 進階挑戰</div>
+    <h2 class="section-heading">把配色工具升級為品牌色規範產生器</h2>
+    <div class="challenge-box">
+      <div class="challenge-label">PRACTICE VARIATIONS</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="ci-num">01</div>
+          <div>讓工具可以輸入兩個顏色（主色 + 品牌第二色），生成一套完整的雙色系配色方案，適合有固定品牌識別的場景。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">02</div>
+          <div>加入「匯出 CSS 變數」功能——把生成的配色方案輸出為 CSS :root 變數格式，可以直接貼入 Gemini 指令，讓 AI 生成工具時使用你的品牌色。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">03</div>
+          <div>為你目前工作的公司或客戶的品牌主色生成一套配色方案，拿來替換課程中任一個工具的色彩，製作一個「品牌版」的演示工具。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn" href="PRAC2-2.html">
+    <div>
+      <div class="nav-btn-label">← 上一個演練</div>
+      <div class="nav-btn-title">實例演練 2：跨時區會議時段協調板</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="../Part3-SVG互動圖表/PRAC3-1.html">
+    <div>
+      <div class="nav-btn-label">前往 Part 3 →</div>
+      <div class="nav-btn-title">實例演練 7：技能評估雷達圖</div>
+    </div>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Gemini 零代碼 AI 實戰課 · Part 2 實例演練</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('prog').style.width = (window.scrollY / total * 100) + '%';
+});
+
+function hexToHsl(hex) {
+  let r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
+  const max = Math.max(r,g,b), min = Math.min(r,g,b);
+  let h, s, l = (max+min)/2;
+  if (max === min) { h = s = 0; }
+  else {
+    const d = max - min;
+    s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max){
+      case r: h = ((g-b)/d + (g<b?6:0))/6; break;
+      case g: h = ((b-r)/d+2)/6; break;
+      case b: h = ((r-g)/d+4)/6; break;
+    }
+  }
+  return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
+}
+
+function hslToHex(h, s, l) {
+  s /= 100; l /= 100;
+  const k = n => (n + h/30) % 12;
+  const a = s * Math.min(l, 1-l);
+  const f = n => Math.round((l - a * Math.max(-1, Math.min(k(n)-3, Math.min(9-k(n),1)))) * 255);
+  return '#' + [f(0),f(8),f(4)].map(v => v.toString(16).padStart(2,'0')).join('');
+}
+
+function onPickerChange() {
+  const v = document.getElementById('color-picker').value;
+  document.getElementById('hex-input').value = v;
+  document.getElementById('swatch-preview').style.background = v;
+}
+
+function onHexInput() {
+  const v = document.getElementById('hex-input').value;
+  if (/^#[0-9a-fA-F]{6}$/.test(v)) {
+    document.getElementById('color-picker').value = v;
+    document.getElementById('swatch-preview').style.background = v;
+  }
+}
+
+function generateScheme() {
+  let hex = document.getElementById('hex-input').value.trim();
+  if (!/^#[0-9a-fA-F]{6}$/.test(hex)) { alert('請輸入有效的 HEX 顏色碼（例：#b5703a）'); return; }
+  const style = document.getElementById('style-select').value;
+  const [h, s, l] = hexToHsl(hex);
+
+  let scheme;
+  if (style === 'muji') {
+    scheme = [
+      { role:'背景色', hex: hslToHex(h, 12, 94) },
+      { role:'卡片背景', hex: hslToHex(h, 6, 98) },
+      { role:'邊框色', hex: hslToHex(h, 14, 84) },
+      { role:'主色', hex: hex },
+      { role:'強調色', hex: hslToHex((h+25)%360, Math.min(s+5, 80), Math.max(l-5, 25)) }
+    ];
+  } else if (style === 'pro') {
+    scheme = [
+      { role:'背景色', hex: hslToHex(h, 8, 95) },
+      { role:'卡片背景', hex: hslToHex(h, 4, 99) },
+      { role:'邊框色', hex: hslToHex(h, 10, 82) },
+      { role:'主色', hex: hex },
+      { role:'強調色', hex: hslToHex((h+180)%360, Math.max(s-20, 20), Math.min(l+10, 55)) }
+    ];
+  } else if (style === 'fresh') {
+    scheme = [
+      { role:'背景色', hex: hslToHex(h, 20, 96) },
+      { role:'卡片背景', hex: hslToHex(h, 10, 100) },
+      { role:'邊框色', hex: hslToHex(h, 22, 86) },
+      { role:'主色', hex: hex },
+      { role:'強調色', hex: hslToHex((h+40)%360, Math.min(s+15, 85), Math.min(l+8, 60)) }
+    ];
+  } else {
+    scheme = [
+      { role:'背景色', hex: hslToHex(h, 15, 10) },
+      { role:'卡片背景', hex: hslToHex(h, 12, 16) },
+      { role:'邊框色', hex: hslToHex(h, 10, 22) },
+      { role:'主色', hex: hex },
+      { role:'強調色', hex: hslToHex((h+15)%360, s, Math.min(l+20, 75)) }
+    ];
+  }
+
+  const pr = document.getElementById('palette-row');
+  pr.innerHTML = scheme.map(c => {
+    const textColor = parseInt(c.hex.slice(1,3),16)*0.299 + parseInt(c.hex.slice(3,5),16)*0.587 + parseInt(c.hex.slice(5,7),16)*0.114 > 128 ? '#2c2b28' : '#ffffff';
+    return `<div class="palette-swatch" style="background:${c.hex}" title="${c.role}"><span class="palette-hex" style="color:${textColor}">${c.hex}</span></div>`;
+  }).join('');
+
+  const cd = document.getElementById('colors-detail');
+  cd.innerHTML = scheme.map(c => `
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:${c.hex}"></div>
+      <div class="chip-role">${c.role}</div>
+      <div class="chip-hex">${c.hex}<button class="chip-copy" onclick="chipCopy('${c.hex}', this)">複製</button></div>
+    </div>`).join('');
+
+  document.getElementById('scheme-result').style.display = 'block';
+}
+
+function chipCopy(hex, btn) {
+  navigator.clipboard.writeText(hex).then(() => {
+    btn.textContent = '✓';
+    setTimeout(() => btn.textContent = '複製', 1500);
+  });
+}
+
+function copyInstructions() {
+  const text = document.getElementById('instruction-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製指令', 1800);
+  });
+}
+
+// 初始化預覽
+generateScheme();
+</script>
+</body>
+</html>

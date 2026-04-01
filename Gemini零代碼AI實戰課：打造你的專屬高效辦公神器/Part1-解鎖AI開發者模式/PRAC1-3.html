@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>解鎖AI開發者模式 · 實例演練 3｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a1);border:1px solid rgba(181,112,58,.3);background:rgba(181,112,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a1);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a1);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a1);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a1);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a1);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a1);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.tool-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:32px 0;}
+.tool-topbar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.tool-dot{width:10px;height:10px;border-radius:50%;}
+.tool-dot-r{background:#ff6058;} .tool-dot-y{background:#ffbd2e;} .tool-dot-g{background:#28c840;}
+.tool-label{flex:1;font-size:.72rem;color:var(--c-muted);font-family:'Courier New',monospace;}
+.tool-body{padding:36px 40px;}
+.copy-btn{font-size:.72rem;color:var(--c-a1);background:none;border:1px solid rgba(181,112,58,.3);padding:3px 12px;border-radius:99px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.copy-btn:hover{background:rgba(181,112,58,.08);}
+
+/* ── 情境模板產生器 ── */
+.gen-form{display:flex;flex-direction:column;gap:16px;margin-bottom:24px;}
+.gen-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.gen-field{display:flex;flex-direction:column;gap:6px;}
+.gen-field.full{grid-column:1/-1;}
+.field-label{font-size:.72rem;color:var(--c-a1);letter-spacing:1.5px;font-weight:500;}
+.gen-input{padding:11px 13px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.87rem;color:var(--c-text);background:var(--c-bg);transition:border-color .2s;}
+.gen-input:focus{outline:none;border-color:var(--c-a1);}
+.gen-input::placeholder{color:var(--c-muted);}
+.gen-select{padding:11px 13px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.87rem;color:var(--c-text);background:var(--c-bg);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M6 8L0 0h12z' fill='%238c8880'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.gen-select:focus{outline:none;border-color:var(--c-a1);}
+.gen-btn{padding:13px;background:var(--c-a1);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;transition:opacity .2s;}
+.gen-btn:hover{opacity:.88;}
+.template-result{display:none;margin-top:4px;}
+.template-label{font-size:.7rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.template-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.84rem;line-height:1.9;padding:22px 24px;border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;border:1px solid rgba(181,112,58,.2);}
+
+.steps-list{display:flex;flex-direction:column;gap:0;margin:32px 0;}
+.step-item{display:flex;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:20px;top:44px;bottom:0;width:1px;background:var(--c-border);}
+.step-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px;padding-top:4px;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--c-card);border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-text);}
+.step-body{flex:1;padding:4px 0 32px 24px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+.step-desc strong{color:var(--c-text);font-weight:700;}
+
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+.result-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.82rem;line-height:1.85;padding:22px 24px;border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;}
+
+.challenge-box{padding:28px 32px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);margin:28px 0;}
+.challenge-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.challenge-list{display:flex;flex-direction:column;gap:12px;}
+.challenge-item{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;line-height:1.7;}
+.ci-num{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-a2);flex-shrink:0;width:20px;}
+
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a1);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">實例演練</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回課程目錄</a>
+  <div class="hero-meta">
+    <div class="hero-part">PART 1 · 解鎖 AI 開發者模式</div>
+    <div class="hero-divider-v"></div>
+    <div class="hero-num">實例演練 3</div>
+  </div>
+  <h1 class="lesson-title">會議情境指令模板產生器</h1>
+  <p class="lesson-tagline">輸入會議類型、與會人數、主要目的，自動產生一段針對這場會議量身訂製的完整 AI 指令，讓你的會議記錄整理、摘要生成更精準。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">PRACTICE GOALS</div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>學會針對不同情境動態調整 Prompt 的內容</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>理解「情境變數」如何影響 AI 指令的有效性</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>產出一批可重複使用的會議 Prompt 模板</span></div>
+  </div>
+</div>
+
+<div class="lesson-body">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">TOOL · 互動工具</div>
+    <h2 class="section-heading">填入會議情境，自動生成量身指令</h2>
+    <p class="body-text">不同類型的會議需要不同的 AI 指令策略。客戶提案會、內部週會、跨部門協調會——各自的重點和輸出格式都不一樣。這個工具幫你把情境轉換成精準的指令。</p>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">meeting-prompt-generator.html</div>
+      </div>
+      <div class="tool-body">
+        <div class="gen-form">
+          <div class="gen-row">
+            <div class="gen-field">
+              <div class="field-label">會議類型</div>
+              <select class="gen-select" id="g-type">
+                <option value="客戶提案">客戶提案會議</option>
+                <option value="內部週會">內部週會</option>
+                <option value="跨部門協調">跨部門協調會</option>
+                <option value="腦力激盪">腦力激盪工作坊</option>
+                <option value="專案檢討">專案成果檢討會</option>
+                <option value="一對一面談">一對一主管面談</option>
+              </select>
+            </div>
+            <div class="gen-field">
+              <div class="field-label">會議目的</div>
+              <input class="gen-input" id="g-goal" placeholder="例：決定 Q3 行銷預算分配" type="text">
+            </div>
+          </div>
+          <div class="gen-row">
+            <div class="gen-field">
+              <div class="field-label">與會人員</div>
+              <input class="gen-input" id="g-attendee" placeholder="例：業務主管、行銷團隊、財務" type="text">
+            </div>
+            <div class="gen-field">
+              <div class="field-label">輸出格式偏好</div>
+              <select class="gen-select" id="g-format">
+                <option value="條列式重點摘要">條列式重點摘要</option>
+                <option value="表格式行動清單（含負責人與截止日）">表格式行動清單</option>
+                <option value="段落式會議記錄">段落式會議記錄</option>
+                <option value="決議事項清單">決議事項清單</option>
+              </select>
+            </div>
+          </div>
+          <div class="gen-row">
+            <div class="gen-field">
+              <div class="field-label">語氣要求</div>
+              <select class="gen-select" id="g-tone">
+                <option value="正式、專業">正式、專業</option>
+                <option value="簡潔、直接">簡潔、直接</option>
+                <option value="友善、易讀">友善、易讀</option>
+              </select>
+            </div>
+            <div class="gen-field">
+              <div class="field-label">字數上限</div>
+              <select class="gen-select" id="g-length">
+                <option value="300 字以內">300 字以內</option>
+                <option value="500 字以內">500 字以內</option>
+                <option value="不限字數，盡量完整">不限字數，完整呈現</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <button class="gen-btn" onclick="generateTemplate()">產生 AI 指令模板 →</button>
+        <div class="template-result" id="template-result">
+          <div class="template-label" style="margin-top:20px;">
+            <span>GENERATED PROMPT TEMPLATE</span>
+            <button class="copy-btn" onclick="copyTemplate()">複製</button>
+          </div>
+          <div class="template-box" id="template-box"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>這個工具的核心概念：</strong>同樣的黃金公式，因為「情境輸入」不同，就會產生完全不同的指令。學會這個邏輯，你就可以把它應用到任何場景。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">HOW TO REPLICATE · 如何自己做出這個工具</div>
+    <h2 class="section-heading">讓 Gemini 幫你做一個情境模板產生器</h2>
+
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">想好你最常遇到的工作情境</div>
+          <div class="step-desc">這個工具的關鍵在於「情境選項」的設計。在告訴 Gemini 之前，先列出你自己工作中最常見的 3～5 種情境。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">複製並修改以下指令，填入你的情境</div>
+          <div class="step-desc">把下方指令中的「會議類型」選項替換成你工作上實際會遇到的情境，例如：客服工單、產品發布通知、銷售話術……</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">測試各種情境組合，確認輸出合理後存檔</div>
+          <div class="step-desc">每一種情境都試一遍，確認生成的 Prompt 真的能用，再下載這個工具。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">→ 複製這段 Prompt 貼入 Gemini</div>
+        <button class="copy-btn" style="margin-left:auto;" onclick="copyInstructions()">複製指令</button>
+      </div>
+      <div class="tool-body" style="padding:24px 28px;">
+        <div class="result-box" id="instruction-box">你是一位擅長製作互動工具的前端工程師。
+
+請製作一個「情境 Prompt 模板產生器」的單頁 HTML 工具，功能如下：
+
+【功能需求】
+- 表單包含以下欄位（下拉選單或文字輸入）：
+  · 情境類型（下拉選單，選項由你設計，至少 5 種）
+  · 任務目的（文字輸入框）
+  · 相關人員（文字輸入框）
+  · 輸出格式（下拉選單：條列式、表格式、段落式）
+  · 語氣要求（下拉選單：正式、簡潔、友善）
+  · 字數限制（下拉選單：300字/500字/不限）
+
+- 一個「產生指令模板」按鈕，按下後根據填入的情境組合，
+  用 JavaScript 動態組合出一段符合黃金公式的完整 AI 指令
+
+- 結果區塊有「複製」按鈕
+
+【指令組合邏輯】
+生成的 Prompt 必須包含四個區塊：
+【角色】根據情境類型自動填入適合的 AI 身分描述
+【任務】結合情境類型和任務目的
+【限制】整合語氣要求和字數限制
+【呈現格式】對應所選的輸出格式
+
+【設計要求】
+- 無印良品風格：背景 #f5f3ee，卡片 #ffffff，邊框 #d8d4cb
+- 強調色 #b5703a，字體 Shippori Mincho + Noto Sans TC（Google Fonts）
+- 圓角 6px，無陰影，無漸層
+
+請生成完整的單一 HTML 檔案。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">CHALLENGE · 進階挑戰</div>
+    <h2 class="section-heading">把這個工具改造成你自己的版本</h2>
+    <div class="challenge-box">
+      <div class="challenge-label">PRACTICE VARIATIONS</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="ci-num">01</div>
+          <div>把「會議」替換成你工作中最常需要 AI 幫忙的其他情境，例如：「客戶回覆信」、「週報撰寫」、「提案摘要」，做出一個你自己的情境產生器。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">02</div>
+          <div>在工具中加入「歷史記錄」功能——把每次產生的模板儲存在頁面上，方便下次直接取用，不用重新填表。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">03</div>
+          <div>拿這個工具產生的 Prompt 實際去用 Gemini 整理一份真實的會議紀錄，比較有無使用模板的結果差異，記錄在 Prompt 庫裡。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn" href="PRAC1-2.html">
+    <div>
+      <div class="nav-btn-label">← 上一個演練</div>
+      <div class="nav-btn-title">實例演練 2：AI 指令品質健診器</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="../Part2-商務軍火庫/PRAC2-1.html">
+    <div>
+      <div class="nav-btn-label">前往 Part 2 →</div>
+      <div class="nav-btn-title">實例演練 4：專案工時費用試算機</div>
+    </div>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Gemini 零代碼 AI 實戰課 · Part 1 實例演練</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('prog').style.width = (window.scrollY / total * 100) + '%';
+});
+
+const roleMap = {
+  '客戶提案': '你是一位資深業務顧問，擅長為 B2B 客戶整理提案會議的關鍵訊息',
+  '內部週會': '你是一位高效率的專案助理，負責整理團隊週會的進度與待辦事項',
+  '跨部門協調': '你是一位跨部門溝通專家，善於找出不同部門間的共識與分歧點',
+  '腦力激盪': '你是一位創意引導師，擅長整理腦力激盪的點子並歸納出可執行的方向',
+  '專案檢討': '你是一位專案管理顧問，善於從成果與問題中提煉出改善建議',
+  '一對一面談': '你是一位人力資源顧問，了解如何整理主管面談的重點並追蹤後續承諾'
+};
+
+function generateTemplate() {
+  const type = document.getElementById('g-type').value;
+  const goal = document.getElementById('g-goal').value.trim() || '（未填入）';
+  const attendee = document.getElementById('g-attendee').value.trim() || '（未填入）';
+  const format = document.getElementById('g-format').value;
+  const tone = document.getElementById('g-tone').value;
+  const length = document.getElementById('g-length').value;
+
+  const role = roleMap[type] || `你是一位專業的 ${type} 記錄助手`;
+
+  const prompt = `【角色】
+${role}。
+
+【任務】
+請根據以下提供的「${type}」會議記錄內容，協助整理出一份清晰的會議摘要。
+本次會議目的：${goal}
+與會人員：${attendee}
+
+【限制】
+- 語氣要求：${tone}
+- 字數限制：${length}
+- 請聚焦在實際決議、行動項目與重要討論，略去無關緊要的閒聊
+- 如有提到「負責人」或「截止日期」，請務必保留
+
+【呈現格式】
+請以「${format}」的方式呈現結果。
+
+---
+（請在此行之後貼入你的會議記錄內容）`;
+
+  document.getElementById('template-box').textContent = prompt;
+  const result = document.getElementById('template-result');
+  result.style.display = 'block';
+  result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copyTemplate() {
+  const text = document.getElementById('template-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製', 1800);
+  });
+}
+
+function copyInstructions() {
+  const text = document.getElementById('instruction-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製指令', 1800);
+  });
+}
+</script>
+</body>
+</html>

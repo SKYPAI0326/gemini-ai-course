@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH2-1 自動化計算工具｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --c-part: var(--c-a2);
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a2);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a2);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a2);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a2);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a2);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.inline-code{font-family:'Courier New',monospace;font-size:.85em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+
+/* ── 痛點對比卡 ── */
+.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0;}
+.pain-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:22px 20px;}
+.pain-icon{font-size:1.4rem;margin-bottom:10px;}
+.pain-title{font-size:.88rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.pain-desc{font-size:.78rem;color:var(--c-muted);line-height:1.7;}
+.pain-card.solved{border-color:rgba(201,150,58,.35);background:rgba(201,150,58,.04);}
+
+/* ── 工具解剖圖 ── */
+.anatomy-wrap{margin:32px 0;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;}
+.anatomy-head{padding:16px 24px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;}
+.anatomy-title{font-size:.78rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;}
+.anatomy-badge{font-size:.68rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:2px 10px;border-radius:99px;font-weight:500;}
+.anatomy-body{padding:24px;}
+.anatomy-zones{display:flex;flex-direction:column;gap:10px;}
+.anatomy-zone{display:flex;gap:16px;align-items:flex-start;padding:14px 16px;background:var(--c-surface);border-radius:var(--radius-sm);}
+.zone-label{font-size:.72rem;color:var(--c-a2);font-weight:700;letter-spacing:.5px;white-space:nowrap;min-width:56px;padding-top:1px;}
+.zone-content{font-size:.82rem;color:var(--c-text);line-height:1.7;}
+.zone-content strong{font-weight:700;}
+
+/* ── Prompt 框 ── */
+.prompt-wrap{margin:32px 0;}
+.prompt-label{font-size:.7rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.prompt-dot{width:6px;height:6px;border-radius:50%;background:var(--c-a3);}
+.prompt-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.85;padding:24px 28px;border-radius:var(--radius);white-space:pre-wrap;word-break:break-word;border:1px solid rgba(90,122,90,.3);}
+.ph{color:var(--c-a2);}
+.pg{color:#8ab48a;}
+.pb{color:#7a9ea3;}
+.pc{color:#6b6a68;}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(201,150,58,.07);border:1px solid rgba(201,150,58,.25);}
+.callout.warn{background:rgba(201,150,58,.07);border:1px solid rgba(201,150,58,.3);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 追加指令清單 ── */
+.addon-list{display:flex;flex-direction:column;gap:10px;margin:24px 0;}
+.addon-item{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:flex-start;gap:14px;}
+.addon-tag{font-size:.65rem;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:99px;white-space:nowrap;flex-shrink:0;margin-top:1px;}
+.tag-v{background:rgba(90,122,90,.12);color:var(--c-a3);}
+.tag-u{background:rgba(107,127,163,.12);color:var(--c-a4);}
+.tag-e{background:rgba(201,150,58,.12);color:var(--c-a2);}
+.addon-text{font-family:'Courier New',monospace;font-size:.8rem;color:var(--c-text);line-height:1.7;}
+.addon-desc{font-size:.75rem;color:var(--c-muted);margin-top:3px;line-height:1.5;}
+
+/* ── 動態進場系統 ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.lesson-hero .back-link      { animation:fadeUp .4s ease both; }
+.lesson-hero .hero-meta      { animation:fadeUp .45s .08s ease both; }
+.lesson-hero .lesson-title   { animation:fadeUp .55s .15s ease both; }
+.lesson-hero .lesson-tagline { animation:fadeUp .5s  .26s ease both; }
+.lesson-hero .outcomes       { animation:fadeUp .45s .36s ease both; }
+
+.reveal { opacity:0; transform:translateY(22px); transition:opacity .65s cubic-bezier(.16,1,.3,1), transform .65s cubic-bezier(.16,1,.3,1); }
+.reveal.in { opacity:1; transform:translateY(0); }
+
+.section-rule { transform-origin:left center; opacity:0; transition:opacity .4s ease, transform .6s cubic-bezier(.16,1,.3,1); transform:scaleX(.3); }
+.section-rule.in { opacity:1; transform:scaleX(1); }
+
+.pain-card, .anatomy-zone { transition:transform .2s ease, box-shadow .2s ease; }
+.pain-card:hover { transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,.07); }
+
+.section-dots { position:fixed; left:20px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:10px; z-index:40; opacity:0; transition:opacity .4s ease; }
+.section-dots.visible { opacity:1; }
+.sdot { width:6px; height:6px; border-radius:50%; background:var(--c-border); cursor:pointer; transition:background .3s ease, transform .3s ease; border:none; padding:0; }
+.sdot.active { background:var(--c-a2); transform:scale(1.5); }
+@media (max-width:1100px) { .section-dots { display:none; } }
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a2);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">CH2-1</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="section-dots" id="sectionDots" aria-label="章節導航"></nav>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 返回課程目錄</a>
+  <div class="hero-meta">
+    <span class="hero-part">PART 2 · 打造你的商務軍火庫</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">2.1</span>
+  </div>
+  <h1 class="lesson-title">自動化計算工具：<br>多層次報價計算機<br>與薪資試算神器</h1>
+  <p class="lesson-tagline">「這個 Excel 公式又拉壞了」「那個欄位是誰改的」「可以幫我算一下嗎，我怕自己算錯」——這些場景你一定不陌生。這一節，我們用 AI 直接做出防呆、好用、不會拉壞的計算工具。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">學完這節，你會有</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>一個「多層次報價計算機」的完整 Prompt，可直接使用</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>一個「薪資試算神器」的完整 Prompt，可直接使用</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>一套讓計算工具更防呆的追加指令模板</div>
+  </div>
+</section>
+
+<main class="lesson-body">
+
+  <!-- S1 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 01</div>
+    <h2 class="section-heading">Excel 的<em>三個致命傷</em></h2>
+    <p class="body-text">Excel 當然沒有不好——但用來做「讓其他人輸入資料的計算工具」，它有幾個幾乎無解的問題：</p>
+
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-icon">😱</div>
+        <div class="pain-title">公式容易被拉壞</div>
+        <div class="pain-desc">只要有人多拉了一格、刪了一欄，整個計算邏輯就崩了，而且通常當下不會發現。</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🗂</div>
+        <div class="pain-title">版本管理是噩夢</div>
+        <div class="pain-desc">「報價表_v3_最終版_確認版_0312.xlsx」——每個人電腦裡都有不同版本，沒有人知道哪個是對的。</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🔒</div>
+        <div class="pain-title">防呆幾乎做不到</div>
+        <div class="pain-desc">你無法阻止別人輸入文字進數字欄位，或者輸入負數、留空白——但計算結果就默默地錯了。</div>
+      </div>
+    </div>
+
+    <div class="pain-grid" style="margin-top:-4px;">
+      <div class="pain-card solved">
+        <div class="pain-icon">✅</div>
+        <div class="pain-title">HTML 工具：結構固定</div>
+        <div class="pain-desc">輸入框就是輸入框，計算邏輯鎖在程式碼裡，使用者只能輸入，不能動到公式。</div>
+      </div>
+      <div class="pain-card solved">
+        <div class="pain-icon">✅</div>
+        <div class="pain-title">HTML 工具：一個檔案永遠一致</div>
+        <div class="pain-desc">打開就是最新版，沒有複製和版本的問題，傳給誰都是同一個工具。</div>
+      </div>
+      <div class="pain-card solved">
+        <div class="pain-icon">✅</div>
+        <div class="pain-title">HTML 工具：可以加防呆</div>
+        <div class="pain-desc">輸入非數字、留空白時可以即時顯示提示；金額自動加千分位；結果即時更新。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S2 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 02</div>
+    <h2 class="section-heading">工具解析：<em>報價計算機</em>的組成</h2>
+    <p class="body-text">在寫 Prompt 之前，先想清楚「這個工具需要哪些部分」——這個思考過程，就是你的「需求描述力」的核心。以多層次報價計算機為例：</p>
+
+    <div class="anatomy-wrap">
+      <div class="anatomy-head">
+        <span class="anatomy-title">工具解剖 · 多層次報價計算機</span>
+        <span class="anatomy-badge">功能拆解</span>
+      </div>
+      <div class="anatomy-body">
+        <div class="anatomy-zones">
+          <div class="anatomy-zone">
+            <span class="zone-label">輸入區</span>
+            <span class="zone-content">品項名稱、數量、單價——可以新增多列，讓使用者輸入多個品項</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">設定區</span>
+            <span class="zone-content">稅率選擇（含稅 / 未稅 / 自訂稅率）、折扣輸入（%）、幣別顯示</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">計算區</span>
+            <span class="zone-content">各品項小計自動計算、全部品項總計、稅金金額、折扣金額、最終應付金額</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">操作區</span>
+            <span class="zone-content">「新增品項」按鈕、「刪除」按鈕（每列）、「清除全部」、「列印 / 匯出」按鈕</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">防呆</span>
+            <span class="zone-content"><strong>數字欄位只接受數字</strong>、金額自動加千分位格式（1,000）、數量 / 單價為空時不計算</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">✦</div>
+      <div class="callout-body">
+        <strong>設計技巧：</strong>在寫 Prompt 之前，先在紙上或備忘錄裡列出「輸入什麼、算出什麼、有哪些按鈕」——把工具的骨架畫清楚，再把這份清單轉成 Prompt，AI 就能精準執行。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S3 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 03</div>
+    <h2 class="section-heading">完整 Prompt：<em>多層次報價計算機</em></h2>
+    <p class="body-text">以下是套用黃金公式寫出的完整 Prompt，可以直接複製到 AI Studio 使用：</p>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label"><span class="prompt-dot"></span>報價計算機 · 完整 Prompt</div>
+      <div class="prompt-box">
+<span class="ph">你是一位熟悉商業應用的資深前端工程師。</span>
+
+<span class="pg">請製作一個「多層次報價計算機」網頁工具，功能需求如下：
+
+【輸入區】
+- 表格形式，每列包含：品項名稱、數量、單價
+- 提供「新增品項」按鈕可動態新增列
+- 每列有「刪除」按鈕可移除該列
+
+【設定區】
+- 稅率下拉選單：免稅（0%）、含稅5%、含稅10%、自訂
+- 「自訂」時顯示稅率輸入框
+- 整體折扣輸入框（輸入百分比，例如輸入 10 代表打九折）
+
+【計算區】
+- 每列自動顯示小計（數量 × 單價）
+- 頁面底部顯示：小計合計、折扣金額、稅金、最終總額
+- 所有金額自動加千分位格式（例如：1,500）
+- 任何數值變動時即時重新計算，不需要按按鈕
+
+【防呆設計】
+- 數量與單價欄位只接受正整數或小數
+- 若輸入非法值，欄位邊框變紅並不納入計算
+- 頁面頂部顯示目前日期，方便截圖存檔</span>
+
+<span class="pb">只使用純 HTML、CSS 與原生 JavaScript，
+不引入任何外部套件或 CDN。
+介面簡潔專業，以白色為主色調，適合商業使用。</span>
+
+<span class="ph">輸出完整可在瀏覽器直接執行的單一 HTML 檔案，
+不需要任何說明文字，只輸出程式碼。</span></div>
+    </div>
+
+    <div class="callout key">
+      <div class="callout-icon">★</div>
+      <div class="callout-body">
+        <strong>為什麼要說「任何數值變動時即時重新計算」？</strong>如果不說，AI 可能會做一個需要按「計算」按鈕才更新的版本。說清楚互動行為，工具的使用體驗才會符合預期。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S4 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 04</div>
+    <h2 class="section-heading">進階版：<em>薪資試算神器</em></h2>
+    <p class="body-text">HR 和財務人員最怕的，是每個月都要在試算表裡算一遍勞健保和退休金。這個工具讓你輸入月薪，瞬間得到所有數字的明細：</p>
+
+    <div class="anatomy-wrap">
+      <div class="anatomy-head">
+        <span class="anatomy-title">工具解剖 · 薪資試算神器</span>
+        <span class="anatomy-badge">功能拆解</span>
+      </div>
+      <div class="anatomy-body">
+        <div class="anatomy-zones">
+          <div class="anatomy-zone">
+            <span class="zone-label">輸入</span>
+            <span class="zone-content">月薪（投保薪資）、眷屬人數（影響健保費）、是否有勞退自提（自訂比例）</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">計算</span>
+            <span class="zone-content">勞保費（員工負擔 6.56%）、健保費（員工負擔部分，含眷屬加乘）、勞退提撥（6%）、實拿金額</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">呈現</span>
+            <span class="zone-content">以明細表格方式列出各項扣除項目及金額，最後一行顯示實拿薪資，視覺上加粗</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label"><span class="prompt-dot"></span>薪資試算神器 · 完整 Prompt</div>
+      <div class="prompt-box">
+<span class="ph">你是一位熟悉台灣勞動法規的資深前端工程師。</span>
+
+<span class="pg">請製作一個「薪資試算神器」網頁工具，功能需求如下：
+
+【輸入區】
+- 月薪（新台幣）：數字輸入框
+- 健保眷屬人數：下拉選單（0、1、2、3 人以上）
+- 勞退自提比例：下拉選單（0%、1%、2%、3%、4%、5%、6%）
+
+【計算明細】（依照台灣法規計算員工負擔部分）
+- 勞保費：月投保薪資 × 6.56%（四捨五入至整數）
+- 健保費：月投保薪資 × 2.35% × 眷屬加乘系數
+- 健保眷屬加乘：0 人×1、1 人×1.7、2 人×2.4、3人以上×3
+- 勞退自提：月薪 × 自提比例
+- 實拿金額：月薪 − 勞保 − 健保 − 自提
+
+【呈現方式】
+- 明細表格，每項扣除列出名稱與金額
+- 最終實拿薪資用較大字體顯示並加底線
+- 所有金額以千分位格式顯示
+- 輸入任何數值時即時更新，不需按計算按鈕
+- 頁面底部加上「以上為試算結果，實際以公司薪資單為準」的免責聲明</span>
+
+<span class="pb">只使用純 HTML、CSS 與原生 JavaScript，不引入外部套件。
+介面簡潔，以白色為主，適合辦公室使用。</span>
+
+<span class="ph">輸出完整可直接在瀏覽器執行的單一 HTML 檔案，不附任何說明。</span></div>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ</div>
+      <div class="callout-body">
+        <strong>關於法規數字：</strong>勞健保費率每年可能微調，使用工具前建議確認當年度的費率。你可以在生成後追加指令：「請將勞保費率更新為 X%，健保費率更新為 Y%」。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S5 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 05</div>
+    <h2 class="section-heading">讓工具更<em>防呆</em>的追加指令</h2>
+    <p class="body-text">工具做出來之後，可以繼續在同一個對話視窗追加這些常用的防呆和體驗優化指令：</p>
+
+    <div class="addon-list">
+      <div class="addon-item">
+        <span class="addon-tag tag-v">驗證</span>
+        <div>
+          <div class="addon-text">「如果數量或單價欄位輸入非數字或負數，欄位框線變紅，並顯示錯誤提示文字，該列不納入計算」</div>
+          <div class="addon-desc">防止使用者誤輸入造成計算錯誤</div>
+        </div>
+      </div>
+      <div class="addon-item">
+        <span class="addon-tag tag-u">體驗</span>
+        <div>
+          <div class="addon-text">「所有金額欄位自動格式化為千分位，例如 1000 自動顯示為 1,000」</div>
+          <div class="addon-desc">增加金額可讀性，減少看錯位數的機率</div>
+        </div>
+      </div>
+      <div class="addon-item">
+        <span class="addon-tag tag-e">匯出</span>
+        <div>
+          <div class="addon-text">「新增一個『複製報價單』按鈕，點擊後將所有品項和金額以純文字格式複製到剪貼簿，格式適合直接貼到 Email 或 Line」</div>
+          <div class="addon-desc">讓工具直接能用，不需要截圖再打字</div>
+        </div>
+      </div>
+      <div class="addon-item">
+        <span class="addon-tag tag-u">體驗</span>
+        <div>
+          <div class="addon-text">「新增一個『列印』按鈕，點擊後觸發瀏覽器列印功能，列印版面只顯示報價表本身，隱藏按鈕和輸入框邊框」</div>
+          <div class="addon-desc">讓工具能直接輸出紙本或 PDF</div>
+        </div>
+      </div>
+      <div class="addon-item">
+        <span class="addon-tag tag-v">驗證</span>
+        <div>
+          <div class="addon-text">「若品項名稱為空白，在計算結果旁顯示警告：『有品項名稱未填寫』」</div>
+          <div class="addon-desc">避免報價單裡出現空白品項</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">✦</div>
+      <div class="callout-body">
+        <strong>建議的迭代順序：</strong>先讓工具「能用」（計算正確），再讓它「好用」（防呆、格式化），最後讓它「順手」（複製、列印）。每次只做一件事，AI 的輸出品質會更穩定。
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a class="nav-btn prev" href="../Part1-解鎖AI開發者模式/CH1-3.html">
+    <span>←</span>
+    <div>
+      <div class="nav-btn-label">上一節</div>
+      <div class="nav-btn-title">1.3 暖身實作</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="CH2-2.html">
+    <div>
+      <div class="nav-btn-label">下一節</div>
+      <div class="nav-btn-title">2.2 邏輯轉換工具</div>
+    </div>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Part 2 · 1 of 3</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollHeight - d.clientHeight > 0 ? (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.1, rootMargin:'0px 0px -48px 0px'});
+  document.querySelectorAll('.lesson-section, .section-rule').forEach(el => { el.classList.add('reveal'); io.observe(el); });
+})();
+(function(){
+  const sections = Array.from(document.querySelectorAll('.lesson-section'));
+  const nav = document.getElementById('sectionDots');
+  if(!sections.length||!nav) return;
+  sections.forEach((sec,i) => {
+    const btn = document.createElement('button');
+    btn.className='sdot';
+    btn.title = sec.querySelector('.section-heading')?.textContent?.trim().slice(0,20)||('第'+(i+1)+'節');
+    btn.addEventListener('click',()=>sec.scrollIntoView({behavior:'smooth',block:'start'}));
+    nav.appendChild(btn);
+  });
+  const dotIo = new IntersectionObserver(entries => {
+    entries.forEach(e => { const i=sections.indexOf(e.target); if(i>=0) nav.children[i]?.classList.toggle('active',e.isIntersecting); });
+    nav.classList.toggle('visible', Array.from(nav.children).some(d=>d.classList.contains('active')));
+  },{threshold:.3});
+  sections.forEach(s=>dotIo.observe(s));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成果發表與工作流 · 實例演練 3｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a4);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a4);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a4);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.tool-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:32px 0;}
+.tool-topbar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.tool-dot{width:10px;height:10px;border-radius:50%;}
+.tool-dot-r{background:#ff6058;} .tool-dot-y{background:#ffbd2e;} .tool-dot-g{background:#28c840;}
+.tool-label{flex:1;font-size:.72rem;color:var(--c-muted);font-family:'Courier New',monospace;}
+.tool-body{padding:36px 40px;}
+.copy-btn{font-size:.72rem;color:var(--c-a4);background:none;border:1px solid rgba(107,127,163,.3);padding:3px 12px;border-radius:99px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.copy-btn:hover{background:rgba(107,127,163,.08);}
+
+/* ── 黑客松計時台 ── */
+.hackathon-wrap{display:flex;flex-direction:column;align-items:center;gap:28px;}
+.challenge-card{width:100%;padding:24px 28px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);}
+.challenge-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.challenge-type-badge{font-size:.68rem;color:var(--c-a4);background:rgba(107,127,163,.1);border:1px solid rgba(107,127,163,.2);padding:3px 10px;border-radius:99px;font-weight:500;}
+.challenge-roll-btn{font-size:.78rem;color:var(--c-muted);background:none;border:1px solid var(--c-border);padding:5px 14px;border-radius:var(--radius-sm);cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.challenge-roll-btn:hover{border-color:var(--c-a4);color:var(--c-a4);}
+.challenge-title-display{font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:var(--c-text);margin-bottom:6px;line-height:1.4;}
+.challenge-desc{font-size:.85rem;color:var(--c-muted);line-height:1.7;}
+.timer-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.timer-display{font-family:'Shippori Mincho',serif;font-size:5rem;font-weight:700;color:var(--c-text);letter-spacing:.05em;line-height:1;}
+.timer-display.warning{color:var(--c-a1);}
+.timer-display.urgent{color:#a03010;}
+.timer-label{font-size:.78rem;color:var(--c-muted);letter-spacing:1px;}
+.timer-controls{display:flex;gap:12px;}
+.timer-btn{padding:11px 28px;border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.87rem;font-weight:500;cursor:pointer;border:1px solid var(--c-border);transition:all .2s;}
+.timer-btn.start{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.timer-btn.start:hover{opacity:.88;}
+.timer-btn.reset{background:var(--c-card);color:var(--c-muted);}
+.timer-btn.reset:hover{border-color:var(--c-a4);color:var(--c-a4);}
+.timer-progress-bg{width:100%;height:6px;background:var(--c-surface);border-radius:99px;overflow:hidden;}
+.timer-progress-fill{height:100%;background:var(--c-a4);border-radius:99px;width:100%;transition:width .5s linear;}
+.done-record{width:100%;}
+.done-record-label{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;margin-bottom:10px;}
+.done-list{display:flex;flex-direction:column;gap:6px;}
+.done-item{display:flex;align-items:center;gap:10px;font-size:.83rem;padding:8px 12px;background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.15);border-radius:var(--radius-sm);}
+.done-icon{color:var(--c-a3);}
+.done-time{font-size:.75rem;color:var(--c-muted);margin-left:auto;}
+
+.steps-list{display:flex;flex-direction:column;gap:0;margin:32px 0;}
+.step-item{display:flex;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:20px;top:44px;bottom:0;width:1px;background:var(--c-border);}
+.step-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px;padding-top:4px;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--c-card);border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-text);}
+.step-body{flex:1;padding:4px 0 32px 24px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+.step-desc strong{color:var(--c-text);font-weight:700;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.key{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+.result-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.82rem;line-height:1.85;padding:22px 24px;border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;}
+.challenge-box-end{padding:28px 32px;background:rgba(107,127,163,.05);border:1px solid rgba(107,127,163,.2);border-radius:var(--radius);margin:28px 0;}
+.challenge-box-end .challenge-label{font-size:.7rem;color:var(--c-a4);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.challenge-list{display:flex;flex-direction:column;gap:12px;}
+.challenge-item{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;line-height:1.7;}
+.ci-num{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-a4);flex-shrink:0;width:20px;}
+.course-complete-banner{padding:32px;background:var(--c-card);border:1px solid var(--c-border);border-left:4px solid var(--c-a4);border-radius:var(--radius);margin:32px 0;text-align:center;}
+.ccb-title{font-family:'Shippori Mincho',serif;font-size:1.4rem;font-weight:700;color:var(--c-text);margin-bottom:8px;}
+.ccb-sub{font-size:.88rem;color:var(--c-muted);line-height:1.75;}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a4);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">實例演練</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回課程目錄</a>
+  <div class="hero-meta">
+    <div class="hero-part">PART 4 · 成果發表與工作流</div>
+    <div class="hero-divider-v"></div>
+    <div class="hero-num">實例演練 3（最終章）</div>
+  </div>
+  <h1 class="lesson-title">20 分鐘黑客松挑戰台</h1>
+  <p class="lesson-tagline">抽一個題目、開始計時、打開 Gemini，在 20 分鐘內從零做出一個能用的工具。這是課程的最終考驗，也是你真正開始的起點。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">PRACTICE GOALS</div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>在時間壓力下，整合本課程所有技能做出一個完整工具</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>體驗「極速開發」的工作流程，建立信心</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>完成一個你可以實際在工作中用的成品</span></div>
+  </div>
+</div>
+
+<div class="lesson-body">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">TOOL · 互動工具</div>
+    <h2 class="section-heading">抽題、倒數、出發</h2>
+    <p class="body-text">點「換一個題目」隨機抽一個挑戰，然後點「開始計時」，20 分鐘倒數計時，打開 Gemini，讓課程所學的一切全部上場。</p>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">hackathon-challenge-timer.html</div>
+      </div>
+      <div class="tool-body">
+        <div class="hackathon-wrap">
+          <div class="challenge-card" id="challenge-card">
+            <div class="challenge-card-header">
+              <div class="challenge-type-badge" id="challenge-type">計算工具</div>
+              <button class="challenge-roll-btn" onclick="rollChallenge()">換一個題目</button>
+            </div>
+            <div class="challenge-title-display" id="challenge-title">載入中…</div>
+            <div class="challenge-desc" id="challenge-desc"></div>
+          </div>
+          <div class="timer-wrap">
+            <div class="timer-label">倒數計時</div>
+            <div class="timer-display" id="timer-display">20:00</div>
+            <div class="timer-progress-bg"><div class="timer-progress-fill" id="timer-fill"></div></div>
+            <div class="timer-controls">
+              <button class="timer-btn start" id="start-btn" onclick="toggleTimer()">開始計時</button>
+              <button class="timer-btn reset" onclick="resetTimer()">重置</button>
+            </div>
+          </div>
+          <div class="done-record" id="done-record" style="display:none">
+            <div class="done-record-label">完成記錄</div>
+            <div class="done-list" id="done-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <div class="callout-icon">🎯</div>
+      <div class="callout-body">
+        <strong>黑客松的心態：完成優先於完美。</strong>20 分鐘做不出完美的工具——但能做出一個「可以用」的工具，就已經贏了。先讓 Gemini 生成基本版，再一句一句描述你要的修改，這就是你這門課的核心能力。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">HOW TO REPLICATE · 如何自己做出這個工具</div>
+    <h2 class="section-heading">讓 Gemini 幫你做一個計時挑戰工具</h2>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">想好你的挑戰題庫</div>
+          <div class="step-desc">這個工具的關鍵在「題庫內容」。把指令中的挑戰題目替換成你和你的團隊最需要練習的場景，它就變成你的團隊訓練工具。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">複製以下指令貼入 Gemini</div>
+          <div class="step-desc">注意倒數計時的關鍵邏輯：用 <strong>setInterval</strong> 每秒更新，時間到自動停止並提示。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">完成後存到你的工具庫</div>
+          <div class="step-desc">這個工具本身就是你的課程收尾成品之一，好好保存它。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">→ 複製這段 Prompt 貼入 Gemini</div>
+        <button class="copy-btn" style="margin-left:auto;" onclick="copyInstructions()">複製指令</button>
+      </div>
+      <div class="tool-body" style="padding:24px 28px;">
+        <div class="result-box" id="instruction-box">你是一位擅長製作互動工具的前端工程師。
+
+請製作一個「20 分鐘黑客松挑戰計時器」的單頁 HTML 工具，功能如下：
+
+【功能需求】
+- 一個挑戰卡，顯示隨機抽到的挑戰題目（預設至少 10 題，題目自行設計）
+- 「換一個題目」按鈕，隨機切換到不同題目（不重複直到全部抽過）
+- 一個倒數計時器（預設 20 分鐘），可自訂時間（5–60 分鐘）
+- 「開始 / 暫停」按鈕切換計時狀態
+- 「重置」按鈕恢復初始時間
+- 計時器進度條，視覺化剩餘時間
+- 時間剩餘 5 分鐘時，計時器數字變色為警示色
+- 時間到達 0 時，自動顯示「時間到！」提示，並記錄此次完成的挑戰題目到列表
+- 完成記錄列表（顯示挑戰名稱 + 完成時間）
+
+【設計要求】
+- 無印良品風格：背景 #f5f3ee，卡片 #ffffff，邊框 #d8d4cb
+- 計時器數字使用 Shippori Mincho 粗體大字，進度條用 #6b7fa3
+- 字體：Shippori Mincho + Noto Sans TC（Google Fonts）
+- 圓角 6px，無陰影，無漸層
+
+請生成完整的單一 HTML 檔案。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">COURSE COMPLETE · 課程完結</div>
+    <h2 class="section-heading">你已完成全部 12 + 12 個演練</h2>
+
+    <div class="course-complete-banner">
+      <div class="ccb-title">恭喜完成「Gemini 零代碼 AI 實戰課」</div>
+      <div class="ccb-sub">
+        你已經走過 12 個核心單元、完成 12 個實例演練。<br>
+        從 Prompt 黃金公式、計算工具、視覺圖表，到部署流程與工作流建立，<br>
+        這些不只是練習——它們都是你可以在工作中直接使用的真實工具。<br><br>
+        <strong>下一步：</strong>把今天做過的工具存入你的工具庫，在真實工作中用起來。<br>
+        你已經不是只會使用 AI 的人，你是能用 AI 製造工具的人。
+      </div>
+    </div>
+
+    <div class="challenge-box-end">
+      <div class="challenge-label">最後三個挑戰</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="ci-num">01</div>
+          <div>在這個月內，把課程中做的工具中，選至少 2 個在真實工作中使用，並把使用後的心得記在 Prompt 庫的備注中。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">02</div>
+          <div>把你覺得最有價值的工具，分享給一位同事或朋友，看看他們的第一反應，從他們的回饋中學習你沒有想到的場景。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">03</div>
+          <div>用黑客松挑戰台，再完成三輪挑戰。每一次都比上一次更快、更精準——這就是你的 AI 開發者肌肉在成長的感覺。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn" href="PRAC4-2.html">
+    <div>
+      <div class="nav-btn-label">← 上一個演練</div>
+      <div class="nav-btn-title">實例演練 2：個人 Prompt 庫管理器</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="../index.html">
+    <div>
+      <div class="nav-btn-label">課程完結 →</div>
+      <div class="nav-btn-title">回課程目錄</div>
+    </div>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Gemini 零代碼 AI 實戰課 · 全部完成</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('prog').style.width = (window.scrollY / total * 100) + '%';
+});
+
+const CHALLENGES = [
+  { type: '計算工具', title: '員工績效獎金試算機', desc: '輸入底薪、績效分數（A/B/C/D）、加班時數，自動計算應領獎金與稅後金額。' },
+  { type: '邏輯工具', title: '會議室預訂衝突偵測器', desc: '輸入多個預訂時段（開始時間 + 結束時間），自動偵測衝突並標示出來。' },
+  { type: '視覺工具', title: '月度費用環圓圖', desc: '輸入各項費用名稱與金額，生成一個 SVG 環形圓圖，顯示各項費用佔比。' },
+  { type: '計算工具', title: '出差費用報銷計算器', desc: '輸入交通、住宿、餐費、其他，依公司報銷規則（設定每項上限）計算可核銷金額。' },
+  { type: '生成工具', title: '週報自動格式化工具', desc: '填入本週完成事項、進行中事項、待解決問題，自動生成符合公司格式的週報文字。' },
+  { type: '視覺工具', title: '目標達成率儀表板', desc: '輸入 Q1 目標值與實際值（3–5 個指標），生成一個帶有達成率比較的直條圖。' },
+  { type: '邏輯工具', title: '專案風險評估矩陣', desc: '輸入風險項目名稱、發生機率（高/中/低）、影響程度（高/中/低），自動生成 3×3 風險矩陣表。' },
+  { type: '計算工具', title: '電商利潤試算機', desc: '輸入商品售價、成本、平台抽成比例、廣告費，自動計算每單淨利和利潤率。' },
+  { type: '生成工具', title: '客戶提案前情境備忘卡', desc: '填入客戶名稱、本次會議目的、客戶痛點、我們的解決方案，生成一張可帶入會議室的提案備忘卡。' },
+  { type: '視覺工具', title: '學習進度追蹤儀表板', desc: '輸入你想學習的技能名稱、目標學習天數、已學習天數，生成一個視覺化的學習進度追蹤板。' },
+  { type: '邏輯工具', title: '人力排班最佳化工具', desc: '輸入員工名稱和可上班日（勾選），以及每天最少需要人數，自動生成一週排班建議。' },
+  { type: '計算工具', title: '廣告 ROI 計算器', desc: '輸入廣告投放金額、產生的訂單數、平均客單價，自動計算 ROAS、ROI 及每單獲客成本。' },
+];
+
+let currentIdx = Math.floor(Math.random() * CHALLENGES.length);
+let timerInterval = null;
+let timeLeft = 20 * 60;
+let isRunning = false;
+const TOTAL = 20 * 60;
+const doneRecords = [];
+
+function showChallenge(idx) {
+  const c = CHALLENGES[idx];
+  document.getElementById('challenge-type').textContent = c.type;
+  document.getElementById('challenge-title').textContent = c.title;
+  document.getElementById('challenge-desc').textContent = c.desc;
+}
+
+function rollChallenge() {
+  let newIdx;
+  do { newIdx = Math.floor(Math.random() * CHALLENGES.length); } while (newIdx === currentIdx && CHALLENGES.length > 1);
+  currentIdx = newIdx;
+  showChallenge(currentIdx);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  const el = document.getElementById('timer-display');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className = 'timer-display' + (timeLeft <= 300 && timeLeft > 60 ? ' warning' : '') + (timeLeft <= 60 ? ' urgent' : '');
+  document.getElementById('timer-fill').style.width = (timeLeft / TOTAL * 100) + '%';
+}
+
+function toggleTimer() {
+  if (isRunning) {
+    clearInterval(timerInterval);
+    isRunning = false;
+    document.getElementById('start-btn').textContent = '繼續計時';
+  } else {
+    if (timeLeft === 0) return;
+    isRunning = true;
+    document.getElementById('start-btn').textContent = '暫停';
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateTimerDisplay();
+      if (timeLeft === 0) {
+        clearInterval(timerInterval);
+        isRunning = false;
+        document.getElementById('start-btn').textContent = '開始計時';
+        const c = CHALLENGES[currentIdx];
+        doneRecords.push({ title: c.title, time: new Date().toLocaleTimeString('zh-TW', {hour:'2-digit',minute:'2-digit'}) });
+        renderDoneList();
+        alert(`時間到！\n\n挑戰「${c.title}」完成了嗎？\n記得把你做的工具存到工具庫！`);
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  isRunning = false;
+  timeLeft = TOTAL;
+  document.getElementById('start-btn').textContent = '開始計時';
+  updateTimerDisplay();
+}
+
+function renderDoneList() {
+  const wrap = document.getElementById('done-record');
+  const list = document.getElementById('done-list');
+  if (doneRecords.length === 0) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = doneRecords.map(r =>
+    `<div class="done-item"><span class="done-icon">✓</span><span>${r.title}</span><span class="done-time">${r.time}</span></div>`
+  ).join('');
+}
+
+function copyInstructions() {
+  const text = document.getElementById('instruction-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製指令', 1800);
+  });
+}
+
+showChallenge(currentIdx);
+updateTimerDisplay();
+</script>
+</body>
+</html>

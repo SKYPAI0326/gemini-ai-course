@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弄一下工作室</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:      #f5f3ee;
+  --c-surface: #edeae3;
+  --c-card:    #ffffff;
+  --c-border:  #d8d4cb;
+  --c-text:    #2c2b28;
+  --c-muted:   #8c8880;
+  --c-a1:      #b5703a;
+  --c-a2:      #c9963a;
+  --c-a3:      #5a7a5a;
+  --c-a4:      #6b7fa3;
+  --c-a5:      #7a9ea3;
+  --radius:    6px;
+  --radius-sm: 4px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);min-height:100vh;}
+
+/* ── 頂部列 ── */
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a1);border:1px solid rgba(181,112,58,.3);background:rgba(181,112,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+/* ── 主視覺 ── */
+.hero{padding:72px 48px 56px;max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+.hero-eyebrow{font-size:.78rem;color:var(--c-a1);letter-spacing:2px;text-transform:uppercase;font-weight:500;}
+.hero-title{font-family:'Shippori Mincho',serif;font-size:2.8rem;font-weight:700;line-height:1.25;color:var(--c-text);letter-spacing:.02em;}
+.hero-desc{font-size:.95rem;color:var(--c-muted);line-height:1.8;max-width:520px;}
+.hero-divider{width:40px;height:1px;background:var(--c-a1);margin-top:8px;}
+
+/* ── 課程卡片區 ── */
+.section{max-width:960px;margin:0 auto;padding:0 48px 80px;}
+.section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:24px;}
+.section-title{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--c-text);}
+.section-line{flex:1;height:1px;background:var(--c-border);}
+.section-count{font-size:.78rem;color:var(--c-muted);}
+
+.course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+.course-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;}
+.course-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.07);}
+.card-band{height:4px;}
+.band-1{background:var(--c-a1);}
+.band-2{background:var(--c-a2);}
+.band-3{background:var(--c-a3);}
+.band-4{background:var(--c-a4);}
+.card-body{padding:22px 24px;flex:1;}
+.card-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.card-tag{font-size:.7rem;color:var(--c-muted);letter-spacing:.5px;}
+.card-status{margin-left:auto;font-size:.68rem;padding:2px 9px;border-radius:99px;font-weight:500;}
+.status-open{background:rgba(181,112,58,.1);border:1px solid rgba(181,112,58,.25);color:var(--c-a1);}
+.status-soon{background:var(--c-surface);border:1px solid var(--c-border);color:var(--c-muted);}
+.card-title{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;line-height:1.4;margin-bottom:8px;color:var(--c-text);}
+.card-desc{font-size:.8rem;color:var(--c-muted);line-height:1.65;}
+.card-footer{padding:14px 24px;border-top:1px solid var(--c-border);display:flex;align-items:center;gap:12px;}
+.card-info{font-size:.73rem;color:var(--c-muted);display:flex;align-items:center;gap:4px;}
+.card-arrow{margin-left:auto;font-size:.8rem;color:var(--c-a1);font-weight:500;opacity:0;transition:opacity .2s,transform .2s;}
+.course-card:hover .card-arrow{opacity:1;transform:translateX(3px);}
+
+/* ── 頁尾 ── */
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">弄一下工作室</div>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">所有課程</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">職業技能</div>
+</header>
+
+<section class="hero">
+  <div class="hero-eyebrow">Learning Studio</div>
+  <h1 class="hero-title">學習，從這裡<br>慢慢開始。</h1>
+  <p class="hero-desc">每一門課都是一次安靜的對話。不急，把每個概念真正弄懂，比快速刷完更重要。</p>
+  <div class="hero-divider"></div>
+</section>
+
+<main class="section">
+
+  <div class="section-head">
+    <div class="section-title">目前課程</div>
+    <div class="section-line"></div>
+    <div class="section-count">1 門</div>
+  </div>
+
+  <div class="course-grid">
+
+    <a class="course-card" href="用AI做工具/index.html">
+      <div class="card-band band-1"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <div class="card-tag">AI 工具開發</div>
+          <div class="card-status status-open">開放中</div>
+        </div>
+        <div class="card-title">Gemini 零代碼 AI 實戰課</div>
+        <div class="card-desc">不需要寫程式，只需要你的邏輯。學會與 AI 溝通，從文字直接生出能解決工作痛點的網頁應用。</div>
+      </div>
+      <div class="card-footer">
+        <div class="card-info">4 部分</div>
+        <div class="card-info">·</div>
+        <div class="card-info">12 單元</div>
+        <div class="card-arrow">進入課程 →</div>
+      </div>
+    </a>
+
+    <!-- 新課程加在這裡 -->
+
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">持續更新中 · 每個單元都值得慢慢學</div>
+</footer>
+
+</body>
+</html>

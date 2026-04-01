@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH3-2 動態專案路徑圖｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a3);border:1px solid rgba(90,122,90,.3);background:rgba(90,122,90,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a3);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a3);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a3);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a3);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a3);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a3);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a3);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.inline-code{font-family:'Courier New',monospace;font-size:.85em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+
+/* ── SVG 互動示範 ── */
+.svg-demo-wrap{margin:32px 0;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;}
+.svg-demo-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+.svg-demo-title{font-size:.72rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;}
+.svg-demo-hint{font-size:.7rem;color:var(--c-a3);font-weight:500;}
+.svg-demo-body{padding:28px;display:flex;justify-content:center;overflow-x:auto;}
+
+/* ── 工具解剖 ── */
+.anatomy-wrap{margin:32px 0;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;}
+.anatomy-head{padding:16px 24px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;}
+.anatomy-title{font-size:.78rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;}
+.anatomy-badge{font-size:.68rem;color:var(--c-a3);border:1px solid rgba(90,122,90,.3);background:rgba(90,122,90,.07);padding:2px 10px;border-radius:99px;font-weight:500;}
+.anatomy-body{padding:24px;}
+.anatomy-zones{display:flex;flex-direction:column;gap:10px;}
+.anatomy-zone{display:flex;gap:16px;align-items:flex-start;padding:14px 16px;background:var(--c-surface);border-radius:var(--radius-sm);}
+.zone-label{font-size:.72rem;color:var(--c-a3);font-weight:700;letter-spacing:.5px;white-space:nowrap;min-width:64px;padding-top:1px;}
+.zone-content{font-size:.82rem;color:var(--c-text);line-height:1.7;}
+
+/* ── Prompt 框 ── */
+.prompt-wrap{margin:32px 0;}
+.prompt-label{font-size:.7rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.prompt-dot{width:6px;height:6px;border-radius:50%;background:var(--c-a3);}
+.prompt-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.85;padding:24px 28px;border-radius:var(--radius);white-space:pre-wrap;word-break:break-word;border:1px solid rgba(90,122,90,.3);}
+.ph{color:var(--c-a2);}
+.pg{color:#8ab48a;}
+.pb{color:#7a9ea3;}
+.pc{color:#6b6a68;}
+
+/* ── 追加指令 ── */
+.addon-list{display:flex;flex-direction:column;gap:10px;margin:24px 0;}
+.addon-item{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:flex-start;gap:14px;}
+.addon-tag{font-size:.65rem;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:99px;white-space:nowrap;flex-shrink:0;margin-top:1px;}
+.tag-v{background:rgba(90,122,90,.12);color:var(--c-a3);}
+.tag-u{background:rgba(107,127,163,.12);color:var(--c-a4);}
+.tag-e{background:rgba(201,150,58,.12);color:var(--c-a2);}
+.addon-text{font-family:'Courier New',monospace;font-size:.8rem;color:var(--c-text);line-height:1.7;}
+.addon-desc{font-size:.75rem;color:var(--c-muted);margin-top:3px;line-height:1.5;}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(90,122,90,.07);border:1px solid rgba(90,122,90,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 動態進場 ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.lesson-hero .back-link      {animation:fadeUp .4s ease both;}
+.lesson-hero .hero-meta      {animation:fadeUp .45s .08s ease both;}
+.lesson-hero .lesson-title   {animation:fadeUp .55s .15s ease both;}
+.lesson-hero .lesson-tagline {animation:fadeUp .5s .26s ease both;}
+.lesson-hero .outcomes       {animation:fadeUp .45s .36s ease both;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+.section-rule{transform-origin:left center;opacity:0;transition:opacity .4s ease,transform .6s cubic-bezier(.16,1,.3,1);transform:scaleX(.3);}
+.section-rule.in{opacity:1;transform:scaleX(1);}
+.section-dots{position:fixed;left:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40;opacity:0;transition:opacity .4s ease;}
+.section-dots.visible{opacity:1;}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--c-border);cursor:pointer;transition:background .3s ease,transform .3s ease;border:none;padding:0;}
+.sdot.active{background:var(--c-a3);transform:scale(1.5);}
+@media(max-width:1100px){.section-dots{display:none;}}
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a3);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">CH3-2</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="section-dots" id="sectionDots" aria-label="章節導航"></nav>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 返回課程目錄</a>
+  <div class="hero-meta">
+    <span class="hero-part">PART 3 · 讓數據「動」起來的視覺魔法</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">3.2</span>
+  </div>
+  <h1 class="lesson-title">流程視覺化：<br>實作「動態專案路徑圖」</h1>
+  <p class="lesson-tagline">你花一小時在 PowerPoint 畫的流程圖，老闆一句「這個步驟可以點開看細節嗎」就破功了。動態路徑圖讓每個節點都能 hover 展開說明、點擊切換狀態——讓複雜流程一眼看清楚。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">學完這節，你會有</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>一份「動態專案路徑圖」的完整 Prompt，可直接使用或修改</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>自訂節點、連線、顏色的追加指令</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>加入時間軸與進度狀態的進階做法</div>
+  </div>
+</section>
+
+<main class="lesson-body">
+
+  <!-- S1 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 01</div>
+    <h2 class="section-heading">為什麼互動路徑圖比<em>PPT 流程圖</em>更有說服力</h2>
+    <p class="body-text">PowerPoint 的流程圖有一個根本問題：它是靜態的。你可以把框框畫得很漂亮，但客戶或老闆永遠只能「看」，不能「探索」。而一份複雜的專案流程，光靠看往往不夠。</p>
+    <p class="body-text">動態路徑圖解決的，是「<strong>讓對方主動參與理解</strong>」的問題——他可以 hover 到他有疑問的步驟，展開細節自己讀；可以看到哪個節點是關鍵路徑；可以在你介紹時跟著你的操作走，而不是盯著一張靜止的圖發呆。</p>
+
+    <div class="callout tip">
+      <div class="callout-icon">✦</div>
+      <div class="callout-body">
+        <strong>實際使用場景：</strong>把動態路徑圖的 HTML 打開在瀏覽器，投影到螢幕上做簡報——遠比 PowerPoint 更有互動感，而且不需要任何軟體安裝，瀏覽器就夠了。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S2 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 02</div>
+    <h2 class="section-heading">互動示範：<em>滑鼠移上去試試看</em></h2>
+    <p class="body-text">以下是一個真實可互動的動態專案路徑圖示範。每個節點都可以 hover 展開詳細說明：</p>
+
+    <div class="svg-demo-wrap">
+      <div class="svg-demo-head">
+        <span class="svg-demo-title">動態專案路徑圖 · 產品上市流程</span>
+        <span class="svg-demo-hint">↑ 移到節點上看詳細說明</span>
+      </div>
+      <div class="svg-demo-body">
+        <svg id="flowSvg" width="680" height="260" viewBox="0 0 680 260" style="font-family:'Noto Sans TC',sans-serif;overflow:visible;">
+          <defs>
+            <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#5a7a5a" opacity=".6"/>
+            </marker>
+            <marker id="arrowGray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#d8d4cb"/>
+            </marker>
+            <filter id="nodeShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity=".08"/>
+            </filter>
+          </defs>
+
+          <!-- 連線 -->
+          <line x1="108" y1="100" x2="192" y2="100" stroke="#5a7a5a" stroke-width="1.5" marker-end="url(#arrowGreen)" opacity=".5"/>
+          <line x1="308" y1="100" x2="392" y2="100" stroke="#5a7a5a" stroke-width="1.5" marker-end="url(#arrowGreen)" opacity=".5"/>
+          <line x1="508" y1="100" x2="592" y2="100" stroke="#d8d4cb" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+          <!-- 分支線 -->
+          <line x1="250" y1="128" x2="250" y2="172" stroke="#d8d4cb" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <line x1="250" y1="172" x2="450" y2="172" stroke="#d8d4cb" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <line x1="450" y1="172" x2="450" y2="128" stroke="#d8d4cb" stroke-width="1.5" marker-end="url(#arrowGray)" stroke-dasharray="4,3"/>
+
+          <!-- 節點群組 -->
+          <!-- N1: 需求確認 -->
+          <g class="flow-node-g" data-title="需求確認" data-desc="與客戶對齊目標、KPI 及時程" data-status="完成" data-owner="PM 王小明">
+            <rect x="10" y="72" width="98" height="56" rx="8" fill="#ffffff" stroke="#5a7a5a" stroke-width="2" filter="url(#nodeShadow)"/>
+            <circle cx="108" cy="80" r="5" fill="#5a7a5a"/>
+            <text x="59" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#2c2b28">需求確認</text>
+            <text x="59" y="114" text-anchor="middle" font-size="10" fill="#5a7a5a">✓ 已完成</text>
+          </g>
+
+          <!-- N2: 設計規劃 -->
+          <g class="flow-node-g" data-title="設計規劃" data-desc="製作視覺稿、使用者流程圖、設計系統" data-status="完成" data-owner="設計師 李大華">
+            <rect x="210" y="72" width="98" height="56" rx="8" fill="#ffffff" stroke="#5a7a5a" stroke-width="2" filter="url(#nodeShadow)"/>
+            <circle cx="308" cy="80" r="5" fill="#5a7a5a"/>
+            <text x="259" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#2c2b28">設計規劃</text>
+            <text x="259" y="114" text-anchor="middle" font-size="10" fill="#5a7a5a">✓ 已完成</text>
+          </g>
+
+          <!-- N3: 開發實作 -->
+          <g class="flow-node-g" data-title="開發實作" data-desc="前後端開發、API 串接、單元測試" data-status="進行中" data-owner="工程師 張三">
+            <rect x="410" y="72" width="98" height="56" rx="8" fill="#fff8f0" stroke="#c9963a" stroke-width="2" filter="url(#nodeShadow)"/>
+            <circle cx="508" cy="80" r="5" fill="#c9963a"/>
+            <text x="459" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#2c2b28">開發實作</text>
+            <text x="459" y="114" text-anchor="middle" font-size="10" fill="#c9963a">⏳ 進行中</text>
+          </g>
+
+          <!-- N4: 上線發布 -->
+          <g class="flow-node-g" data-title="上線發布" data-desc="部署至正式環境、監控系統上線" data-status="待開始" data-owner="DevOps 陳四">
+            <rect x="610" y="72" width="60" height="56" rx="8" fill="#f5f3ee" stroke="#d8d4cb" stroke-width="1.5" filter="url(#nodeShadow)"/>
+            <text x="640" y="97" text-anchor="middle" font-size="11" fill="#8c8880">上線</text>
+            <text x="640" y="113" text-anchor="middle" font-size="11" fill="#8c8880">發布</text>
+          </g>
+
+          <!-- 分支：QA 測試 -->
+          <g class="flow-node-g" data-title="QA 測試" data-desc="功能測試、壓力測試、UAT 使用者驗收" data-status="待開始" data-owner="QA 工程師">
+            <rect x="360" y="148" width="180" height="44" rx="8" fill="#f5f3ee" stroke="#d8d4cb" stroke-width="1.5" stroke-dasharray="5,3"/>
+            <text x="450" y="174" text-anchor="middle" font-size="11" fill="#8c8880">QA 測試（平行進行）</text>
+          </g>
+
+          <!-- Tooltip -->
+          <g id="flowTooltip" opacity="0" pointer-events="none">
+            <rect id="ftBg" rx="6" fill="#2c2b28" opacity=".93"/>
+            <text id="ftTitle" font-size="12" font-weight="700" fill="#8ab48a"></text>
+            <text id="ftStatus" font-size="10" fill="#c9963a"></text>
+            <text id="ftDesc" font-size="10" fill="#d8d4cb"></text>
+            <text id="ftOwner" font-size="9" fill="#6b6a68"></text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="anatomy-wrap">
+      <div class="anatomy-head">
+        <span class="anatomy-title">工具解剖 · 動態專案路徑圖</span>
+        <span class="anatomy-badge">功能拆解</span>
+      </div>
+      <div class="anatomy-body">
+        <div class="anatomy-zones">
+          <div class="anatomy-zone">
+            <span class="zone-label">節點</span>
+            <span class="zone-content">每個步驟一個節點，顏色區分狀態：綠色＝完成、橘色＝進行中、灰色＝待開始</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">連線</span>
+            <span class="zone-content">箭頭連接節點，實線＝主路徑，虛線＝分支或平行任務</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">Hover</span>
+            <span class="zone-content">滑鼠移到節點時顯示浮動說明卡：任務名稱、負責人、詳細描述、當前狀態</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">輸入</span>
+            <span class="zone-content">頁面頂部提供表單，可修改每個節點的名稱、說明、狀態，圖表即時更新</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S3 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 03</div>
+    <h2 class="section-heading">完整 Prompt：<em>動態專案路徑圖</em></h2>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label"><span class="prompt-dot"></span>動態專案路徑圖 · 完整 Prompt</div>
+      <div class="prompt-box">
+<span class="ph">你是一位擅長數據視覺化的資深前端工程師。</span>
+
+<span class="pg">請製作一個「動態專案路徑圖」網頁工具，功能需求如下：
+
+【節點設定】
+預設包含 5 個節點，由左至右排列：
+1. 需求確認（狀態：完成）
+2. 設計規劃（狀態：完成）
+3. 開發實作（狀態：進行中）
+4. QA 測試（狀態：待開始）
+5. 上線發布（狀態：待開始）
+
+每個節點包含以下資料：
+- 節點名稱（顯示在節點上）
+- 負責人姓名
+- 詳細說明（hover 時顯示）
+- 預計完成日期
+- 狀態（完成 / 進行中 / 待開始 / 延誤）
+
+【視覺呈現】
+使用 SVG 繪製，節點以圓角矩形表示，箭頭連接：
+- 完成：綠色邊框 #2e7d32，綠色打勾圖示
+- 進行中：橘色邊框 #e65100，旋轉進度圖示
+- 待開始：灰色邊框 #bdbdbd，無圖示
+- 延誤：紅色邊框 #c62828，警示圖示
+
+【互動功能】
+- 滑鼠移到節點時顯示浮動說明卡（tooltip），內容包含：負責人、詳細說明、預計完成日期
+- 點擊節點時，節點高亮（加粗邊框），右側出現詳細資訊面板
+- 點擊其他區域時，取消選取
+- 頁面載入時，節點依序淡入（間隔 0.15s）
+
+【可編輯性】
+頁面頂部有一個「編輯模式」按鈕，點擊後可以修改每個節點的名稱與狀態，確認後更新圖表
+
+【匯出功能】
+「下載 SVG」按鈕，讓使用者將圖表下載為 .svg 檔案，可貼入簡報或文件</span>
+
+<span class="pb">只使用純 HTML、CSS 與原生 JavaScript 和 SVG，
+不引入任何外部套件、D3.js 或 Chart.js。
+整體風格簡潔現代，白色背景，適合商業簡報使用。</span>
+
+<span class="ph">輸出完整可在瀏覽器直接執行的單一 HTML 檔案，不需要任何說明文字。</span></div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S4 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 04</div>
+    <h2 class="section-heading">自訂<em>節點、連線、顏色</em>的追加指令</h2>
+
+    <div class="addon-list">
+      <div class="addon-item">
+        <span class="addon-tag tag-v">佈局</span>
+        <div>
+          <div class="addon-text">「將節點佈局改為由上至下垂直排列，箭頭從上方節點指向下方節點」</div>
+          <div class="addon-desc">適合決策樹或審批流程圖</div>
+        </div>
+      </div>
+      <div class="addon-item">
+        <span class="addon-tag tag-v">佈局</span>
+        <div>
+          <div class="addon-text">「在第二個節點後增加一個分支：分成兩條路徑（A路徑：快速上線；B路徑：完整測試），兩條路徑最後匯合到最後一個節點」</div>
+          <div class="addon-desc">適合需要展示多路徑決策的場景</div>
+        </div>
+      </div>
+      <div class="addon-item">
+        <span class="addon-tag tag-u">視覺</span>
+        <div>
+          <div class="addon-text">「在每個節點下方加上預計完成日期（格式：MM/DD），完成的節點顯示實際完成日期」</div>
+          <div class="addon-desc">讓路徑圖同時承載時間資訊</div>
+        </div>
+      </div>
+      <div class="addon-item">
+        <span class="addon-tag tag-e">匯出</span>
+        <div>
+          <div class="addon-text">「新增一個『複製連結摘要』按鈕，點擊後將所有節點名稱和狀態整理成純文字，格式為：✓ 需求確認（完成） → ⏳ 開發實作（進行中）……，複製到剪貼簿」</div>
+          <div class="addon-desc">讓路徑圖的狀態摘要可以直接貼到 Slack 或 Email</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S5 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 05</div>
+    <h2 class="section-heading">進階：加入<em>時間軸</em>與進度狀態</h2>
+    <p class="body-text">如果你的專案有明確的時間線，可以把路徑圖升級為帶時間軸的版本——每個節點按照日期對齊在橫軸上，讓進度落後或超前一眼可見：</p>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label"><span class="prompt-dot"></span>加入時間軸的追加指令</div>
+      <div class="prompt-box">
+<span class="pg">在現有路徑圖下方，新增一條水平時間軸（從今天起算 12 週），功能如下：
+
+- 每個節點在時間軸上顯示一個對應的時間標記點
+- 標記點的橫向位置對應節點的「預計完成週次」
+- 今天的位置在時間軸上用垂直虛線標示為「NOW」
+- 已完成的節點：標記點填滿綠色
+- 進行中的節點：標記點為橘色空心圓（閃爍動畫）
+- 若節點的預計完成日已過但狀態仍為「進行中」，標記點改為紅色並顯示「延誤」
+
+時間軸上方的刻度每週一格，顯示週次（W1、W2……）</span></div>
+    </div>
+
+    <div class="callout key">
+      <div class="callout-icon">★</div>
+      <div class="callout-body">
+        <strong>實用建議：</strong>路徑圖和時間軸的組合，就是輕量版的甘特圖。不需要買 Project 或 Asana，一個 HTML 檔案就能做到同樣的視覺效果，而且可以客製化任何你需要的功能。
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a class="nav-btn prev" href="CH3-1.html">
+    <span>←</span>
+    <div>
+      <div class="nav-btn-label">上一節</div>
+      <div class="nav-btn-title">3.1 什麼是 SVG 互動圖？</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="CH3-3.html">
+    <div>
+      <div class="nav-btn-label">下一節</div>
+      <div class="nav-btn-title">3.3 互動式銷售漏斗</div>
+    </div>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Part 3 · 2 of 3</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollHeight - d.clientHeight > 0 ? (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.1, rootMargin:'0px 0px -48px 0px'});
+  document.querySelectorAll('.lesson-section, .section-rule').forEach(el => { el.classList.add('reveal'); io.observe(el); });
+})();
+(function(){
+  const sections = Array.from(document.querySelectorAll('.lesson-section'));
+  const nav = document.getElementById('sectionDots');
+  if(!sections.length||!nav) return;
+  sections.forEach((sec,i) => {
+    const btn = document.createElement('button');
+    btn.className='sdot';
+    btn.title = sec.querySelector('.section-heading')?.textContent?.trim().slice(0,20)||('第'+(i+1)+'節');
+    btn.addEventListener('click',()=>sec.scrollIntoView({behavior:'smooth',block:'start'}));
+    nav.appendChild(btn);
+  });
+  const dotIo = new IntersectionObserver(entries => {
+    entries.forEach(e => { const i=sections.indexOf(e.target); if(i>=0) nav.children[i]?.classList.toggle('active',e.isIntersecting); });
+    nav.classList.toggle('visible', Array.from(nav.children).some(d=>d.classList.contains('active')));
+  },{threshold:.3});
+  sections.forEach(s=>dotIo.observe(s));
+})();
+
+// 互動路徑圖 tooltip
+(function(){
+  const svg = document.getElementById('flowSvg');
+  if (!svg) return;
+  const tooltip = document.getElementById('flowTooltip');
+  const ftBg = document.getElementById('ftBg');
+  const ftTitle = document.getElementById('ftTitle');
+  const ftStatus = document.getElementById('ftStatus');
+  const ftDesc = document.getElementById('ftDesc');
+  const ftOwner = document.getElementById('ftOwner');
+
+  document.querySelectorAll('.flow-node-g').forEach(g => {
+    g.style.cursor = 'pointer';
+    g.addEventListener('mouseenter', (e) => {
+      const title = g.dataset.title || '';
+      const desc = g.dataset.desc || '';
+      const status = g.dataset.status || '';
+      const owner = g.dataset.owner || '';
+      ftTitle.textContent = title;
+      ftStatus.textContent = '狀態：' + status;
+      ftDesc.textContent = desc;
+      ftOwner.textContent = '負責人：' + owner;
+
+      const maxLen = Math.max(title.length, desc.length, owner.length + 4) * 7 + 20;
+      const w = Math.min(Math.max(maxLen, 160), 240);
+      ftBg.setAttribute('width', w);
+      ftBg.setAttribute('height', 72);
+      ftTitle.setAttribute('x', 10); ftTitle.setAttribute('y', 20);
+      ftStatus.setAttribute('x', 10); ftStatus.setAttribute('y', 36);
+      ftDesc.setAttribute('x', 10); ftDesc.setAttribute('y', 50);
+      ftOwner.setAttribute('x', 10); ftOwner.setAttribute('y', 64);
+
+      const svgRect = svg.getBoundingClientRect();
+      const gRect = g.getBoundingClientRect();
+      let tx = gRect.left - svgRect.left;
+      let ty = gRect.top - svgRect.top - 80;
+      if (tx + w > 680) tx = 680 - w - 4;
+      if (ty < 0) ty = gRect.bottom - svgRect.top + 4;
+      tooltip.setAttribute('transform', `translate(${tx},${ty})`);
+      tooltip.setAttribute('opacity', '1');
+    });
+    g.addEventListener('mouseleave', () => { tooltip.setAttribute('opacity', '0'); });
+  });
+
+  // 節點進場動畫
+  const demoWrap = document.querySelector('.svg-demo-wrap');
+  let done = false;
+  const obs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && !done) {
+      done = true;
+      document.querySelectorAll('.flow-node-g').forEach((g, i) => {
+        g.style.opacity = '0';
+        g.style.transition = `opacity .4s ease ${i * 0.15}s`;
+        setTimeout(() => { g.style.opacity = '1'; }, 50);
+      });
+    }
+  }, {threshold:.3});
+  if (demoWrap) obs.observe(demoWrap);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH4-1 工具部署：存下來、隨時用｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a4);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a4);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a4);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a4);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.inline-code{font-family:'Courier New',monospace;font-size:.85em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+
+/* ── 步驟列表 ── */
+.step-list{display:flex;flex-direction:column;gap:0;margin:28px 0;}
+.step-item{display:flex;gap:20px;align-items:flex-start;padding:22px 0;border-bottom:1px solid var(--c-border);}
+.step-item:last-child{border-bottom:none;}
+.step-num{font-family:'Shippori Mincho',serif;font-size:1.4rem;font-weight:700;color:var(--c-a4);min-width:32px;line-height:1;padding-top:2px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+
+/* ── 部署比較表 ── */
+.deploy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0;}
+.deploy-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:22px 20px;}
+.deploy-card.highlight{border-color:rgba(107,127,163,.4);background:rgba(107,127,163,.04);}
+.deploy-badge{font-size:.65rem;font-weight:700;letter-spacing:.5px;padding:2px 10px;border-radius:99px;margin-bottom:12px;display:inline-block;}
+.badge-rec{background:rgba(107,127,163,.12);color:var(--c-a4);}
+.badge-opt{background:var(--c-surface);color:var(--c-muted);}
+.deploy-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-text);margin-bottom:12px;}
+.deploy-pro{font-size:.8rem;color:var(--c-text);display:flex;gap:8px;line-height:1.6;margin-bottom:4px;}
+.deploy-pro::before{content:"✓";color:var(--c-a3);font-weight:700;flex-shrink:0;}
+.deploy-con{font-size:.8rem;color:var(--c-muted);display:flex;gap:8px;line-height:1.6;margin-top:8px;}
+.deploy-con::before{content:"—";flex-shrink:0;}
+
+/* ── 資料夾結構 ── */
+.folder-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:28px 0;}
+.folder-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 20px;display:flex;align-items:center;gap:8px;}
+.folder-dot{width:10px;height:10px;border-radius:50%;}
+.fd-r{background:#d8d4cb;} .fd-y{background:#c9963a;opacity:.5;} .fd-g{background:#5a7a5a;opacity:.5;}
+.folder-body{padding:20px 24px;font-family:'Courier New',monospace;font-size:.83rem;line-height:2;}
+.f-dir{color:var(--c-a4);font-weight:700;}
+.f-note{color:var(--c-muted);font-size:.74rem;}
+.f-indent1{padding-left:1.5em;display:block;}
+.f-indent2{padding-left:3em;display:block;}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 動態進場 ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.lesson-hero .back-link      {animation:fadeUp .4s ease both;}
+.lesson-hero .hero-meta      {animation:fadeUp .45s .08s ease both;}
+.lesson-hero .lesson-title   {animation:fadeUp .55s .15s ease both;}
+.lesson-hero .lesson-tagline {animation:fadeUp .5s .26s ease both;}
+.lesson-hero .outcomes       {animation:fadeUp .45s .36s ease both;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+.section-rule{transform-origin:left center;opacity:0;transition:opacity .4s ease,transform .6s cubic-bezier(.16,1,.3,1);transform:scaleX(.3);}
+.section-rule.in{opacity:1;transform:scaleX(1);}
+.section-dots{position:fixed;left:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40;opacity:0;transition:opacity .4s ease;}
+.section-dots.visible{opacity:1;}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--c-border);cursor:pointer;transition:background .3s ease,transform .3s ease;border:none;padding:0;}
+.sdot.active{background:var(--c-a4);transform:scale(1.5);}
+@media(max-width:1100px){.section-dots{display:none;}}
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a4);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">CH4-1</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="section-dots" id="sectionDots" aria-label="章節導航"></nav>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 返回課程目錄</a>
+  <div class="hero-meta">
+    <span class="hero-part">PART 4 · 成果發表與未來工作流</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">4.1</span>
+  </div>
+  <h1 class="lesson-title">工具部署：<br>存下來、隨時用</h1>
+  <p class="lesson-tagline">你做出來的工具不只是「用一次就關掉的檔案」。把它好好存放、設好捷徑，下次需要的時候兩秒就能打開——而且全部在本機執行，資料不出去，資安零疑慮。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">學完這節，你會有</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>一套整理 AI 工具的資料夾結構，可立即套用</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>在瀏覽器建立工具捷徑的完整方法</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>三種部署選項的比較：本機、GitHub Pages、公司內網</div>
+  </div>
+</section>
+
+<main class="lesson-body">
+
+  <!-- S1 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 01</div>
+    <h2 class="section-heading">本機執行：<em>最安全的部署方式</em></h2>
+    <p class="body-text">我們整個課程做的工具都是純 HTML 檔案，這代表一件事：<strong>它們不需要伺服器就能運作</strong>。直接用瀏覽器打開，就是完整功能。</p>
+    <p class="body-text">這個特性在企業環境裡是一個巨大的優勢。計算薪資、處理報價、分析客戶數據——這些工作如果上傳到雲端服務，就涉及資料外洩風險。而用本機 HTML 工具，所有運算都在你自己的電腦裡進行，資料從來不會離開你的裝置。</p>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ</div>
+      <div class="callout-body">
+        <strong>純 HTML 工具的本質：</strong>它其實就是一個網頁，但不需要連網。瀏覽器（Chrome、Safari、Edge）就是它的「執行環境」，打開即用，關閉即停，沒有安裝、沒有更新、沒有訂閱費。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S2 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 02</div>
+    <h2 class="section-heading">整理你的<em>工具資料夾</em></h2>
+    <p class="body-text">工具越做越多之後，最常見的問題是「那個計算機存在哪裡？」建議從一開始就建立一個固定的資料夾結構，讓每個工具都有明確的家。</p>
+
+    <div class="folder-wrap">
+      <div class="folder-head">
+        <div class="folder-dot fd-r"></div>
+        <div class="folder-dot fd-y"></div>
+        <div class="folder-dot fd-g"></div>
+      </div>
+      <div class="folder-body">
+        <div><span class="f-dir">📁 AI工具庫/</span></div>
+        <span class="f-indent1"><span class="f-dir">📁 計算類/</span></span>
+        <span class="f-indent2">報價計算機.html &nbsp;<span class="f-note">← 客戶報價、快速試算</span></span>
+        <span class="f-indent2">薪資試算器.html</span>
+        <span class="f-indent2">匯率換算工具.html</span>
+        <span class="f-indent1"><span class="f-dir">📁 排程類/</span></span>
+        <span class="f-indent2">排班生成器.html</span>
+        <span class="f-indent2">跨時區會議板.html</span>
+        <span class="f-indent1"><span class="f-dir">📁 視覺化類/</span></span>
+        <span class="f-indent2">銷售漏斗圖.html</span>
+        <span class="f-indent2">專案路徑圖.html</span>
+        <span class="f-indent1"><span class="f-dir">📁 其他/</span></span>
+        <span class="f-indent2">倒數計時器.html</span>
+      </div>
+    </div>
+
+    <p class="body-text">分類方式不需要完全照上面。重點是讓你自己三秒內找到想要的工具。可以依照工作性質改成「業務類 / 行政類 / 報告類」，或依照使用頻率「每天用 / 每週用 / 偶爾用」來分。</p>
+
+    <div class="callout tip">
+      <div class="callout-icon">✦</div>
+      <div class="callout-body">
+        <strong>命名技巧：</strong>直接用功能命名（「報價計算機」而不是「tool_v3_final」），讓三個月後的你也看得懂。如果有多個版本，在後面加日期：<span class="inline-code">報價計算機_2024-03.html</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S3 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 03</div>
+    <h2 class="section-heading">讓工具<em>像 App 一樣好用</em>的三個技巧</h2>
+    <p class="body-text">工具存好之後，下一步是讓它「夠方便」——打開不超過兩個動作，才會真的被使用。以下三個技巧可以大幅提升工具的可及性：</p>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">01</div>
+        <div>
+          <div class="step-title">瀏覽器書籤列</div>
+          <div class="step-desc">把最常用的工具拖拉到瀏覽器的書籤列（Bookmarks Bar）。每次打開瀏覽器都看得到，一秒點開。Chrome / Safari / Edge 都支援，也可以建立「AI 工具」資料夾分類存放。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">02</div>
+        <div>
+          <div class="step-title">桌面捷徑</div>
+          <div class="step-desc">Windows：對 HTML 檔案按右鍵 → 傳送到 → 桌面（建立捷徑）。macOS：按住 Option 鍵拖拉檔案到桌面建立別名。雙擊就能用預設瀏覽器打開。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">03</div>
+        <div>
+          <div class="step-title">釘選到瀏覽器分頁</div>
+          <div class="step-desc">對正在使用的工具分頁按右鍵 → 釘選分頁（Pin Tab）。它會變成一個小圖示常駐在左側，每次開啟瀏覽器都自動恢復，不佔空間又隨時可用。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S4 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 04</div>
+    <h2 class="section-heading">部署選項比較：<em>本機以外的選擇</em></h2>
+    <p class="body-text">如果你想讓團隊成員也能用你做的工具，或需要在不同裝置間存取，可以考慮以下部署方式：</p>
+
+    <div class="deploy-grid">
+      <div class="deploy-card highlight">
+        <div class="deploy-badge badge-rec">推薦</div>
+        <div class="deploy-title">本機執行</div>
+        <div class="deploy-pro">零成本，無需帳號</div>
+        <div class="deploy-pro">資料不離開裝置</div>
+        <div class="deploy-pro">無需網路連線</div>
+        <div class="deploy-pro">適合敏感資料工具</div>
+        <div class="deploy-con">僅限個人裝置使用</div>
+      </div>
+      <div class="deploy-card">
+        <div class="deploy-badge badge-opt">選項</div>
+        <div class="deploy-title">GitHub Pages</div>
+        <div class="deploy-pro">免費靜態網頁托管</div>
+        <div class="deploy-pro">有公開網址可分享</div>
+        <div class="deploy-pro">版本控制方便</div>
+        <div class="deploy-con">需要 GitHub 帳號</div>
+        <div class="deploy-con" style="margin-top:0">不適合含敏感資料工具</div>
+      </div>
+      <div class="deploy-card">
+        <div class="deploy-badge badge-opt">選項</div>
+        <div class="deploy-title">公司內網</div>
+        <div class="deploy-pro">全團隊可存取</div>
+        <div class="deploy-pro">資料留在公司內部</div>
+        <div class="deploy-pro">可整合到內部入口</div>
+        <div class="deploy-con">需要 IT 部門協助</div>
+        <div class="deploy-con" style="margin-top:0">架設需要一點時間</div>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <div class="callout-icon">★</div>
+      <div class="callout-body">
+        <strong>決策原則：</strong>工具裡有沒有公司機密或個人資料？有的話就本機執行。只是通用計算工具或展示用圖表？可以考慮 GitHub Pages 讓同事用網址存取，省去每次傳檔的麻煩。
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a class="nav-btn prev" href="../Part3-SVG互動圖表/CH3-3.html">
+    <span>←</span>
+    <div>
+      <div class="nav-btn-label">上一節</div>
+      <div class="nav-btn-title">3.3 互動式銷售漏斗</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="CH4-2.html">
+    <div>
+      <div class="nav-btn-label">下一節</div>
+      <div class="nav-btn-title">4.2 建立專屬 Prompt 庫</div>
+    </div>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Part 4 · 1 of 3</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollHeight - d.clientHeight > 0
+    ? (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.1, rootMargin:'0px 0px -48px 0px'});
+  document.querySelectorAll('.lesson-section, .section-rule').forEach(el => { el.classList.add('reveal'); io.observe(el); });
+})();
+(function(){
+  const sections = Array.from(document.querySelectorAll('.lesson-section'));
+  const nav = document.getElementById('sectionDots');
+  if(!sections.length||!nav) return;
+  sections.forEach((sec,i) => {
+    const btn = document.createElement('button');
+    btn.className='sdot';
+    btn.title = sec.querySelector('.section-heading')?.textContent?.trim().slice(0,20)||('第'+(i+1)+'節');
+    btn.addEventListener('click',()=>sec.scrollIntoView({behavior:'smooth',block:'start'}));
+    nav.appendChild(btn);
+  });
+  const dotIo = new IntersectionObserver(entries => {
+    entries.forEach(e => { const i=sections.indexOf(e.target); if(i>=0) nav.children[i]?.classList.toggle('active',e.isIntersecting); });
+    nav.classList.toggle('visible', Array.from(nav.children).some(d=>d.classList.contains('active')));
+  },{threshold:.3});
+  sections.forEach(s=>dotIo.observe(s));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成果發表與工作流 · 實例演練 1｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a4);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a4);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a4);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.tool-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:32px 0;}
+.tool-topbar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.tool-dot{width:10px;height:10px;border-radius:50%;}
+.tool-dot-r{background:#ff6058;} .tool-dot-y{background:#ffbd2e;} .tool-dot-g{background:#28c840;}
+.tool-label{flex:1;font-size:.72rem;color:var(--c-muted);font-family:'Courier New',monospace;}
+.tool-body{padding:32px 36px;}
+.copy-btn{font-size:.72rem;color:var(--c-a4);background:none;border:1px solid rgba(107,127,163,.3);padding:3px 12px;border-radius:99px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.copy-btn:hover{background:rgba(107,127,163,.08);}
+
+/* ── 部署清單 ── */
+.checklist-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.checklist-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-text);}
+.checklist-progress{font-size:.78rem;color:var(--c-a4);font-weight:500;}
+.checklist-prog-bg{height:4px;background:var(--c-surface);border-radius:99px;overflow:hidden;margin-bottom:20px;}
+.checklist-prog-fill{height:100%;background:var(--c-a4);border-radius:99px;transition:width .4s ease;}
+.checklist-group{margin-bottom:20px;}
+.checklist-group-label{font-size:.72rem;color:var(--c-a4);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--c-border);}
+.checklist-items{display:flex;flex-direction:column;gap:6px;}
+.checklist-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:background .15s;}
+.checklist-item:hover{background:var(--c-bg);}
+.checklist-item.done{opacity:.55;}
+.checklist-cb{width:18px;height:18px;border:1.5px solid var(--c-border);border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.checklist-item.done .checklist-cb{background:var(--c-a4);border-color:var(--c-a4);}
+.checklist-cb-check{color:#fff;font-size:11px;opacity:0;transition:opacity .2s;}
+.checklist-item.done .checklist-cb-check{opacity:1;}
+.checklist-text{font-size:.87rem;color:var(--c-text);line-height:1.6;}
+.checklist-item.done .checklist-text{text-decoration:line-through;color:var(--c-muted);}
+.checklist-note{font-size:.75rem;color:var(--c-muted);margin-top:2px;}
+.reset-btn{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);background:none;border:1px solid var(--c-border);padding:7px 16px;border-radius:var(--radius-sm);cursor:pointer;font-family:'Noto Sans TC',sans-serif;margin-top:16px;}
+.reset-btn:hover{border-color:var(--c-a4);color:var(--c-a4);}
+.done-banner{display:none;margin-top:16px;padding:16px 20px;background:rgba(107,127,163,.08);border:1px solid rgba(107,127,163,.25);border-radius:var(--radius);font-size:.88rem;color:var(--c-a4);font-weight:500;}
+
+.steps-list{display:flex;flex-direction:column;gap:0;margin:32px 0;}
+.step-item{display:flex;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:20px;top:44px;bottom:0;width:1px;background:var(--c-border);}
+.step-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px;padding-top:4px;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--c-card);border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-text);}
+.step-body{flex:1;padding:4px 0 32px 24px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+.step-desc strong{color:var(--c-text);font-weight:700;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.tip{background:rgba(107,127,163,.06);border:1px solid rgba(107,127,163,.2);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+.result-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.82rem;line-height:1.85;padding:22px 24px;border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;}
+.challenge-box{padding:28px 32px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);margin:28px 0;}
+.challenge-label{font-size:.7rem;color:var(--c-a4);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.challenge-list{display:flex;flex-direction:column;gap:12px;}
+.challenge-item{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;line-height:1.7;}
+.ci-num{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-a4);flex-shrink:0;width:20px;}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a4);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">實例演練</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回課程目錄</a>
+  <div class="hero-meta">
+    <div class="hero-part">PART 4 · 成果發表與工作流</div>
+    <div class="hero-divider-v"></div>
+    <div class="hero-num">實例演練 1</div>
+  </div>
+  <h1 class="lesson-title">工具上線前部署清單</h1>
+  <p class="lesson-tagline">每次完成一個 Gemini 工具後，用這份互動式清單逐項確認，確保工具在分享給他人或使用前，所有關鍵項目都已就緒，零失誤上線。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">PRACTICE GOALS</div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>建立一套可複用的工具部署前確認流程</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>理解「互動式 Checklist」工具的設計邏輯</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>為自己的工具庫制定一套個人化的部署標準</span></div>
+  </div>
+</div>
+
+<div class="lesson-body">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">TOOL · 互動工具</div>
+    <h2 class="section-heading">逐項確認，確保工具完美上線</h2>
+    <p class="body-text">把你做好的工具 HTML 檔案對照下方清單逐一確認，全部打勾後才算真正完成。這個清單涵蓋功能測試、跨瀏覽器、安全性、使用體驗四個面向。</p>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">deployment-checklist.html</div>
+      </div>
+      <div class="tool-body">
+        <div class="checklist-header">
+          <div class="checklist-title">工具部署前確認清單</div>
+          <div class="checklist-progress" id="ck-progress">0 / 16</div>
+        </div>
+        <div class="checklist-prog-bg"><div class="checklist-prog-fill" id="ck-fill" style="width:0%"></div></div>
+        <div id="checklist-body"></div>
+        <button class="reset-btn" onclick="resetChecklist()">↺ 重置所有項目</button>
+        <div class="done-banner" id="done-banner">全部完成！這個工具已準備好分享給他人使用。</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>部署清單的本質是「品質門」：</strong>每一項都是過去踩過的坑。第一次做工具可能不知道要確認這些，但養成習慣之後，你的每一個工具都會更可靠，分享給別人時也更有信心。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">HOW TO REPLICATE · 如何自己做出這個工具</div>
+    <h2 class="section-heading">讓 Gemini 幫你做一個 Checklist 工具</h2>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">列出你自己的確認清單項目</div>
+          <div class="step-desc">下方指令中的清單內容可以完全替換成你工作中需要確認的事項，例如：上稿前確認、提案前確認、出差前確認……</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">複製以下指令貼入 Gemini Canvas</div>
+          <div class="step-desc">注意「<strong>勾選後自動更新進度條</strong>」的需求描述——這是讓工具有即時回饋感的關鍵。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">存為標準 SOP，每次部署都用</div>
+          <div class="step-desc">把這個工具存在你的工具庫資料夾，每次要部署工具前都打開一次，養成習慣。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">→ 複製這段 Prompt 貼入 Gemini</div>
+        <button class="copy-btn" style="margin-left:auto;" onclick="copyInstructions()">複製指令</button>
+      </div>
+      <div class="tool-body" style="padding:24px 28px;">
+        <div class="result-box" id="instruction-box">你是一位擅長製作互動工具的前端工程師。
+
+請製作一個「工具部署前確認清單」的單頁 HTML 工具，功能如下：
+
+【功能需求】
+- 一份互動式清單，清單項目分為以下分類（你可以調整項目內容）：
+  1. 功能測試（所有按鈕可正常運作、計算結果正確、邊界值測試）
+  2. 相容性（在 Chrome/Safari/Edge 皆可正常開啟、在手機上基本可用）
+  3. 使用體驗（說明文字清楚、placeholder 有提示、錯誤狀態有提示）
+  4. 部署準備（檔案名稱正確、存在指定資料夾、備份完成）
+
+- 每個項目可點擊勾選，勾選後：
+  · 顯示打勾符號
+  · 項目文字變灰並加刪除線
+  · 頂部進度條即時更新（X / 總數）
+- 全部勾選完成時，顯示完成橫幅提示
+- 一個「重置」按鈕，清空所有勾選
+
+【設計要求】
+- 無印良品風格：背景 #f5f3ee，卡片 #ffffff，邊框 #d8d4cb
+- 強調色 #6b7fa3（霧藍），進度條使用此色
+- 字體：Shippori Mincho + Noto Sans TC（Google Fonts）
+- 圓角 6px，無陰影，無漸層
+
+請生成完整的單一 HTML 檔案。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">CHALLENGE · 進階挑戰</div>
+    <h2 class="section-heading">把清單工具升級成你的 SOP 系統</h2>
+    <div class="challenge-box">
+      <div class="challenge-label">PRACTICE VARIATIONS</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="ci-num">01</div>
+          <div>修改清單內容，做一份「提案簡報上台前確認清單」或「客戶 Email 發送前確認清單」，把它加入你的工作日常。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">02</div>
+          <div>讓工具在全部勾選完成後，自動生成一份「完成報告」文字，包含工具名稱、完成時間、確認人，可直接複製貼到紀錄。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">03</div>
+          <div>讓工具可以儲存勾選狀態（使用 localStorage），下次開啟頁面時保留上次的進度，不需要重新勾選。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn" href="../Part3-SVG互動圖表/PRAC3-3.html">
+    <div>
+      <div class="nav-btn-label">← Part 3 最後演練</div>
+      <div class="nav-btn-title">實例演練 9：KPI 成果儀表板</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="PRAC4-2.html">
+    <div>
+      <div class="nav-btn-label">下一個演練 →</div>
+      <div class="nav-btn-title">實例演練 2：個人 Prompt 庫管理器</div>
+    </div>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Gemini 零代碼 AI 實戰課 · Part 4 實例演練</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('prog').style.width = (window.scrollY / total * 100) + '%';
+});
+
+const CHECKLIST = [
+  { group: '① 功能測試', items: [
+    { text: '所有按鈕點擊後有正確反應', note: '逐一測試每個互動元素' },
+    { text: '計算邏輯正確（用幾個已知結果驗算）', note: '邊界值：0、負數、空白' },
+    { text: '複製功能可正常運作', note: '測試剪貼簿複製按鈕' },
+    { text: '空白或異常輸入有適當提示', note: '不能讓工具靜默出錯' },
+  ]},
+  { group: '② 跨環境相容', items: [
+    { text: '在 Chrome 瀏覽器正常顯示', note: '' },
+    { text: '在 Safari 瀏覽器正常顯示', note: 'Mac 或 iPhone 測試' },
+    { text: '在手機螢幕可基本操作', note: '縮放後不會版面破版' },
+    { text: '字型正常載入（非系統預設字體）', note: '確認 Google Fonts 有載入' },
+  ]},
+  { group: '③ 使用體驗', items: [
+    { text: '輸入欄位有 placeholder 提示文字', note: '讓使用者知道該填什麼' },
+    { text: '按鈕文字清楚說明動作', note: '不要只寫「確認」或「送出」' },
+    { text: '功能說明文字簡短易懂', note: '初次使用者不需要問人' },
+    { text: '重要結果以視覺方式強調', note: '數字夠大、顏色夠清晰' },
+  ]},
+  { group: '④ 部署準備', items: [
+    { text: '檔案名稱易識別（例：報價計算器.html）', note: '避免 untitled.html' },
+    { text: '已存入指定工具庫資料夾', note: '統一管理，方便找尋' },
+    { text: '已備份一份到雲端或外部儲存', note: '避免電腦損壞遺失' },
+    { text: '已在進度追蹤記錄完成時間', note: '方便回溯版本歷史' },
+  ]},
+];
+
+const states = {};
+let totalItems = 0;
+
+function buildChecklist() {
+  let idx = 0;
+  const body = document.getElementById('checklist-body');
+  CHECKLIST.forEach(group => {
+    const gDiv = document.createElement('div');
+    gDiv.className = 'checklist-group';
+    gDiv.innerHTML = `<div class="checklist-group-label">${group.group}</div>`;
+    const iDiv = document.createElement('div');
+    iDiv.className = 'checklist-items';
+    group.items.forEach(item => {
+      const id = 'ck-' + idx;
+      states[id] = false;
+      totalItems++;
+      const el = document.createElement('div');
+      el.className = 'checklist-item';
+      el.id = id;
+      el.onclick = () => toggleItem(id);
+      el.innerHTML = `
+        <div class="checklist-cb"><span class="checklist-cb-check">✓</span></div>
+        <div>
+          <div class="checklist-text">${item.text}</div>
+          ${item.note ? `<div class="checklist-note">${item.note}</div>` : ''}
+        </div>`;
+      iDiv.appendChild(el);
+      idx++;
+    });
+    gDiv.appendChild(iDiv);
+    body.appendChild(gDiv);
+  });
+  updateProgress();
+}
+
+function toggleItem(id) {
+  states[id] = !states[id];
+  const el = document.getElementById(id);
+  el.classList.toggle('done', states[id]);
+  updateProgress();
+}
+
+function updateProgress() {
+  const done = Object.values(states).filter(v => v).length;
+  document.getElementById('ck-progress').textContent = `${done} / ${totalItems}`;
+  document.getElementById('ck-fill').style.width = (done / totalItems * 100) + '%';
+  const banner = document.getElementById('done-banner');
+  banner.style.display = done === totalItems ? 'block' : 'none';
+}
+
+function resetChecklist() {
+  Object.keys(states).forEach(id => {
+    states[id] = false;
+    document.getElementById(id)?.classList.remove('done');
+  });
+  updateProgress();
+}
+
+function copyInstructions() {
+  const text = document.getElementById('instruction-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製指令', 1800);
+  });
+}
+
+buildChecklist();
+</script>
+</body>
+</html>

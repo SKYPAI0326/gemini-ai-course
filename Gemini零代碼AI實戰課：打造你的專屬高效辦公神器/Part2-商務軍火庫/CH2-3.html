@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH2-3 UI/UX 美學升級｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a2);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a2);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a2);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a2);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a2);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.inline-code{font-family:'Courier New',monospace;font-size:.85em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+
+/* ── 前後對比 ── */
+.before-after{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0;}
+.ba-card{border-radius:var(--radius);overflow:hidden;border:1px solid var(--c-border);}
+.ba-label{padding:10px 16px;font-size:.72rem;font-weight:700;letter-spacing:1px;border-bottom:1px solid var(--c-border);}
+.ba-card.before .ba-label{background:#f0eeea;color:var(--c-muted);}
+.ba-card.after .ba-label{background:rgba(201,150,58,.08);color:var(--c-a2);border-bottom-color:rgba(201,150,58,.2);}
+.ba-card.after{border-color:rgba(201,150,58,.3);}
+.ba-preview{padding:20px;}
+
+/* 模擬「陽春」介面 */
+.plain-ui{display:flex;flex-direction:column;gap:8px;}
+.plain-label{font-size:.75rem;color:#666;}
+.plain-input{border:1px solid #ccc;padding:6px 8px;font-size:.8rem;border-radius:2px;background:#fff;width:100%;}
+.plain-btn{background:#ddd;border:1px solid #bbb;padding:7px 16px;font-size:.8rem;cursor:pointer;border-radius:2px;}
+.plain-result{margin-top:8px;font-size:.8rem;color:#333;padding:8px;border:1px solid #ddd;background:#f9f9f9;}
+
+/* 模擬「升級後」介面 */
+.nice-ui{display:flex;flex-direction:column;gap:12px;}
+.nice-field{display:flex;flex-direction:column;gap:4px;}
+.nice-label{font-size:.72rem;font-weight:600;color:#4a4a4a;letter-spacing:.5px;}
+.nice-input{border:1.5px solid #e0ddd8;padding:9px 14px;font-size:.85rem;border-radius:6px;background:#fff;width:100%;transition:border-color .2s;}
+.nice-btn{background:linear-gradient(135deg,#c9963a,#b5703a);color:#fff;border:none;padding:10px 20px;font-size:.85rem;font-weight:600;cursor:pointer;border-radius:6px;letter-spacing:.3px;}
+.nice-result{margin-top:4px;font-size:.85rem;color:#2c2b28;padding:12px 16px;border-radius:6px;background:#f8f5f0;border-left:3px solid #c9963a;}
+
+/* ── 風格指令卡片 ── */
+.style-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:28px 0;}
+.style-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;transition:transform .2s ease,box-shadow .2s ease;}
+.style-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.08);}
+.style-preview{height:80px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:500;}
+.preview-material{background:#1976d2;color:#fff;font-family:Roboto,sans-serif;}
+.preview-card-style{background:#fff;color:#333;box-shadow:inset 0 0 0 1px #e0e0e0;}
+.preview-card-style span{padding:8px 20px;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:.8rem;color:#333;}
+.preview-dark{background:#1a1a2e;color:#e0e0e0;font-family:Courier New,monospace;}
+.preview-minimal{background:#fafafa;color:#333;border-top:2px solid #333;}
+.style-info{padding:14px 16px;border-top:1px solid var(--c-border);}
+.style-name{font-size:.85rem;font-weight:700;color:var(--c-text);margin-bottom:4px;}
+.style-desc{font-size:.75rem;color:var(--c-muted);line-height:1.6;}
+
+/* ── Prompt 框 ── */
+.prompt-wrap{margin:32px 0;}
+.prompt-label{font-size:.7rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.prompt-dot{width:6px;height:6px;border-radius:50%;background:var(--c-a3);}
+.prompt-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.85;padding:24px 28px;border-radius:var(--radius);white-space:pre-wrap;word-break:break-word;border:1px solid rgba(90,122,90,.3);}
+.ph{color:var(--c-a2);}
+.pg{color:#8ab48a;}
+.pb{color:#7a9ea3;}
+.pc{color:#6b6a68;}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(201,150,58,.07);border:1px solid rgba(201,150,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 指令庫 ── */
+.cmd-group{margin-bottom:28px;}
+.cmd-group-label{font-size:.72rem;color:var(--c-a4);letter-spacing:1.5px;font-weight:500;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.cmd-group-label::after{content:'';flex:1;height:1px;background:rgba(107,127,163,.2);}
+.cmd-list{display:flex;flex-direction:column;gap:8px;}
+.cmd-item{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:12px 16px;font-family:'Courier New',monospace;font-size:.8rem;color:var(--c-text);line-height:1.7;position:relative;cursor:pointer;transition:border-color .2s,background .2s;}
+.cmd-item:hover{border-color:var(--c-a2);background:rgba(201,150,58,.03);}
+.cmd-item::after{content:'複製';position:absolute;right:12px;top:50%;transform:translateY(-50%);font-family:'Noto Sans TC',sans-serif;font-size:.65rem;color:var(--c-muted);opacity:0;transition:opacity .2s;}
+.cmd-item:hover::after{opacity:1;}
+.cmd-tag{display:inline-block;font-family:'Noto Sans TC',sans-serif;font-size:.65rem;color:var(--c-a4);background:rgba(107,127,163,.1);border-radius:3px;padding:0 5px;margin-right:6px;font-weight:500;}
+.copy-toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--c-text);color:#fff;padding:8px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;z-index:999;}
+.copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── 動態進場 ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.lesson-hero .back-link      {animation:fadeUp .4s ease both;}
+.lesson-hero .hero-meta      {animation:fadeUp .45s .08s ease both;}
+.lesson-hero .lesson-title   {animation:fadeUp .55s .15s ease both;}
+.lesson-hero .lesson-tagline {animation:fadeUp .5s .26s ease both;}
+.lesson-hero .outcomes       {animation:fadeUp .45s .36s ease both;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+.section-rule{transform-origin:left center;opacity:0;transition:opacity .4s ease,transform .6s cubic-bezier(.16,1,.3,1);transform:scaleX(.3);}
+.section-rule.in{opacity:1;transform:scaleX(1);}
+.style-card{transition:transform .22s ease,box-shadow .22s ease;}
+.style-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.09);}
+.section-dots{position:fixed;left:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40;opacity:0;transition:opacity .4s ease;}
+.section-dots.visible{opacity:1;}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--c-border);cursor:pointer;transition:background .3s ease,transform .3s ease;border:none;padding:0;}
+.sdot.active{background:var(--c-a2);transform:scale(1.5);}
+@media(max-width:1100px){.section-dots{display:none;}}
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a2);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">CH2-3</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="section-dots" id="sectionDots" aria-label="章節導航"></nav>
+<div class="copy-toast" id="copyToast">已複製到剪貼簿</div>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 返回課程目錄</a>
+  <div class="hero-meta">
+    <span class="hero-part">PART 2 · 打造你的商務軍火庫</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">2.3</span>
+  </div>
+  <h1 class="lesson-title">UI/UX 美學升級：<br>拒絕陽春介面，<br>一句話讓工具脫胎換骨</h1>
+  <p class="lesson-tagline">AI 生成的工具預設介面通常功能正確、但視覺平淡。而一個看起來專業的工具，更容易被同事採用、更容易在簡報中展示、也讓你顯得更有質感。這一節教你用一句話讓介面大升級。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">學完這節，你會</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>理解為什麼同樣功能的工具，視覺差距會影響使用率</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>掌握四種主流介面風格的升級指令</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>帶走一份「細節升級指令庫」，隨時可以貼到 AI Studio 使用</div>
+  </div>
+</section>
+
+<main class="lesson-body">
+
+  <!-- S1 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 01</div>
+    <h2 class="section-heading">同樣功能，<em>視覺差距</em>決定使用率</h2>
+    <p class="body-text">你有沒有遇過這種情況：你做了一個很實用的工具，傳給同事，對方掃一眼說「好，我知道了」，然後就繼續用原本那個爛 Excel？</p>
+    <p class="body-text">這不是功能的問題，是第一印象的問題。人對「看起來專業」的工具信任度更高，也更願意花時間學習怎麼用。好的視覺設計不是裝飾，它是使用者願意打開工具的理由。</p>
+
+    <div class="before-after">
+      <div class="ba-card before">
+        <div class="ba-label">❌ AI 預設生成</div>
+        <div class="ba-preview">
+          <div class="plain-ui">
+            <div class="plain-label">品項名稱</div>
+            <input class="plain-input" value="行銷顧問服務" readonly>
+            <div class="plain-label">金額（元）</div>
+            <input class="plain-input" value="50000" readonly>
+            <button class="plain-btn">計算</button>
+            <div class="plain-result">含稅總額：52,500 元</div>
+          </div>
+        </div>
+      </div>
+      <div class="ba-card after">
+        <div class="ba-label">✦ 加一句升級指令後</div>
+        <div class="ba-preview">
+          <div class="nice-ui">
+            <div class="nice-field">
+              <div class="nice-label">品項名稱</div>
+              <input class="nice-input" value="行銷顧問服務" readonly>
+            </div>
+            <div class="nice-field">
+              <div class="nice-label">金額（元）</div>
+              <input class="nice-input" value="50,000" readonly>
+            </div>
+            <button class="nice-btn">計算含稅金額</button>
+            <div class="nice-result">含稅總額　<strong style="font-size:1rem;">NT$ 52,500</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="body-text">右邊的版本功能完全一樣，差異只來自在生成後追加了一句升級指令。接下來我們就看這些指令怎麼寫。</p>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S2 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 02</div>
+    <h2 class="section-heading">四種主流<em>介面風格</em>指令</h2>
+    <p class="body-text">以下四種風格幾乎涵蓋了辦公室工具的主要使用場景。把對應的指令直接貼到 AI Studio，即可套用：</p>
+
+    <div class="style-grid">
+      <div class="style-card">
+        <div class="style-preview preview-material">
+          <span>Material Design</span>
+        </div>
+        <div class="style-info">
+          <div class="style-name">Google Material Design</div>
+          <div class="style-desc">藍色主色調、陰影層次、Roboto 字體——最接近 Google 產品的感覺，適合科技感強的場合。</div>
+        </div>
+      </div>
+      <div class="style-card">
+        <div class="style-preview preview-card-style">
+          <span>卡片式佈局</span>
+        </div>
+        <div class="style-info">
+          <div class="style-name">現代卡片風格</div>
+          <div class="style-desc">白底、細陰影、圓角卡片——最通用的現代商業設計，適合所有職場場景。</div>
+        </div>
+      </div>
+      <div class="style-card">
+        <div class="style-preview preview-dark">
+          <span style="color:#64ffda;">暗色主題</span>
+        </div>
+        <div class="style-info">
+          <div class="style-name">深色介面</div>
+          <div class="style-desc">深色背景、高對比文字、螢光強調色——適合數據展示、長時間使用或投影環境。</div>
+        </div>
+      </div>
+      <div class="style-card">
+        <div class="style-preview preview-minimal">
+          <span style="font-weight:700;letter-spacing:2px;font-size:.75rem;">MINIMAL</span>
+        </div>
+        <div class="style-info">
+          <div class="style-name">極簡主義</div>
+          <div class="style-desc">無彩度、大量留白、精準線條——適合需要「低調但高質感」的場合，例如客戶提案。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label"><span class="prompt-dot"></span>四種風格的升級指令（擇一使用）</div>
+      <div class="prompt-box">
+<span class="pc">// 風格 A：Material Design</span>
+<span class="pg">請將整個工具的介面風格改為 Google Material Design 3 風格：
+使用藍色（#1976D2）為主色調，按鈕使用 filled 樣式，
+輸入框使用 outlined 樣式，加上細陰影卡片佈局，
+字體改為 Roboto（從 Google Fonts 載入）。</span>
+
+<span class="pc">// 風格 B：現代卡片</span>
+<span class="pg">請將介面升級為現代商業風格：
+整體使用白色背景，各功能區塊放入白色卡片中（圓角 12px、box-shadow: 0 2px 12px rgba(0,0,0,.08)），
+主色改為深藍 #1a237e，按鈕使用漸層效果，
+輸入框聚焦時顯示藍色底線。</span>
+
+<span class="pc">// 風格 C：深色介面</span>
+<span class="pg">請將介面改為深色主題：
+背景色 #0d1117，卡片背景 #161b22，邊框 #30363d，
+主文字白色，強調色使用螢光綠 #39d353，
+按鈕使用半透明背景加邊框樣式。</span>
+
+<span class="pc">// 風格 D：極簡主義</span>
+<span class="pg">請將介面改為極簡主義風格：
+全白背景，不使用任何彩色元素，只用黑白灰，
+標題下方加一條 2px 黑色線條，按鈕為黑色填滿白字，
+所有圓角一律設為 0（方形），字體改為 serif 字體。</span></div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S3 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 03</div>
+    <h2 class="section-heading"><em>細節升級指令庫</em>：點擊即可複製</h2>
+    <p class="body-text">除了整體風格之外，以下是針對單一細節的升級指令。每一條都可以直接貼到 AI Studio 的對話視窗，AI 會在現有工具上針對性地修改該部分：</p>
+
+    <div class="cmd-group">
+      <div class="cmd-group-label">色彩與品牌</div>
+      <div class="cmd-list">
+        <div class="cmd-item" data-copy="請將主色調改為品牌橘色 #E65100，所有按鈕、重點標題、進度條都改用此色。"><span class="cmd-tag">色彩</span>請將主色調改為品牌橘色 #E65100，所有按鈕、重點標題、進度條都改用此色。</div>
+        <div class="cmd-item" data-copy="在頁面左上角加上公司名稱「弄一下工作室」，字體稍大，使用主色調顏色。"><span class="cmd-tag">品牌</span>在頁面左上角加上公司名稱「弄一下工作室」，字體稍大，使用主色調顏色。</div>
+        <div class="cmd-item" data-copy="在頁面底部加上頁尾，顯示「© 2025 弄一下工作室 · 此為內部試算工具」，字體小、灰色。"><span class="cmd-tag">品牌</span>在頁面底部加上頁尾，顯示「© 2025 弄一下工作室 · 此為內部試算工具」，字體小、灰色。</div>
+      </div>
+    </div>
+
+    <div class="cmd-group">
+      <div class="cmd-group-label">字體與排版</div>
+      <div class="cmd-list">
+        <div class="cmd-item" data-copy="將所有字體改為 Noto Sans TC（從 Google Fonts 載入），標題用 font-weight: 700，內文用 400。"><span class="cmd-tag">字體</span>將所有字體改為 Noto Sans TC（從 Google Fonts 載入），標題用 font-weight: 700，內文用 400。</div>
+        <div class="cmd-item" data-copy="增加整體的行距至 1.8，段落之間的間距增加至 24px，讓版面更容易閱讀。"><span class="cmd-tag">排版</span>增加整體的行距至 1.8，段落之間的間距增加至 24px，讓版面更容易閱讀。</div>
+        <div class="cmd-item" data-copy="所有數字金額改用等寬字體（Courier New 或 monospace）顯示，讓數字對齊更整齊。"><span class="cmd-tag">字體</span>所有數字金額改用等寬字體（Courier New 或 monospace）顯示，讓數字對齊更整齊。</div>
+      </div>
+    </div>
+
+    <div class="cmd-group">
+      <div class="cmd-group-label">動態與互動</div>
+      <div class="cmd-list">
+        <div class="cmd-item" data-copy="所有按鈕加上 hover 效果：滑鼠移上去時顏色加深 10%，並有 0.15s 的過渡動畫。"><span class="cmd-tag">動畫</span>所有按鈕加上 hover 效果：滑鼠移上去時顏色加深 10%，並有 0.15s 的過渡動畫。</div>
+        <div class="cmd-item" data-copy="當計算結果更新時，結果數字加上一個 0.3s 的淡入動畫，讓使用者注意到數字已更新。"><span class="cmd-tag">動畫</span>當計算結果更新時，結果數字加上一個 0.3s 的淡入動畫，讓使用者注意到數字已更新。</div>
+        <div class="cmd-item" data-copy="頁面載入時，各區塊依序以 fade-in 動畫出現（間隔 0.1s），讓頁面進場更有層次感。"><span class="cmd-tag">動畫</span>頁面載入時，各區塊依序以 fade-in 動畫出現（間隔 0.1s），讓頁面進場更有層次感。</div>
+      </div>
+    </div>
+
+    <div class="cmd-group">
+      <div class="cmd-group-label">響應式與列印</div>
+      <div class="cmd-list">
+        <div class="cmd-item" data-copy="讓工具在手機（螢幕寬度 < 600px）上也能正常使用：欄位改為縱向排列，按鈕改為全寬。"><span class="cmd-tag">RWD</span>讓工具在手機（螢幕寬度 &lt; 600px）上也能正常使用：欄位改為縱向排列，按鈕改為全寬。</div>
+        <div class="cmd-item" data-copy="新增列印樣式（@media print）：隱藏所有按鈕和輸入框邊框，只保留結果數字和標題，適合列印成紙本報告。"><span class="cmd-tag">列印</span>新增列印樣式（@media print）：隱藏所有按鈕和輸入框邊框，只保留結果數字和標題，適合列印成紙本報告。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S4 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 04</div>
+    <h2 class="section-heading">完整範例：<em>報價計算機介面升級</em></h2>
+    <p class="body-text">把 2.1 節做的報價計算機，加上這段升級指令，可以讓它從「陽春工具」變成「看起來像花了錢請人做的產品」：</p>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label"><span class="prompt-dot"></span>報價計算機完整升級指令</div>
+      <div class="prompt-box">
+<span class="pc">// 在同一個對話視窗，生成報價計算機之後，接著輸入：</span>
+
+<span class="pg">請將這個工具的介面升級，保持功能完全不變，只改視覺設計：
+
+整體風格：現代商業風格，白色背景為主
+色彩系統：主色 #1a237e（深藍）、強調色 #e65100（橘）、成功色 #2e7d32（深綠）
+頁面頂部：加一條 56px 高的深藍色頂部列，左側顯示「報價試算」白色字樣
+
+輸入區：
+- 各輸入框使用 outlined 樣式（1px 邊框，聚焦時邊框變主色深藍）
+- 品項表格的表頭列使用淺藍色背景（#e8eaf6）
+- 刪除按鈕改為紅色文字、無背景的 text button 樣式
+
+結果區：
+- 「最終總額」以 1.5rem 加粗字體顯示，並加橘色底線強調
+- 計算結果區塊放入一個帶細陰影的白色卡片中
+
+按鈕：
+- 主要動作（新增品項、計算）改為深藍填滿白字，圓角 4px
+- hover 時加深顏色，有 0.2s 過渡動畫
+
+其他：
+- 所有金額自動加千分位格式
+- 頁面底部加上「本試算結果僅供參考」小字</span></div>
+    </div>
+
+    <div class="callout key">
+      <div class="callout-icon">★</div>
+      <div class="callout-body">
+        <strong>Part 2 完成了。</strong>你現在手上有三種商務工具的製作能力：自動化計算、邏輯轉換、以及讓任何工具看起來更專業的升級指令庫。進入 Part 3，我們要做更吸引眼球的東西——能動的圖表。
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a class="nav-btn prev" href="CH2-2.html">
+    <span>←</span>
+    <div>
+      <div class="nav-btn-label">上一節</div>
+      <div class="nav-btn-title">2.2 邏輯轉換工具</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="../Part3-SVG互動圖表/CH3-1.html">
+    <div>
+      <div class="nav-btn-label">進入 Part 3</div>
+      <div class="nav-btn-title">3.1 什麼是 SVG 互動圖？</div>
+    </div>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Part 2 · 3 of 3</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollHeight - d.clientHeight > 0 ? (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.1, rootMargin:'0px 0px -48px 0px'});
+  document.querySelectorAll('.lesson-section, .section-rule').forEach(el => { el.classList.add('reveal'); io.observe(el); });
+})();
+(function(){
+  const sections = Array.from(document.querySelectorAll('.lesson-section'));
+  const nav = document.getElementById('sectionDots');
+  if(!sections.length||!nav) return;
+  sections.forEach((sec,i) => {
+    const btn = document.createElement('button');
+    btn.className='sdot';
+    btn.title = sec.querySelector('.section-heading')?.textContent?.trim().slice(0,20)||('第'+(i+1)+'節');
+    btn.addEventListener('click',()=>sec.scrollIntoView({behavior:'smooth',block:'start'}));
+    nav.appendChild(btn);
+  });
+  const dotIo = new IntersectionObserver(entries => {
+    entries.forEach(e => { const i=sections.indexOf(e.target); if(i>=0) nav.children[i]?.classList.toggle('active',e.isIntersecting); });
+    nav.classList.toggle('visible', Array.from(nav.children).some(d=>d.classList.contains('active')));
+  },{threshold:.3});
+  sections.forEach(s=>dotIo.observe(s));
+})();
+
+// 指令複製功能
+(function(){
+  const toast = document.getElementById('copyToast');
+  let toastTimer;
+  document.querySelectorAll('.cmd-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const text = item.dataset.copy;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        clearTimeout(toastTimer);
+        toast.classList.add('show');
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

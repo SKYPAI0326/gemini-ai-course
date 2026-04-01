@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH2-2 邏輯轉換工具｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a2);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a2);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a2);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a2);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a2);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.inline-code{font-family:'Courier New',monospace;font-size:.85em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+
+/* ── 邏輯說明框 ── */
+.logic-box{margin:28px 0;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;}
+.logic-head{padding:14px 20px;border-bottom:1px solid var(--c-border);font-size:.72rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;display:flex;align-items:center;justify-content:space-between;}
+.logic-badge{font-size:.68rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.07);padding:2px 10px;border-radius:99px;font-weight:500;}
+.logic-body{padding:20px;}
+.logic-rule{display:flex;gap:14px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);margin-bottom:8px;background:var(--c-surface);}
+.logic-rule:last-child{margin-bottom:0;}
+.rule-if{font-size:.7rem;font-weight:700;color:var(--c-a4);letter-spacing:.5px;white-space:nowrap;min-width:36px;padding-top:2px;}
+.rule-then{font-size:.83rem;color:var(--c-text);line-height:1.65;}
+
+/* ── 工具解剖 ── */
+.anatomy-wrap{margin:32px 0;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;}
+.anatomy-head{padding:16px 24px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;}
+.anatomy-title{font-size:.78rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;}
+.anatomy-badge{font-size:.68rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:2px 10px;border-radius:99px;font-weight:500;}
+.anatomy-body{padding:24px;}
+.anatomy-zones{display:flex;flex-direction:column;gap:10px;}
+.anatomy-zone{display:flex;gap:16px;align-items:flex-start;padding:14px 16px;background:var(--c-surface);border-radius:var(--radius-sm);}
+.zone-label{font-size:.72rem;color:var(--c-a2);font-weight:700;letter-spacing:.5px;white-space:nowrap;min-width:56px;padding-top:1px;}
+.zone-content{font-size:.82rem;color:var(--c-text);line-height:1.7;}
+.zone-content strong{font-weight:700;}
+
+/* ── Prompt 框 ── */
+.prompt-wrap{margin:32px 0;}
+.prompt-label{font-size:.7rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.prompt-dot{width:6px;height:6px;border-radius:50%;background:var(--c-a3);}
+.prompt-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.85;padding:24px 28px;border-radius:var(--radius);white-space:pre-wrap;word-break:break-word;border:1px solid rgba(90,122,90,.3);}
+.ph{color:var(--c-a2);}
+.pg{color:#8ab48a;}
+.pb{color:#7a9ea3;}
+.pc{color:#6b6a68;}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(201,150,58,.07);border:1px solid rgba(201,150,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 時區展示 ── */
+.tz-demo{margin:28px 0;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;}
+.tz-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:14px 20px;font-size:.72rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;}
+.tz-body{padding:20px;display:flex;flex-direction:column;gap:10px;}
+.tz-row{display:grid;grid-template-columns:140px 1fr auto;align-items:center;gap:16px;padding:12px 16px;border-radius:var(--radius-sm);background:var(--c-surface);}
+.tz-row.highlight{background:rgba(201,150,58,.08);border:1px solid rgba(201,150,58,.2);}
+.tz-city{font-size:.83rem;font-weight:500;color:var(--c-text);}
+.tz-offset{font-size:.72rem;color:var(--c-muted);}
+.tz-time{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:var(--c-text);}
+.tz-row.highlight .tz-time{color:var(--c-a2);}
+.tz-badge{font-size:.65rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.1);padding:1px 8px;border-radius:99px;font-weight:500;}
+
+/* ── 描述複雜邏輯指引 ── */
+.guide-list{display:flex;flex-direction:column;gap:16px;margin:24px 0;}
+.guide-item{display:flex;gap:16px;align-items:flex-start;padding:18px 20px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);}
+.guide-num{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:var(--c-a2);flex-shrink:0;width:28px;line-height:1;}
+.guide-body{}
+.guide-title{font-size:.88rem;font-weight:700;color:var(--c-text);margin-bottom:4px;}
+.guide-desc{font-size:.82rem;color:var(--c-muted);line-height:1.7;}
+
+/* ── 動態進場系統 ── */
+@keyframes fadeUp {
+  from{opacity:0;transform:translateY(14px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.lesson-hero .back-link      {animation:fadeUp .4s ease both;}
+.lesson-hero .hero-meta      {animation:fadeUp .45s .08s ease both;}
+.lesson-hero .lesson-title   {animation:fadeUp .55s .15s ease both;}
+.lesson-hero .lesson-tagline {animation:fadeUp .5s .26s ease both;}
+.lesson-hero .outcomes       {animation:fadeUp .45s .36s ease both;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+.section-rule{transform-origin:left center;opacity:0;transition:opacity .4s ease,transform .6s cubic-bezier(.16,1,.3,1);transform:scaleX(.3);}
+.section-rule.in{opacity:1;transform:scaleX(1);}
+.section-dots{position:fixed;left:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40;opacity:0;transition:opacity .4s ease;}
+.section-dots.visible{opacity:1;}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--c-border);cursor:pointer;transition:background .3s ease,transform .3s ease;border:none;padding:0;}
+.sdot.active{background:var(--c-a2);transform:scale(1.5);}
+@media(max-width:1100px){.section-dots{display:none;}}
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a2);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">CH2-2</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="section-dots" id="sectionDots" aria-label="章節導航"></nav>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 返回課程目錄</a>
+  <div class="hero-meta">
+    <span class="hero-part">PART 2 · 打造你的商務軍火庫</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">2.2</span>
+  </div>
+  <h1 class="lesson-title">邏輯轉換工具：<br>排班自動生成器<br>與跨時區會議協調板</h1>
+  <p class="lesson-tagline">這類工具比計算機更複雜——你不只是讓 AI 算數字，而是讓它理解規則、套用條件、然後輸出你要的結果。學會描述「複雜邏輯」，是讓 AI 工具真正強大的關鍵。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">學完這節，你會有</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>「排班自動生成器」完整 Prompt，可依據規則生成排班表</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>「跨時區會議協調板」完整 Prompt，一眼看清各地時間</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>描述複雜邏輯給 AI 的五個實用技巧</div>
+  </div>
+</section>
+
+<main class="lesson-body">
+
+  <!-- S1 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 01</div>
+    <h2 class="section-heading">比計算更複雜：<em>輸入規則，輸出結果</em></h2>
+    <p class="body-text">上一節的計算工具，邏輯相對直覺：輸入數字，套公式，顯示結果。但很多辦公室的痛點，問題本身就更複雜——它不是「計算」，而是「根據一堆條件，自動產出一個符合規則的結果」。</p>
+    <p class="body-text">排班就是最典型的例子：你有 6 個員工、3 種班次、每人每週不能超過 5 班、週六必須有 2 人……這不是算術，這是邏輯判斷。手動排很花時間，用 Excel 函數幾乎不可能做到，但告訴 AI 這些規則，它可以幫你寫出一個自動排班工具。</p>
+
+    <div class="logic-box">
+      <div class="logic-head">
+        <span>邏輯工具的核心模式</span>
+        <span class="logic-badge">INPUT → RULE → OUTPUT</span>
+      </div>
+      <div class="logic-body">
+        <div class="logic-rule">
+          <span class="rule-if">INPUT</span>
+          <span class="rule-then">使用者提供的資料：員工名單、可排班日期、班次種類、個人限制</span>
+        </div>
+        <div class="logic-rule">
+          <span class="rule-if">RULE</span>
+          <span class="rule-then">你定義的規則：每人每週最多幾班、哪幾天必須幾人、誰不能排哪個時段</span>
+        </div>
+        <div class="logic-rule">
+          <span class="rule-if">OUTPUT</span>
+          <span class="rule-then">AI 根據輸入和規則自動計算的結果：完整排班表、各人班數統計</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">✦</div>
+      <div class="callout-body">
+        <strong>關鍵差異：</strong>做這類工具時，你在 Prompt 裡不只是說「做什麼」，你還要把所有的「規則」完整列出來。規則越清楚，生成的工具越準確。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S2 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 02</div>
+    <h2 class="section-heading">工具解析：<em>排班自動生成器</em></h2>
+    <p class="body-text">排班工具的核心挑戰是「規則的完整性」——你要在 Prompt 裡把所有排班的邏輯都說清楚，AI 才能生成正確的工具。先來看一個實際辦公室場景的需求：</p>
+
+    <div class="anatomy-wrap">
+      <div class="anatomy-head">
+        <span class="anatomy-title">工具解剖 · 排班自動生成器</span>
+        <span class="anatomy-badge">功能拆解</span>
+      </div>
+      <div class="anatomy-body">
+        <div class="anatomy-zones">
+          <div class="anatomy-zone">
+            <span class="zone-label">員工設定</span>
+            <span class="zone-content">輸入員工名單（可新增 / 刪除）；每位員工可標記「特定日期不可排班」的例外</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">班次設定</span>
+            <span class="zone-content">定義班次種類：早班（08:00–16:00）、午班（12:00–20:00）、晚班（16:00–24:00）</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">規則設定</span>
+            <span class="zone-content">每人每週最多排班天數；每天各班次需要的人數；週末人力需求（可與平日不同）</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">輸出</span>
+            <span class="zone-content">表格式排班表（橫列為日期 / 縱列為員工）；各員工當週班數統計；一鍵生成 / 重新排</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S3 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 03</div>
+    <h2 class="section-heading">完整 Prompt：<em>排班自動生成器</em></h2>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label"><span class="prompt-dot"></span>排班自動生成器 · 完整 Prompt</div>
+      <div class="prompt-box">
+<span class="ph">你是一位熟悉商業應用的資深前端工程師。</span>
+
+<span class="pg">請製作一個「週排班自動生成器」網頁工具，功能需求如下：
+
+【員工設定】
+- 可新增員工姓名（預設 6 位）
+- 每位員工可勾選「本週不可排班日期」（週一至週日的多選勾選框）
+
+【班次與規則設定】
+- 三種班次：早班（08:00–16:00）、午班（12:00–20:00）、晚班（16:00–24:00）
+- 可設定每天各班次需要的人數（預設：每班次 1 人）
+- 每人每週最多排班天數（預設：5 天）
+- 週六、週日的各班次人數可單獨設定（通常比平日少）
+
+【生成邏輯】
+- 點擊「自動生成排班」按鈕後，根據以上規則隨機分配班次
+- 確保每位員工的班次不超過每週上限
+- 不在員工標記「不可排班」的日期排班
+- 若無法滿足全部需求，在排班表下方顯示哪幾個時段人力不足
+
+【排班表輸出】
+- 表格形式：橫列為週一至週日，縱列為員工姓名
+- 每個格子顯示班次名稱（或空白代表休息）
+- 表格下方顯示每位員工本週總班數
+- 提供「重新生成」和「列印排班表」按鈕</span>
+
+<span class="pb">只使用純 HTML、CSS 與原生 JavaScript，不引入任何外部套件。
+介面清晰易用，適合主管快速查看與列印。</span>
+
+<span class="ph">輸出完整可在瀏覽器直接執行的單一 HTML 檔案，不需要任何說明文字。</span></div>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ</div>
+      <div class="callout-body">
+        <strong>調整技巧：</strong>如果你的排班有更複雜的規則（例如「同一人不能連續排三天晚班」），在生成後的對話視窗繼續描述：「增加一個規則：同一位員工不能連續排超過兩天同一個班次」，AI 會更新工具的邏輯。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S4 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 04</div>
+    <h2 class="section-heading">工具解析：<em>跨時區會議協調板</em></h2>
+    <p class="body-text">遠距工作和跨國合作的團隊每週都要面對同一個問題：「台北時間下午三點，那他們那邊是幾點？週五對他們是什麼時候？」這個工具讓你一眼看清所有時區的時間。</p>
+
+    <div class="tz-demo">
+      <div class="tz-head">跨時區協調板 · 示意</div>
+      <div class="tz-body">
+        <div class="tz-row highlight">
+          <div><div class="tz-city">🇹🇼 台北</div><div class="tz-offset">UTC+8（基準）</div></div>
+          <div></div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="tz-time">15:00</span><span class="tz-badge">你的時間</span></div>
+        </div>
+        <div class="tz-row">
+          <div><div class="tz-city">🇯🇵 東京</div><div class="tz-offset">UTC+9（+1h）</div></div>
+          <div></div>
+          <span class="tz-time">16:00</span>
+        </div>
+        <div class="tz-row">
+          <div><div class="tz-city">🇸🇬 新加坡</div><div class="tz-offset">UTC+8（相同）</div></div>
+          <div></div>
+          <span class="tz-time">15:00</span>
+        </div>
+        <div class="tz-row">
+          <div><div class="tz-city">🇬🇧 倫敦</div><div class="tz-offset">UTC+0（-8h）</div></div>
+          <div></div>
+          <span class="tz-time">07:00</span>
+        </div>
+        <div class="tz-row">
+          <div><div class="tz-city">🇺🇸 紐約</div><div class="tz-offset">UTC-5（-13h）</div></div>
+          <div></div>
+          <span class="tz-time">02:00 ＋1</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="body-text">上面的示意圖展示了工具的核心功能——你選定一個時間，所有時區即時顯示對應時間。實際工具還會讓你新增 / 移除時區、標記「工作時段」（亮色），讓你一眼看出這個時間點是否適合開會。</p>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S5 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 05</div>
+    <h2 class="section-heading">完整 Prompt 與<em>描述複雜邏輯</em>的技巧</h2>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label"><span class="prompt-dot"></span>跨時區會議協調板 · 完整 Prompt</div>
+      <div class="prompt-box">
+<span class="ph">你是一位熟悉商業應用的資深前端工程師。</span>
+
+<span class="pg">請製作一個「跨時區會議協調板」網頁工具，功能需求如下：
+
+【時區設定】
+- 預設顯示 5 個時區：台北（UTC+8）、東京（UTC+9）、新加坡（UTC+8）、倫敦（UTC±0）、紐約（UTC-5）
+- 提供「新增時區」功能：下拉選單選擇時區名稱，可新增至列表
+- 每個時區列有「刪除」按鈕
+
+【時間輸入】
+- 頁面頂部提供「選擇時間」的日期和時間選擇器（datetime-local）
+- 預設為目前時間
+- 使用者可點擊「現在」按鈕快速設為目前時間
+
+【顯示方式】
+- 每個時區以一列顯示：旗幟 emoji、城市名稱、時區偏移、對應的日期與時間
+- 若對應時間在「一般工作時段」（09:00–18:00），該列背景顯示淺綠色
+- 若對應時間在深夜（00:00–07:00），顯示淺灰色並加上「深夜」標記
+- 時間選擇器任何變動即時更新所有時區的顯示
+
+【實用功能】
+- 「複製會議時間」按鈕：將目前選定的時間以各時區格式整理成文字，一鍵複製（格式如：台北 15:00 / 東京 16:00 / 倫敦 07:00）</span>
+
+<span class="pb">只使用純 HTML、CSS 與原生 JavaScript，不引入外部套件。
+所有時區換算使用 JavaScript 的 Intl.DateTimeFormat API。
+介面整潔，適合截圖分享給跨國團隊。</span>
+
+<span class="ph">輸出完整可在瀏覽器直接執行的單一 HTML 檔案，不需要任何說明文字。</span></div>
+    </div>
+
+    <p class="body-text" style="margin-top:36px;">描述這種「有複雜邏輯」的工具時，以下五個技巧能大幅提升 AI 的理解精準度：</p>
+
+    <div class="guide-list">
+      <div class="guide-item">
+        <div class="guide-num">01</div>
+        <div class="guide-body">
+          <div class="guide-title">用條件句描述規則</div>
+          <div class="guide-desc">說「若時間在 09:00–18:00，顯示綠色；若在 00:00–07:00，顯示灰色」比說「要顯示工作時段」準確十倍。明確的 if-then 語句讓 AI 不需要猜測你的意思。</div>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-num">02</div>
+        <div class="guide-body">
+          <div class="guide-title">舉一個具體的例子</div>
+          <div class="guide-desc">在描述邏輯後，加上「例如：台北選下午 3 點，東京應該顯示下午 4 點」——給 AI 一個驗證邏輯用的例子，能有效防止錯誤。</div>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-num">03</div>
+        <div class="guide-body">
+          <div class="guide-title">說明「無法達成時怎麼辦」</div>
+          <div class="guide-desc">排班工具加上「若無法滿足全部人力需求，顯示哪些時段人力不足」——邊界情況的處理方式，決定了工具在真實使用時的穩定性。</div>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-num">04</div>
+        <div class="guide-body">
+          <div class="guide-title">分段落、用標題</div>
+          <div class="guide-desc">把 Prompt 分成【輸入區】【規則設定】【輸出格式】等段落，讓 AI 逐段理解你的需求，不容易漏掉任何一個功能點。</div>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-num">05</div>
+        <div class="guide-body">
+          <div class="guide-title">說明預設值</div>
+          <div class="guide-desc">「預設顯示 5 個時區」「預設每人每週最多 5 班」——說明預設值讓工具一打開就能用，使用者不需要從零設定。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a class="nav-btn prev" href="CH2-1.html">
+    <span>←</span>
+    <div>
+      <div class="nav-btn-label">上一節</div>
+      <div class="nav-btn-title">2.1 自動化計算工具</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="CH2-3.html">
+    <div>
+      <div class="nav-btn-label">下一節</div>
+      <div class="nav-btn-title">2.3 UI/UX 美學升級</div>
+    </div>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Part 2 · 2 of 3</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollHeight - d.clientHeight > 0 ? (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.1, rootMargin:'0px 0px -48px 0px'});
+  document.querySelectorAll('.lesson-section, .section-rule').forEach(el => { el.classList.add('reveal'); io.observe(el); });
+})();
+(function(){
+  const sections = Array.from(document.querySelectorAll('.lesson-section'));
+  const nav = document.getElementById('sectionDots');
+  if(!sections.length||!nav) return;
+  sections.forEach((sec,i) => {
+    const btn = document.createElement('button');
+    btn.className='sdot';
+    btn.title = sec.querySelector('.section-heading')?.textContent?.trim().slice(0,20)||('第'+(i+1)+'節');
+    btn.addEventListener('click',()=>sec.scrollIntoView({behavior:'smooth',block:'start'}));
+    nav.appendChild(btn);
+  });
+  const dotIo = new IntersectionObserver(entries => {
+    entries.forEach(e => { const i=sections.indexOf(e.target); if(i>=0) nav.children[i]?.classList.toggle('active',e.isIntersecting); });
+    nav.classList.toggle('visible', Array.from(nav.children).some(d=>d.classList.contains('active')));
+  },{threshold:.3});
+  sections.forEach(s=>dotIo.observe(s));
+
+  // 即時時鐘示意
+  function updateTzDemo() {
+    const now = new Date();
+    const rows = document.querySelectorAll('.tz-row .tz-time');
+    const offsets = [8, 9, 8, 0, -5];
+    rows.forEach((el, i) => {
+      const d = new Date(now.getTime() + (offsets[i] - 8) * 3600000);
+      const h = String(d.getUTCHours()).padStart(2,'0');
+      const m = String(d.getUTCMinutes()).padStart(2,'0');
+      el.textContent = h + ':' + m;
+    });
+  }
+  updateTzDemo();
+  setInterval(updateTzDemo, 30000);
+})();
+</script>
+</body>
+</html>

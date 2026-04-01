@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemini 零代碼 AI 實戰課｜弄一下工作室</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:      #f5f3ee;
+  --c-surface: #edeae3;
+  --c-card:    #ffffff;
+  --c-border:  #d8d4cb;
+  --c-text:    #2c2b28;
+  --c-muted:   #8c8880;
+  --c-a1:      #b5703a;
+  --c-a2:      #c9963a;
+  --c-a3:      #5a7a5a;
+  --c-a4:      #6b7fa3;
+  --c-a5:      #7a9ea3;
+  --radius:    6px;
+  --radius-sm: 4px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);min-height:100vh;}
+
+/* ── 頂部列 ── */
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a1);border:1px solid rgba(181,112,58,.3);background:rgba(181,112,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+/* ── 主視覺 ── */
+.hero{padding:72px 48px 48px;max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--c-muted);text-decoration:none;margin-bottom:4px;}
+.back-link:hover{color:var(--c-a1);}
+.hero-eyebrow{font-size:.75rem;color:var(--c-a1);letter-spacing:2px;text-transform:uppercase;font-weight:500;}
+.hero-title{font-family:'Shippori Mincho',serif;font-size:2.4rem;font-weight:700;line-height:1.25;color:var(--c-text);}
+.hero-desc{font-size:.92rem;color:var(--c-muted);line-height:1.85;max-width:500px;}
+.hero-divider{width:40px;height:1px;background:var(--c-a1);margin-top:4px;}
+.hero-stats{display:flex;gap:32px;margin-top:4px;}
+.stat{display:flex;flex-direction:column;gap:3px;}
+.stat-num{font-family:'Shippori Mincho',serif;font-size:1.5rem;font-weight:700;color:var(--c-text);}
+.stat-lbl{font-size:.73rem;color:var(--c-muted);}
+
+/* ── 進度列 ── */
+.section{max-width:960px;margin:0 auto;padding:0 48px 64px;}
+.progress-bar-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:18px 24px;margin-bottom:36px;display:flex;align-items:center;gap:20px;}
+.prog-label{font-size:.82rem;color:var(--c-muted);white-space:nowrap;}
+.prog-track{flex:1;height:5px;background:var(--c-surface);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--c-a1);border-radius:99px;width:0%;transition:width .6s ease;}
+.prog-pct{font-size:.82rem;font-weight:500;color:var(--c-a1);white-space:nowrap;}
+
+/* ── 章節群組 ── */
+.part-head{display:flex;align-items:baseline;gap:14px;margin-bottom:16px;}
+.part-label{font-size:.7rem;color:var(--c-a1);font-weight:500;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+.part-title{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--c-text);}
+.part-line{flex:1;height:1px;background:var(--c-border);}
+.part-count{font-size:.75rem;color:var(--c-muted);}
+
+/* ── 課程列表（縱向） ── */
+.lesson-list{display:flex;flex-direction:column;gap:10px;margin-bottom:40px;}
+.lesson-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);display:flex;align-items:center;gap:0;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s;overflow:hidden;}
+.lesson-card:hover{transform:translateX(4px);box-shadow:0 4px 16px rgba(0,0,0,.06);}
+.lesson-card.locked{opacity:.5;cursor:not-allowed;}
+.lesson-card.locked:hover{transform:none;box-shadow:none;}
+.lesson-band{width:4px;align-self:stretch;flex-shrink:0;}
+.band-1{background:var(--c-a1);}
+.band-2{background:var(--c-a2);}
+.band-3{background:var(--c-a3);}
+.band-4{background:var(--c-a4);}
+.lesson-body{padding:16px 20px;flex:1;display:flex;align-items:center;gap:16px;}
+.lesson-num{font-size:.7rem;color:var(--c-muted);white-space:nowrap;letter-spacing:.5px;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:.98rem;font-weight:700;flex:1;line-height:1.4;}
+.lesson-status{font-size:.68rem;padding:2px 10px;border-radius:99px;font-weight:500;white-space:nowrap;}
+.status-available{background:rgba(181,112,58,.1);border:1px solid rgba(181,112,58,.25);color:var(--c-a1);}
+.status-lock{background:var(--c-surface);border:1px solid var(--c-border);color:var(--c-muted);}
+.lesson-arrow{font-size:.8rem;color:var(--c-a1);font-weight:500;padding:0 20px;opacity:0;transition:opacity .15s,transform .15s;}
+.lesson-card:hover .lesson-arrow{opacity:1;transform:translateX(3px);}
+
+/* ── 實例演練區塊 ── */
+.prac-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;margin-top:-4px;}
+.prac-label{font-size:.68rem;color:var(--c-a4);font-weight:500;letter-spacing:1px;white-space:nowrap;}
+.prac-line{flex:1;height:1px;background:rgba(107,127,163,.2);border-style:dashed;}
+.prac-list{display:flex;flex-direction:column;gap:8px;margin-bottom:40px;}
+.prac-card{background:rgba(107,127,163,.04);border:1px solid rgba(107,127,163,.18);border-radius:var(--radius);display:flex;align-items:center;gap:0;text-decoration:none;color:inherit;transition:transform .15s,border-color .15s;overflow:hidden;}
+.prac-card:hover{transform:translateX(4px);border-color:rgba(107,127,163,.4);}
+.prac-band{width:3px;align-self:stretch;flex-shrink:0;background:var(--c-a4);opacity:.5;}
+.prac-body{padding:13px 18px;flex:1;display:flex;align-items:center;gap:14px;}
+.prac-num{font-size:.68rem;color:var(--c-a4);white-space:nowrap;letter-spacing:.5px;}
+.prac-title{font-size:.9rem;font-weight:500;flex:1;line-height:1.4;color:var(--c-text);}
+.prac-badge{font-size:.65rem;padding:2px 9px;border-radius:99px;background:rgba(107,127,163,.1);border:1px solid rgba(107,127,163,.2);color:var(--c-a4);white-space:nowrap;}
+.prac-arrow{font-size:.78rem;color:var(--c-a4);padding:0 18px;opacity:0;transition:opacity .15s,transform .15s;}
+.prac-card:hover .prac-arrow{opacity:1;transform:translateX(3px);}
+
+/* ── 頁尾 ── */
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+
+/* ── 通知 ── */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
+.toast.show{transform:none;opacity:1;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課：打造你的專屬高效辦公神器</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">職業技能</div>
+</header>
+
+<section class="hero">
+  <a class="back-link" href="../index.html">← 所有課程</a>
+  <div class="hero-eyebrow">Course · AI Tools</div>
+  <h1 class="hero-title">Gemini 零代碼 AI 實戰課：打造你的專屬高效辦公神器</h1>
+  <p class="hero-desc">不需要寫程式，只需要你的邏輯。學會與 AI 溝通，從文字直接生出能解決工作痛點的網頁應用。</p>
+  <div class="hero-divider"></div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">4</div>
+      <div class="stat-lbl">學習部分</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">12</div>
+      <div class="stat-lbl">單元</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">3h+</div>
+      <div class="stat-lbl">課程時數</div>
+    </div>
+  </div>
+</section>
+
+<main class="section">
+
+  <div class="progress-bar-wrap">
+    <div class="prog-label">整體進度</div>
+    <div class="prog-track"><div class="prog-fill"></div></div>
+    <div class="prog-pct">0 / 12</div>
+  </div>
+
+  <!-- Part 1 -->
+  <div class="part-head">
+    <div class="part-label">Part 1</div>
+    <div class="part-title">解鎖 AI 開發者模式</div>
+    <div class="part-line"></div>
+    <div class="part-count">0 / 3</div>
+  </div>
+  <div class="lesson-list">
+    <a class="lesson-card" href="Part1-解鎖AI開發者模式/CH1-1.html">
+      <div class="lesson-band band-1"></div>
+      <div class="lesson-body">
+        <div class="lesson-num">1.1</div>
+        <div class="lesson-title">顛覆認知：Gemini 不只是聊天機器人，而是你的「軟體架構師」</div>
+        <div class="lesson-status status-available">可學習</div>
+      </div>
+      <div class="lesson-arrow">→</div>
+    </a>
+    <a class="lesson-card" href="Part1-解鎖AI開發者模式/CH1-2.html">
+      <div class="lesson-band band-1"></div>
+      <div class="lesson-body">
+        <div class="lesson-num">1.2</div>
+        <div class="lesson-title">溝通心法：角色＋任務＋限制＋呈現，精準控制 AI 生成結果</div>
+        <div class="lesson-status status-available">可學習</div>
+      </div>
+      <div class="lesson-arrow">→</div>
+    </a>
+    <a class="lesson-card" href="Part1-解鎖AI開發者模式/CH1-3.html">
+      <div class="lesson-band band-1"></div>
+      <div class="lesson-body">
+        <div class="lesson-num">1.3</div>
+        <div class="lesson-title">暖身實作：30 秒生成一個「會議倒數計時器」</div>
+        <div class="lesson-status status-available">可學習</div>
+      </div>
+      <div class="lesson-arrow">→</div>
+    </a>
+  </div>
+
+  <div class="prac-head">
+    <div class="prac-label">PRACTICE · 實例演練</div>
+    <div class="prac-line"></div>
+  </div>
+  <div class="prac-list">
+    <a class="prac-card" href="Part1-解鎖AI開發者模式/PRAC1-1.html">
+      <div class="prac-band"></div>
+      <div class="prac-body"><div class="prac-num">演練 1</div><div class="prac-title">Prompt 黃金公式組合台</div><div class="prac-badge">互動工具</div></div>
+      <div class="prac-arrow">→</div>
+    </a>
+    <a class="prac-card" href="Part1-解鎖AI開發者模式/PRAC1-2.html">
+      <div class="prac-band"></div>
+      <div class="prac-body"><div class="prac-num">演練 2</div><div class="prac-title">AI 指令品質健診器</div><div class="prac-badge">評分工具</div></div>
+      <div class="prac-arrow">→</div>
+    </a>
+    <a class="prac-card" href="Part1-解鎖AI開發者模式/PRAC1-3.html">
+      <div class="prac-band"></div>
+      <div class="prac-body"><div class="prac-num">演練 3</div><div class="prac-title">會議情境指令模板產生器</div><div class="prac-badge">生成工具</div></div>
+      <div class="prac-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- Part 2 -->
+  <div class="part-head">
+    <div class="part-label">Part 2</div>
+    <div class="part-title">打造你的商務軍火庫</div>
+    <div class="part-line"></div>
+    <div class="part-count">0 / 3</div>
+  </div>
+  <div class="lesson-list">
+    <a class="lesson-card" href="Part2-商務軍火庫/CH2-1.html">
+      <div class="lesson-band band-2"></div>
+      <div class="lesson-body">
+        <div class="lesson-num">2.1</div>
+        <div class="lesson-title">自動化計算工具：製作多層次報價計算機或薪資試算神器</div>
+        <div class="lesson-status status-available">可學習</div>
+      </div>
+      <div class="lesson-arrow">→</div>
+    </a>
+    <a class="lesson-card" href="Part2-商務軍火庫/CH2-2.html">
+      <div class="lesson-band band-2"></div>
+      <div class="lesson-body">
+        <div class="lesson-num">2.2</div>
+        <div class="lesson-title">邏輯轉換工具：製作排班自動生成器或跨時區會議協調板</div>
+        <div class="lesson-status status-available">可學習</div>
+      </div>
+      <div class="lesson-arrow">→</div>
+    </a>
+    <a class="lesson-card" href="Part2-商務軍火庫/CH2-3.html">
+      <div class="lesson-band band-2"></div>
+      <div class="lesson-body">
+        <div class="lesson-num">2.3</div>
+        <div class="lesson-title">UI/UX 美學升級：一句話套用現代化介面風格</div>
+        <div class="lesson-status status-available">可學習</div>
+      </div>
+      <div class="lesson-arrow">→</div>
+    </a>
+  </div>
+
+  <div class="prac-head">
+    <div class="prac-label">PRACTICE · 實例演練</div>
+    <div class="prac-line"></div>
+  </div>
+  <div class="prac-list">
+    <a class="prac-card" href="Part2-商務軍火庫/PRAC2-1.html">
+      <div class="prac-band"></div>
+      <div class="prac-body"><div class="prac-num">演練 4</div><div class="prac-title">專案工時費用試算機</div><div class="prac-badge">計算工具</div></div>
+      <div class="prac-arrow">→</div>
+    </a>
+    <a class="prac-card" href="Part2-商務軍火庫/PRAC2-2.html">
+      <div class="prac-band"></div>
+      <div class="prac-body"><div class="prac-num">演練 5</div><div class="prac-title">跨時區會議時段協調板</div><div class="prac-badge">邏輯工具</div></div>
+      <div class="prac-arrow">→</div>
+    </a>
+    <a class="prac-card" href="Part2-商務軍火庫/PRAC2-3.html">
+      <div class="prac-band"></div>
+      <div class="prac-body"><div class="prac-num">演練 6</div><div class="prac-title">介面配色方案速查器</div><div class="prac-badge">視覺工具</div></div>
+      <div class="prac-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- Part 3 -->
+  <div class="part-head">
+    <div class="part-label">Part 3</div>
+    <div class="part-title">讓數據「動」起來的視覺魔法</div>
+    <div class="part-line"></div>
+    <div class="part-count">0 / 3</div>
+  </div>
+  <div class="lesson-list">
+    <a class="lesson-card" href="Part3-SVG互動圖表/CH3-1.html">
+      <div class="lesson-band band-3"></div>
+      <div class="lesson-body">
+        <div class="lesson-num">3.1</div>
+        <div class="lesson-title">什麼是 SVG 互動圖？為什麼你需要可縮放、可點擊的動態圖表</div>
+        <div class="lesson-status status-available">可學習</div>
+      </div>
+      <div class="lesson-arrow">→</div>
+    </a>
+    <a class="lesson-card" href="Part3-SVG互動圖表/CH3-2.html">
+      <div class="lesson-band band-3"></div>
+      <div class="lesson-body">
+        <div class="lesson-num">3.2</div>
+        <div class="lesson-title">流程視覺化：實作動態專案路徑圖</div>
+        <div class="lesson-status status-available">可學習</div>
+      </div>
+      <div class="lesson-arrow">→</div>
+    </a>
+    <a class="lesson-card" href="Part3-SVG互動圖表/CH3-3.html">
+      <div class="lesson-band band-3"></div>
+      <div class="lesson-body">
+        <div class="lesson-num">3.3</div>
+        <div class="lesson-title">數據儀表板：實作互動式銷售漏斗</div>
+        <div class="lesson-status status-available">可學習</div>
+      </div>
+      <div class="lesson-arrow">→</div>
+    </a>
+  </div>
+
+  <div class="prac-head">
+    <div class="prac-label">PRACTICE · 實例演練</div>
+    <div class="prac-line"></div>
+  </div>
+  <div class="prac-list">
+    <a class="prac-card" href="Part3-SVG互動圖表/PRAC3-1.html">
+      <div class="prac-band"></div>
+      <div class="prac-body"><div class="prac-num">演練 7</div><div class="prac-title">技能評估雷達圖</div><div class="prac-badge">SVG 圖表</div></div>
+      <div class="prac-arrow">→</div>
+    </a>
+    <a class="prac-card" href="Part3-SVG互動圖表/PRAC3-2.html">
+      <div class="prac-band"></div>
+      <div class="prac-body"><div class="prac-num">演練 8</div><div class="prac-title">專案時程甘特圖</div><div class="prac-badge">SVG 圖表</div></div>
+      <div class="prac-arrow">→</div>
+    </a>
+    <a class="prac-card" href="Part3-SVG互動圖表/PRAC3-3.html">
+      <div class="prac-band"></div>
+      <div class="prac-body"><div class="prac-num">演練 9</div><div class="prac-title">KPI 成果儀表板</div><div class="prac-badge">數據視覺化</div></div>
+      <div class="prac-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- Part 4 -->
+  <div class="part-head">
+    <div class="part-label">Part 4</div>
+    <div class="part-title">成果發表與未來工作流</div>
+    <div class="part-line"></div>
+    <div class="part-count">0 / 3</div>
+  </div>
+  <div class="lesson-list">
+    <a class="lesson-card" href="Part4-成果發表與工作流/CH4-1.html">
+      <div class="lesson-band band-4"></div>
+      <div class="lesson-body">
+        <div class="lesson-num">4.1</div>
+        <div class="lesson-title">工具部署：存下來、隨時用，本機執行無資安疑慮</div>
+        <div class="lesson-status status-available">可學習</div>
+      </div>
+      <div class="lesson-arrow">→</div>
+    </a>
+    <a class="lesson-card" href="Part4-成果發表與工作流/CH4-2.html">
+      <div class="lesson-band band-4"></div>
+      <div class="lesson-body">
+        <div class="lesson-num">4.2</div>
+        <div class="lesson-title">建立專屬 Prompt 庫：整理你的指令集，打造數位資產</div>
+        <div class="lesson-status status-available">可學習</div>
+      </div>
+      <div class="lesson-arrow">→</div>
+    </a>
+    <a class="lesson-card" href="Part4-成果發表與工作流/CH4-3.html">
+      <div class="lesson-band band-4"></div>
+      <div class="lesson-body">
+        <div class="lesson-num">4.3</div>
+        <div class="lesson-title">極速黑客松：20 分鐘從無到有，產出解決痛點的 App</div>
+        <div class="lesson-status status-available">可學習</div>
+      </div>
+      <div class="lesson-arrow">→</div>
+    </a>
+  </div>
+
+  <div class="prac-head">
+    <div class="prac-label">PRACTICE · 實例演練</div>
+    <div class="prac-line"></div>
+  </div>
+  <div class="prac-list">
+    <a class="prac-card" href="Part4-成果發表與工作流/PRAC4-1.html">
+      <div class="prac-band"></div>
+      <div class="prac-body"><div class="prac-num">演練 10</div><div class="prac-title">工具上線前部署清單</div><div class="prac-badge">流程工具</div></div>
+      <div class="prac-arrow">→</div>
+    </a>
+    <a class="prac-card" href="Part4-成果發表與工作流/PRAC4-2.html">
+      <div class="prac-band"></div>
+      <div class="prac-body"><div class="prac-num">演練 11</div><div class="prac-title">個人 Prompt 庫管理器</div><div class="prac-badge">資料管理</div></div>
+      <div class="prac-arrow">→</div>
+    </a>
+    <a class="prac-card" href="Part4-成果發表與工作流/PRAC4-3.html">
+      <div class="prac-band"></div>
+      <div class="prac-body"><div class="prac-num">演練 12</div><div class="prac-title">20 分鐘黑客松挑戰台</div><div class="prac-badge">最終挑戰</div></div>
+      <div class="prac-arrow">→</div>
+    </a>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">持續更新中 · 每個單元都值得慢慢學</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+document.querySelectorAll('.lesson-card.locked').forEach(card=>{
+  card.addEventListener('click',e=>{e.preventDefault();showToast('此單元尚未開放');});
+});
+</script>
+</body>
+</html>

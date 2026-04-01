@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVG互動圖表 · 實例演練 2｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a3);border:1px solid rgba(90,122,90,.3);background:rgba(90,122,90,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a3);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a3);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a3);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a3);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a3);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a3);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.tool-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:32px 0;}
+.tool-topbar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.tool-dot{width:10px;height:10px;border-radius:50%;}
+.tool-dot-r{background:#ff6058;} .tool-dot-y{background:#ffbd2e;} .tool-dot-g{background:#28c840;}
+.tool-label{flex:1;font-size:.72rem;color:var(--c-muted);font-family:'Courier New',monospace;}
+.tool-body{padding:32px 36px;}
+.copy-btn{font-size:.72rem;color:var(--c-a3);background:none;border:1px solid rgba(90,122,90,.3);padding:3px 12px;border-radius:99px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.copy-btn:hover{background:rgba(90,122,90,.08);}
+
+/* ── 甘特圖工具 ── */
+.gantt-header{display:grid;grid-template-columns:140px 90px 60px auto;gap:8px;padding:0 0 8px;border-bottom:1px solid var(--c-border);font-size:.72rem;color:var(--c-muted);letter-spacing:.5px;font-weight:500;}
+.gantt-rows-wrap{display:flex;flex-direction:column;gap:8px;margin:10px 0;}
+.gantt-row{display:grid;grid-template-columns:140px 90px 60px auto;gap:8px;align-items:center;}
+.gantt-input{padding:8px 10px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.82rem;color:var(--c-text);background:var(--c-bg);width:100%;}
+.gantt-input:focus{outline:none;border-color:var(--c-a3);}
+.gantt-input[type=date]{font-size:.78rem;}
+.gantt-input[type=number]{text-align:right;}
+.gantt-remove{width:28px;height:28px;border:none;background:none;color:var(--c-muted);cursor:pointer;font-size:1rem;flex-shrink:0;}
+.gantt-remove:hover{color:var(--c-text);}
+.gantt-add-btn{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--c-muted);background:none;border:1px dashed var(--c-border);padding:8px 16px;border-radius:var(--radius-sm);cursor:pointer;font-family:'Noto Sans TC',sans-serif;margin-top:4px;}
+.gantt-add-btn:hover{border-color:var(--c-a3);color:var(--c-a3);}
+.gantt-gen-btn{width:100%;margin-top:14px;padding:12px;background:var(--c-a3);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.87rem;font-weight:500;cursor:pointer;}
+.gantt-gen-btn:hover{opacity:.88;}
+.gantt-chart-wrap{display:none;margin-top:20px;overflow-x:auto;}
+.gantt-chart-wrap svg{display:block;}
+
+.steps-list{display:flex;flex-direction:column;gap:0;margin:32px 0;}
+.step-item{display:flex;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:20px;top:44px;bottom:0;width:1px;background:var(--c-border);}
+.step-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px;padding-top:4px;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--c-card);border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-text);}
+.step-body{flex:1;padding:4px 0 32px 24px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+.step-desc strong{color:var(--c-text);font-weight:700;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+.result-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.82rem;line-height:1.85;padding:22px 24px;border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;}
+.challenge-box{padding:28px 32px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);margin:28px 0;}
+.challenge-label{font-size:.7rem;color:var(--c-a3);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.challenge-list{display:flex;flex-direction:column;gap:12px;}
+.challenge-item{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;line-height:1.7;}
+.ci-num{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-a3);flex-shrink:0;width:20px;}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a3);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">實例演練</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回課程目錄</a>
+  <div class="hero-meta">
+    <div class="hero-part">PART 3 · SVG 互動圖表</div>
+    <div class="hero-divider-v"></div>
+    <div class="hero-num">實例演練 2</div>
+  </div>
+  <h1 class="lesson-title">專案時程甘特圖</h1>
+  <p class="lesson-tagline">輸入任務名稱、開始日期、天數，工具自動生成 SVG 甘特圖，幫你視覺化整個專案的時間軸安排，一眼看清哪些任務重疊、哪段是關鍵路徑。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">PRACTICE GOALS</div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>理解甘特圖是如何將日期轉換為 SVG 座標的</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>練習「時間軸」類工具的輸入邏輯與視覺設計</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>用你現在的實際專案試做一張甘特圖</span></div>
+  </div>
+</div>
+
+<div class="lesson-body">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">TOOL · 互動工具</div>
+    <h2 class="section-heading">填入任務資訊，自動生成時程甘特圖</h2>
+    <p class="body-text">輸入各任務的名稱、開始日期（YYYY-MM-DD）和持續天數，點擊「生成甘特圖」後，工具會自動計算時間軸範圍並繪製 SVG 圖表。</p>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">gantt-chart-generator.html</div>
+      </div>
+      <div class="tool-body">
+        <div class="gantt-header"><div>任務名稱</div><div>開始日期</div><div>天數</div><div></div></div>
+        <div class="gantt-rows-wrap" id="gantt-rows"></div>
+        <button class="gantt-add-btn" onclick="addGanttRow()">＋ 新增任務</button>
+        <button class="gantt-gen-btn" onclick="renderGantt()">生成甘特圖 →</button>
+        <div class="gantt-chart-wrap" id="gantt-chart-wrap">
+          <svg id="gantt-svg"></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>甘特圖的核心數學：</strong>「任務在時間軸上的 X 位置 = (任務開始日 − 整體最早日) / 總天數 × 圖表寬度」。這個日期到像素的轉換邏輯，就是 SVG 圖表的基本公式，換個場景也完全適用。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">HOW TO REPLICATE · 如何自己做出這個工具</div>
+    <h2 class="section-heading">讓 Gemini 幫你做一個甘特圖工具</h2>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">先用紙筆畫出你想要的甘特圖樣式</div>
+          <div class="step-desc">想清楚你的甘特圖需要哪些資訊：只有時間條？還是要有里程碑、進度百分比、負責人？確定後再告訴 Gemini。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">複製以下指令貼入 Gemini Canvas</div>
+          <div class="step-desc">注意指令中「<strong>自動計算時間軸範圍</strong>」的描述——這告訴 Gemini 要根據輸入的日期動態調整比例，不是寫死範圍。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">用你的真實專案資料測試</div>
+          <div class="step-desc">把你現在進行中的專案任務輸入進去，確認圖表正確顯示任務重疊情況，再存檔。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">→ 複製這段 Prompt 貼入 Gemini</div>
+        <button class="copy-btn" style="margin-left:auto;" onclick="copyInstructions()">複製指令</button>
+      </div>
+      <div class="tool-body" style="padding:24px 28px;">
+        <div class="result-box" id="instruction-box">你是一位擅長製作 SVG 數據視覺化工具的前端工程師。
+
+請製作一個「專案時程甘特圖產生器」的單頁 HTML 工具，功能如下：
+
+【功能需求】
+- 使用者可輸入多筆任務資料（支援動態新增和刪除），每筆包含：
+  · 任務名稱（文字輸入）
+  · 開始日期（date picker，格式 YYYY-MM-DD）
+  · 持續天數（數字輸入）
+- 「生成甘特圖」按鈕，按下後用 JavaScript 計算並渲染 SVG 甘特圖
+- SVG 甘特圖包含：
+  · 自動計算所有任務的最早開始日與最晚結束日，以此為時間軸範圍
+  · 水平時間軸，標示日期刻度（每 7 天一個標記）
+  · 每個任務佔一列，左側顯示任務名稱，右側顯示時間條
+  · 時間條的顏色使用 #5a7a5a 系列（可依任務序號略作深淺變化）
+  · 「今天」的位置用垂直虛線標示
+  · 滑鼠 hover 時顯示任務的詳細資訊（名稱、日期、天數）
+
+【設計要求】
+- 無印良品風格：背景 #f5f3ee，卡片 #ffffff，邊框 #d8d4cb
+- 甘特條使用 #5a7a5a 主色，透明度漸層處理
+- 字體：Shippori Mincho + Noto Sans TC（Google Fonts）
+- 圓角 6px，無陰影，無漸層（甘特條可有 4px 圓角）
+
+請生成完整的單一 HTML 檔案。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">CHALLENGE · 進階挑戰</div>
+    <h2 class="section-heading">把甘特圖升級為真正的專案管理工具</h2>
+    <div class="challenge-box">
+      <div class="challenge-label">PRACTICE VARIATIONS</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="ci-num">01</div>
+          <div>加入「進度百分比」欄位，在甘特條內部顯示完成進度（例如 70% 的甘特條填色，剩下 30% 留空），讓圖表反映實際進度。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">02</div>
+          <div>加入「負責人」欄位，用不同顏色區分不同人負責的任務，方便在同一張圖上看到工作量分配是否均衡。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">03</div>
+          <div>把甘特圖工具整合到你工作中的實際專案，用它向主管或客戶說明時程安排，記錄使用後的回饋。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn" href="PRAC3-1.html">
+    <div>
+      <div class="nav-btn-label">← 上一個演練</div>
+      <div class="nav-btn-title">實例演練 1：技能評估雷達圖</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="PRAC3-3.html">
+    <div>
+      <div class="nav-btn-label">下一個演練 →</div>
+      <div class="nav-btn-title">實例演練 3：KPI 成果儀表板</div>
+    </div>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Gemini 零代碼 AI 實戰課 · Part 3 實例演練</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('prog').style.width = (window.scrollY / total * 100) + '%';
+});
+
+let gId = 0;
+function addGanttRow(name = '', start = '', days = '') {
+  gId++;
+  const id = gId;
+  const today = new Date().toISOString().slice(0,10);
+  const div = document.createElement('div');
+  div.className = 'gantt-row';
+  div.id = 'grow-' + id;
+  div.innerHTML = `
+    <input class="gantt-input" type="text" placeholder="任務名稱" value="${name}" id="gname-${id}">
+    <input class="gantt-input" type="date" value="${start || today}" id="gstart-${id}">
+    <input class="gantt-input" type="number" min="1" value="${days || 7}" id="gdays-${id}">
+    <button class="gantt-remove" onclick="removeGanttRow(${id})">×</button>`;
+  document.getElementById('gantt-rows').appendChild(div);
+}
+function removeGanttRow(id) {
+  document.getElementById('grow-' + id)?.remove();
+}
+
+function renderGantt() {
+  const rows = document.querySelectorAll('[id^="grow-"]');
+  const tasks = [];
+  rows.forEach(row => {
+    const id = row.id.replace('grow-', '');
+    const name = document.getElementById('gname-' + id)?.value.trim() || '任務';
+    const start = document.getElementById('gstart-' + id)?.value;
+    const days = parseInt(document.getElementById('gdays-' + id)?.value) || 7;
+    if (start) tasks.push({ name, start: new Date(start), days });
+  });
+  if (tasks.length === 0) { alert('請至少輸入一個任務。'); return; }
+
+  const minDate = new Date(Math.min(...tasks.map(t => t.start)));
+  const maxDate = new Date(Math.max(...tasks.map(t => new Date(t.start.getTime() + t.days * 86400000))));
+  const totalDays = Math.ceil((maxDate - minDate) / 86400000) + 2;
+
+  const rowH = 36, labelW = 130, chartW = 520, padTop = 36, padBot = 16;
+  const svgH = padTop + tasks.length * rowH + padBot;
+  const svgW = labelW + chartW;
+  const today = new Date();
+
+  const colors = ['#5a7a5a','#6b8f6b','#4e6b4e','#7a9e7a','#527052'];
+
+  let html = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${svgW} ${svgH}" width="${svgW}" height="${svgH}" font-family="Noto Sans TC,sans-serif">`;
+  html += `<rect width="${svgW}" height="${svgH}" fill="#ffffff"/>`;
+
+  // 日期刻度
+  for (let d = 0; d <= totalDays; d += 7) {
+    const x = labelW + (d / totalDays) * chartW;
+    const dt = new Date(minDate.getTime() + d * 86400000);
+    const label = `${dt.getMonth()+1}/${dt.getDate()}`;
+    html += `<line x1="${x.toFixed(0)}" y1="${padTop-8}" x2="${x.toFixed(0)}" y2="${svgH - padBot}" stroke="#d8d4cb" stroke-width="1"/>`;
+    html += `<text x="${x.toFixed(0)}" y="${padTop-12}" text-anchor="middle" font-size="10" fill="#8c8880">${label}</text>`;
+  }
+
+  // 任務列
+  tasks.forEach((t, i) => {
+    const y = padTop + i * rowH;
+    const startDay = (t.start - minDate) / 86400000;
+    const barX = labelW + (startDay / totalDays) * chartW;
+    const barW = Math.max(4, (t.days / totalDays) * chartW);
+    const color = colors[i % colors.length];
+
+    html += `<rect x="0" y="${y}" width="${svgW}" height="${rowH}" fill="${i%2===0 ? '#f9f8f5' : '#ffffff'}"/>`;
+    html += `<text x="${labelW - 8}" y="${y + rowH/2 + 1}" text-anchor="end" dominant-baseline="middle" font-size="11" fill="#2c2b28">${t.name}</text>`;
+    html += `<rect x="${barX.toFixed(1)}" y="${y + 8}" width="${barW.toFixed(1)}" height="${rowH - 16}" fill="${color}" rx="3" opacity=".85"/>`;
+    html += `<text x="${(barX + barW/2).toFixed(1)}" y="${y + rowH/2 + 1}" text-anchor="middle" dominant-baseline="middle" font-size="9" fill="#ffffff" font-weight="700">${t.days}天</text>`;
+  });
+
+  // 今天線
+  const todayDay = (today - minDate) / 86400000;
+  if (todayDay >= 0 && todayDay <= totalDays) {
+    const todayX = labelW + (todayDay / totalDays) * chartW;
+    html += `<line x1="${todayX.toFixed(0)}" y1="${padTop-8}" x2="${todayX.toFixed(0)}" y2="${svgH - padBot}" stroke="#b5703a" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    html += `<text x="${todayX.toFixed(0)}" y="${svgH - 2}" text-anchor="middle" font-size="9" fill="#b5703a" font-weight="700">今天</text>`;
+  }
+
+  html += `</svg>`;
+  document.getElementById('gantt-svg').outerHTML = html;
+  document.getElementById('gantt-chart-wrap').style.display = 'block';
+  document.getElementById('gantt-chart-wrap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copyInstructions() {
+  const text = document.getElementById('instruction-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製指令', 1800);
+  });
+}
+
+// 預設資料
+const base = new Date();
+const fmt = d => d.toISOString().slice(0,10);
+addGanttRow('需求分析與規劃', fmt(new Date(base.getTime() - 7*86400000)), 7);
+addGanttRow('設計稿製作', fmt(new Date(base.getTime() - 2*86400000)), 10);
+addGanttRow('前端開發', fmt(new Date(base.getTime() + 5*86400000)), 14);
+addGanttRow('測試與修正', fmt(new Date(base.getTime() + 16*86400000)), 7);
+addGanttRow('上線發布', fmt(new Date(base.getTime() + 22*86400000)), 3);
+</script>
+</body>
+</html>

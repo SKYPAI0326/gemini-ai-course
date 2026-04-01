@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVG互動圖表 · 實例演練 3｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a3);border:1px solid rgba(90,122,90,.3);background:rgba(90,122,90,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a3);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a3);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a3);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a3);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a3);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a3);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.tool-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:32px 0;}
+.tool-topbar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.tool-dot{width:10px;height:10px;border-radius:50%;}
+.tool-dot-r{background:#ff6058;} .tool-dot-y{background:#ffbd2e;} .tool-dot-g{background:#28c840;}
+.tool-label{flex:1;font-size:.72rem;color:var(--c-muted);font-family:'Courier New',monospace;}
+.tool-body{padding:32px 36px;}
+.copy-btn{font-size:.72rem;color:var(--c-a3);background:none;border:1px solid rgba(90,122,90,.3);padding:3px 12px;border-radius:99px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.copy-btn:hover{background:rgba(90,122,90,.08);}
+
+/* ── KPI 儀表板 ── */
+.kpi-form-section{margin-bottom:20px;}
+.kpi-form-label{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;margin-bottom:10px;}
+.kpi-input-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:8px;padding:0 0 6px;border-bottom:1px solid var(--c-border);font-size:.7rem;color:var(--c-muted);letter-spacing:.5px;font-weight:500;}
+.kpi-input-rows{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+.kpi-input-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:8px;align-items:center;}
+.kpi-input{padding:8px 10px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.83rem;color:var(--c-text);background:var(--c-bg);width:100%;}
+.kpi-input:focus{outline:none;border-color:var(--c-a3);}
+.kpi-input.num{text-align:right;}
+.kpi-remove{width:28px;height:28px;border:none;background:none;color:var(--c-muted);cursor:pointer;font-size:1rem;}
+.kpi-remove:hover{color:var(--c-text);}
+.kpi-add-btn{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--c-muted);background:none;border:1px dashed var(--c-border);padding:8px 16px;border-radius:var(--radius-sm);cursor:pointer;font-family:'Noto Sans TC',sans-serif;margin-top:8px;}
+.kpi-add-btn:hover{border-color:var(--c-a3);color:var(--c-a3);}
+.kpi-gen-btn{width:100%;margin-top:16px;padding:12px;background:var(--c-a3);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.87rem;font-weight:500;cursor:pointer;}
+.kpi-gen-btn:hover{opacity:.88;}
+
+/* ── 儀表板卡片 ── */
+.dashboard-wrap{display:none;margin-top:20px;}
+.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.kpi-card{background:var(--c-bg);border:1px solid var(--c-border);border-radius:var(--radius);padding:18px 20px;}
+.kpi-card-name{font-size:.75rem;color:var(--c-muted);letter-spacing:.5px;font-weight:500;margin-bottom:8px;}
+.kpi-card-vals{display:flex;align-items:baseline;gap:6px;margin-bottom:10px;}
+.kpi-actual{font-family:'Shippori Mincho',serif;font-size:1.8rem;font-weight:700;}
+.kpi-unit{font-size:.78rem;color:var(--c-muted);}
+.kpi-target-line{font-size:.75rem;color:var(--c-muted);margin-bottom:8px;}
+.kpi-bar-bg{height:6px;background:var(--c-surface);border-radius:99px;overflow:hidden;}
+.kpi-bar-fill{height:100%;border-radius:99px;transition:width .8s ease;}
+.kpi-rate-row{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+.kpi-rate{font-size:.75rem;font-weight:700;}
+.kpi-badge{font-size:.68rem;padding:2px 8px;border-radius:99px;font-weight:500;}
+.badge-ok{background:rgba(90,122,90,.12);color:var(--c-a3);}
+.badge-warn{background:rgba(201,150,58,.12);color:var(--c-a2);}
+.badge-bad{background:rgba(181,112,58,.12);color:var(--c-a1);}
+
+.steps-list{display:flex;flex-direction:column;gap:0;margin:32px 0;}
+.step-item{display:flex;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:20px;top:44px;bottom:0;width:1px;background:var(--c-border);}
+.step-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px;padding-top:4px;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--c-card);border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-text);}
+.step-body{flex:1;padding:4px 0 32px 24px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+.step-desc strong{color:var(--c-text);font-weight:700;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+.result-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.82rem;line-height:1.85;padding:22px 24px;border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;}
+.challenge-box{padding:28px 32px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);margin:28px 0;}
+.challenge-label{font-size:.7rem;color:var(--c-a3);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.challenge-list{display:flex;flex-direction:column;gap:12px;}
+.challenge-item{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;line-height:1.7;}
+.ci-num{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-a3);flex-shrink:0;width:20px;}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a3);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">實例演練</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回課程目錄</a>
+  <div class="hero-meta">
+    <div class="hero-part">PART 3 · SVG 互動圖表</div>
+    <div class="hero-divider-v"></div>
+    <div class="hero-num">實例演練 3</div>
+  </div>
+  <h1 class="lesson-title">KPI 成果儀表板</h1>
+  <p class="lesson-tagline">輸入各項 KPI 指標的名稱、目標值、實際值、單位，工具自動生成視覺化儀表板卡片，顯示完成率、進度條，並依達成狀況顯示顏色警示。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">PRACTICE GOALS</div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>理解「數據儀表板」的視覺設計邏輯與狀態色彩系統</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>練習「輸入多組資料 → 輸出多張卡片」的動態渲染模式</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>為你的部門或個人 KPI 做一個可以週會展示的儀表板</span></div>
+  </div>
+</div>
+
+<div class="lesson-body">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">TOOL · 互動工具</div>
+    <h2 class="section-heading">填入 KPI 資料，生成視覺化儀表板</h2>
+    <p class="body-text">輸入每個 KPI 的名稱、目標值、實際完成值、單位，點「生成儀表板」後，工具自動計算完成率並以顏色區分：達標（綠）、接近（黃）、落後（橘）。</p>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">kpi-dashboard.html</div>
+      </div>
+      <div class="tool-body">
+        <div class="kpi-form-section">
+          <div class="kpi-input-header"><div>指標名稱</div><div style="text-align:right">目標值</div><div style="text-align:right">實際值</div><div>單位</div><div></div></div>
+          <div class="kpi-input-rows" id="kpi-rows"></div>
+          <button class="kpi-add-btn" onclick="addKpiRow()">＋ 新增指標</button>
+        </div>
+        <button class="kpi-gen-btn" onclick="renderDashboard()">生成 KPI 儀表板 →</button>
+        <div class="dashboard-wrap" id="dashboard-wrap">
+          <div class="kpi-form-label" style="margin-bottom:14px;margin-top:4px;">DASHBOARD</div>
+          <div class="dashboard-grid" id="dashboard-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>儀表板的設計核心是「狀態語言」：</strong>不同的顏色傳達不同的緊急程度。綠色代表好消息，橘色代表需要關注，這是一套不需要解釋的視覺語言。在製作工具時，把「條件判斷 → 顏色輸出」的邏輯描述清楚，Gemini 就能自動處理。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">HOW TO REPLICATE · 如何自己做出這個工具</div>
+    <h2 class="section-heading">讓 Gemini 幫你做一個 KPI 儀表板</h2>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">列出你工作中需要追蹤的 KPI</div>
+          <div class="step-desc">這個工具最大的價值是可以替換成你實際的業績指標。先把你的月度 KPI 列出來，包含名稱、單位和目標值。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">複製以下指令貼入 Gemini Canvas</div>
+          <div class="step-desc">注意指令中「<strong>依達成率判斷顏色</strong>」的描述方式——這讓 Gemini 理解工具需要條件邏輯，而不只是靜態顯示。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">填入本月實際數據，存為月報工具</div>
+          <div class="step-desc">每月更新一次實際值，這個工具就是你的月度成果彙報頁面，可以直接在週會上展示。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">→ 複製這段 Prompt 貼入 Gemini</div>
+        <button class="copy-btn" style="margin-left:auto;" onclick="copyInstructions()">複製指令</button>
+      </div>
+      <div class="tool-body" style="padding:24px 28px;">
+        <div class="result-box" id="instruction-box">你是一位擅長製作數據儀表板的前端工程師。
+
+請製作一個「KPI 成果儀表板」的單頁 HTML 工具，功能如下：
+
+【功能需求】
+- 使用者可輸入多組 KPI 資料（支援動態新增和刪除），每組包含：
+  · 指標名稱（文字輸入）
+  · 目標值（數字輸入）
+  · 實際完成值（數字輸入）
+  · 單位（文字輸入，例如：萬元、人、件、%）
+- 「生成儀表板」按鈕，按下後動態渲染 KPI 卡片網格
+- 每張 KPI 卡片顯示：
+  · 指標名稱
+  · 實際值（大字顯示）+ 單位
+  · 目標值標示（例如：目標 100 萬元）
+  · 達成率進度條（filled = 實際/目標 × 100%，最高顯示 100%）
+  · 達成率百分比 + 狀態標籤（依以下邏輯）：
+    - 達成率 ≥ 100%：綠色，顯示「已達標」
+    - 達成率 80–99%：黃色，顯示「接近目標」
+    - 達成率 60–79%：橘色，顯示「需加油」
+    - 達成率 < 60%：紅橘色，顯示「落後較多」
+
+【設計要求】
+- 整體頁面無印良品風格：背景 #f5f3ee，卡片 #ffffff，邊框 #d8d4cb
+- 達標色 #5a7a5a，接近目標色 #c9963a，需加油色 #b5703a
+- KPI 卡片排成 3 欄格狀
+- 字體：Shippori Mincho + Noto Sans TC（Google Fonts）
+- 圓角 6px，無陰影，無漸層
+
+請生成完整的單一 HTML 檔案。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">CHALLENGE · 進階挑戰</div>
+    <h2 class="section-heading">讓這個儀表板成為你的月報神器</h2>
+    <div class="challenge-box">
+      <div class="challenge-label">PRACTICE VARIATIONS</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="ci-num">01</div>
+          <div>加入「上月數據」欄位，在卡片上顯示「本月 vs 上月」的環比變化（↑ 成長 or ↓ 下降），讓老闆一眼看到趨勢。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">02</div>
+          <div>加入「儀表板標題」和「更新日期」輸入，讓這個工具可以直接做成一份正式的月度成果報告，在週會投影幕上展示。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">03</div>
+          <div>把你部門目前的實際 KPI 填入，用這個儀表板在下次週會上呈現成果，並觀察主管和同事的反應。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn" href="PRAC3-2.html">
+    <div>
+      <div class="nav-btn-label">← 上一個演練</div>
+      <div class="nav-btn-title">實例演練 2：專案時程甘特圖</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="../Part4-成果發表與工作流/PRAC4-1.html">
+    <div>
+      <div class="nav-btn-label">前往 Part 4 →</div>
+      <div class="nav-btn-title">實例演練 10：工具上線前部署清單</div>
+    </div>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Gemini 零代碼 AI 實戰課 · Part 3 實例演練</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('prog').style.width = (window.scrollY / total * 100) + '%';
+});
+
+let kId = 0;
+function addKpiRow(name='', target='', actual='', unit='') {
+  kId++;
+  const id = kId;
+  const div = document.createElement('div');
+  div.className = 'kpi-input-row';
+  div.id = 'krow-' + id;
+  div.innerHTML = `
+    <input class="kpi-input" type="text" placeholder="指標名稱" value="${name}" id="kname-${id}">
+    <input class="kpi-input num" type="number" placeholder="目標" value="${target}" id="ktarget-${id}">
+    <input class="kpi-input num" type="number" placeholder="實績" value="${actual}" id="kactual-${id}">
+    <input class="kpi-input" type="text" placeholder="單位" value="${unit}" id="kunit-${id}" style="max-width:70px">
+    <button class="kpi-remove" onclick="removeKpiRow(${id})">×</button>`;
+  document.getElementById('kpi-rows').appendChild(div);
+}
+function removeKpiRow(id) { document.getElementById('krow-' + id)?.remove(); }
+
+function renderDashboard() {
+  const rows = document.querySelectorAll('[id^="krow-"]');
+  const kpis = [];
+  rows.forEach(row => {
+    const id = row.id.replace('krow-', '');
+    kpis.push({
+      name: document.getElementById('kname-' + id)?.value.trim() || '指標',
+      target: parseFloat(document.getElementById('ktarget-' + id)?.value) || 0,
+      actual: parseFloat(document.getElementById('kactual-' + id)?.value) || 0,
+      unit: document.getElementById('kunit-' + id)?.value.trim() || ''
+    });
+  });
+  if (kpis.length === 0) { alert('請至少輸入一個 KPI。'); return; }
+
+  const grid = document.getElementById('dashboard-grid');
+  grid.innerHTML = kpis.map(k => {
+    const rate = k.target > 0 ? (k.actual / k.target * 100) : 0;
+    const pct = Math.min(100, rate);
+    let color, badge, barColor;
+    if (rate >= 100) { color = 'var(--c-a3)'; badge = '已達標'; barColor = '#5a7a5a'; }
+    else if (rate >= 80) { color = 'var(--c-a2)'; badge = '接近目標'; barColor = '#c9963a'; }
+    else if (rate >= 60) { color = 'var(--c-a1)'; badge = '需加油'; barColor = '#b5703a'; }
+    else { color = '#a05030'; badge = '落後較多'; barColor = '#a05030'; }
+
+    const badgeClass = rate >= 100 ? 'badge-ok' : (rate >= 80 ? 'badge-warn' : 'badge-bad');
+
+    return `<div class="kpi-card">
+      <div class="kpi-card-name">${k.name}</div>
+      <div class="kpi-card-vals">
+        <span class="kpi-actual" style="color:${color}">${k.actual.toLocaleString()}</span>
+        <span class="kpi-unit">${k.unit}</span>
+      </div>
+      <div class="kpi-target-line">目標：${k.target.toLocaleString()} ${k.unit}</div>
+      <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
+      <div class="kpi-rate-row">
+        <span class="kpi-rate" style="color:${color}">${rate.toFixed(1)}%</span>
+        <span class="kpi-badge ${badgeClass}">${badge}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('dashboard-wrap').style.display = 'block';
+  document.getElementById('dashboard-wrap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copyInstructions() {
+  const text = document.getElementById('instruction-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製指令', 1800);
+  });
+}
+
+// 預設資料
+addKpiRow('新客戶成交數', '50', '43', '件');
+addKpiRow('月度業績', '200', '186', '萬元');
+addKpiRow('客戶滿意度', '90', '94', '%');
+addKpiRow('提案勝率', '60', '55', '%');
+addKpiRow('回購率', '40', '28', '%');
+addKpiRow('平均成交天數', '14', '11', '天');
+</script>
+</body>
+</html>

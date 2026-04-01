@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH4-3 極速黑客松｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a4);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a4);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a4);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a4);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.inline-code{font-family:'Courier New',monospace;font-size:.85em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+
+/* ── 時間軸 ── */
+.timeline{display:flex;flex-direction:column;gap:0;margin:32px 0;position:relative;}
+.timeline::before{content:'';position:absolute;left:56px;top:8px;bottom:8px;width:2px;background:var(--c-border);}
+.tl-item{display:flex;gap:20px;align-items:flex-start;padding:0 0 28px 0;position:relative;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-time{min-width:48px;text-align:right;font-family:'Shippori Mincho',serif;font-size:.85rem;font-weight:700;color:var(--c-a4);padding-top:14px;white-space:nowrap;flex-shrink:0;}
+.tl-dot{width:14px;height:14px;border-radius:50%;background:var(--c-a4);border:2px solid var(--c-bg);flex-shrink:0;margin-top:15px;position:relative;z-index:1;}
+.tl-dot.done{background:var(--c-a3);}
+.tl-body{flex:1;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:14px 18px;}
+.tl-phase{font-size:.68rem;font-weight:700;letter-spacing:.5px;color:var(--c-a4);margin-bottom:4px;}
+.tl-title{font-size:.92rem;font-weight:700;color:var(--c-text);margin-bottom:4px;}
+.tl-desc{font-size:.82rem;color:var(--c-muted);line-height:1.65;}
+
+/* ── 實戰步驟 ── */
+.demo-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:28px 0;}
+.demo-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+.demo-title{font-size:.72rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;}
+.demo-tag{font-size:.68rem;color:var(--c-a1);border:1px solid rgba(181,112,58,.3);background:rgba(181,112,58,.07);padding:2px 10px;border-radius:99px;font-weight:500;}
+.demo-body{padding:24px;}
+.demo-step{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--c-border);}
+.demo-step:last-child{border-bottom:none;}
+.ds-num{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:var(--c-a1);min-width:24px;line-height:1;padding-top:3px;}
+.ds-content{}
+.ds-title{font-size:.88rem;font-weight:700;color:var(--c-text);margin-bottom:3px;}
+.ds-text{font-size:.8rem;color:var(--c-muted);line-height:1.7;}
+.ds-code{font-family:'Courier New',monospace;font-size:.78rem;background:var(--c-surface);border-radius:var(--radius-sm);padding:6px 12px;margin-top:6px;color:var(--c-text);display:block;line-height:1.7;}
+
+/* ── 收尾卡 ── */
+.finish-card{background:var(--c-card);border:1px solid rgba(107,127,163,.35);border-radius:var(--radius);padding:36px 40px;margin:28px 0;text-align:center;}
+.finish-title{font-family:'Shippori Mincho',serif;font-size:1.5rem;font-weight:700;color:var(--c-text);margin-bottom:12px;line-height:1.4;}
+.finish-body{font-size:.9rem;color:var(--c-muted);line-height:1.9;max-width:500px;margin:0 auto 24px;}
+.finish-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+.finish-tag{font-size:.75rem;padding:4px 14px;border-radius:99px;border:1px solid var(--c-border);color:var(--c-muted);}
+
+/* ── 常見陷阱 ── */
+.trap-list{display:flex;flex-direction:column;gap:10px;margin:24px 0;}
+.trap-item{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.trap-bad{font-size:.82rem;color:var(--c-a1);display:flex;gap:8px;align-items:flex-start;line-height:1.6;}
+.trap-bad::before{content:"✗";font-weight:700;flex-shrink:0;}
+.trap-good{font-size:.82rem;color:var(--c-a3);display:flex;gap:8px;align-items:flex-start;line-height:1.6;}
+.trap-good::before{content:"✓";font-weight:700;flex-shrink:0;}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 動態進場 ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.lesson-hero .back-link      {animation:fadeUp .4s ease both;}
+.lesson-hero .hero-meta      {animation:fadeUp .45s .08s ease both;}
+.lesson-hero .lesson-title   {animation:fadeUp .55s .15s ease both;}
+.lesson-hero .lesson-tagline {animation:fadeUp .5s .26s ease both;}
+.lesson-hero .outcomes       {animation:fadeUp .45s .36s ease both;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+.section-rule{transform-origin:left center;opacity:0;transition:opacity .4s ease,transform .6s cubic-bezier(.16,1,.3,1);transform:scaleX(.3);}
+.section-rule.in{opacity:1;transform:scaleX(1);}
+.section-dots{position:fixed;left:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40;opacity:0;transition:opacity .4s ease;}
+.section-dots.visible{opacity:1;}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--c-border);cursor:pointer;transition:background .3s ease,transform .3s ease;border:none;padding:0;}
+.sdot.active{background:var(--c-a4);transform:scale(1.5);}
+@media(max-width:1100px){.section-dots{display:none;}}
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a4);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">CH4-3</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="section-dots" id="sectionDots" aria-label="章節導航"></nav>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 返回課程目錄</a>
+  <div class="hero-meta">
+    <span class="hero-part">PART 4 · 成果發表與未來工作流</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">4.3</span>
+  </div>
+  <h1 class="lesson-title">極速黑客松：<br>20 分鐘從無到有</h1>
+  <p class="lesson-tagline">學到這裡，你已經具備所有技能。現在把它們組合起來，用一場 20 分鐘的「個人黑客松」，從一個工作痛點直接產出可以用的工具。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">學完這節，你會有</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>一套可重複執行的 20 分鐘工具開發流程</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>從「痛點發現」到「工具完成」的完整示範</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>避開新手最常踩的三個陷阱</div>
+  </div>
+</section>
+
+<main class="lesson-body">
+
+  <!-- S1 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 01</div>
+    <h2 class="section-heading">黑客松思維：<em>完成比完美更重要</em></h2>
+    <p class="body-text">黑客松（Hackathon）原本是工程師在 24-48 小時內快速做出產品的競賽模式。我們借用這個思維，但把時間縮短到 20 分鐘，目標只有一個：<strong>做出一個可以用的東西</strong>。</p>
+    <p class="body-text">很多人學完工具後的第一個問題是「我要從哪裡開始？」答案很簡單——從你今天工作中最讓你煩躁的那個重複性動作開始。那個動作，就是你的第一個工具候選。</p>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ</div>
+      <div class="callout-body">
+        <strong>好的工具候選長什麼樣子？</strong>你每週至少做一次、步驟固定可預測、大部分時間都在填數字或複製貼上——這就是一個值得自動化的痛點。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S2 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 02</div>
+    <h2 class="section-heading">20 分鐘工作流程：<em>照著做就對了</em></h2>
+    <p class="body-text">以下是一個可以重複執行的 20 分鐘流程。第一次做可能會花 30 分鐘，第十次你可能 12 分鐘就完成：</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-time">0–3m</div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <div class="tl-phase">步驟一</div>
+          <div class="tl-title">定義痛點（3 分鐘）</div>
+          <div class="tl-desc">用一句話說清楚你要解決的問題。「我每次報價都要手動加三個欄位的稅金和折扣，計算容易出錯」——這樣就夠了，不需要寫需求文件。</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">3–7m</div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <div class="tl-phase">步驟二</div>
+          <div class="tl-title">選擇工具類型，套用 Prompt 框架（4 分鐘）</div>
+          <div class="tl-desc">根據痛點決定工具類型（計算 / 視覺化 / 排程…），從 Prompt 庫取出對應的框架，填入你的具體需求。</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">7–12m</div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <div class="tl-phase">步驟三</div>
+          <div class="tl-title">提交 Prompt，等待生成（5 分鐘）</div>
+          <div class="tl-desc">把完整 Prompt 貼給 Claude 或 ChatGPT。等待期間可以準備好一個新的 HTML 檔案，等 AI 輸出後直接貼進去存檔。</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">12–17m</div>
+        <div class="tl-dot"></div>
+        <div class="tl-body">
+          <div class="tl-phase">步驟四</div>
+          <div class="tl-title">測試與快速修正（5 分鐘）</div>
+          <div class="tl-desc">打開瀏覽器測試。找出最明顯的一個問題，用一句話追加指令讓 AI 修正。不要試圖一次修改所有問題——先讓核心功能正確。</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">17–20m</div>
+        <div class="tl-dot done"></div>
+        <div class="tl-body">
+          <div class="tl-phase">步驟五</div>
+          <div class="tl-title">存檔並命名（3 分鐘）</div>
+          <div class="tl-desc">按照 CH4-1 的命名規則存進工具資料夾，加到書籤列。完成。現在你有了一個可以用的工具。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S3 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 03</div>
+    <h2 class="section-heading">實戰示範：<em>從痛點到工具</em></h2>
+    <p class="body-text">以下是一個完整的黑客松實例，示範如何把一個工作痛點在 20 分鐘內轉換成工具：</p>
+
+    <div class="demo-wrap">
+      <div class="demo-head">
+        <span class="demo-title">實戰示範 · 外勤差旅費報銷計算器</span>
+        <span class="demo-tag">完整流程</span>
+      </div>
+      <div class="demo-body">
+        <div class="demo-step">
+          <div class="ds-num">①</div>
+          <div class="ds-content">
+            <div class="ds-title">痛點描述（3 min）</div>
+            <div class="ds-text">每次出差回來要手算：交通費 + 住宿費 × 天數 + 餐費（每日上限 400 元）× 天數，再扣掉公司預付的備用金，最後換算成報銷金額。用計算機容易按錯，用 Excel 要開檔案。</div>
+          </div>
+        </div>
+        <div class="demo-step">
+          <div class="ds-num">②</div>
+          <div class="ds-content">
+            <div class="ds-title">套用框架，寫 Prompt（4 min）</div>
+            <span class="ds-code">你是擅長製作企業工具的前端工程師。
+請幫我做一個「差旅費報銷計算器」HTML 工具：
+
+輸入欄位：
+- 出差天數
+- 交通費（來回合計）
+- 住宿費（每晚）
+- 實際餐費（每日，上限 400 元超出自動截斷）
+- 公司預付備用金
+
+自動計算並顯示：總報銷金額、各項小計、應補/應退金額
+
+單一 HTML，不依賴外部 library，設計簡潔好填</span>
+          </div>
+        </div>
+        <div class="demo-step">
+          <div class="ds-num">③</div>
+          <div class="ds-content">
+            <div class="ds-title">生成與測試（5+5 min）</div>
+            <div class="ds-text">貼給 AI，等待輸出，存成 HTML 打開瀏覽器。發現餐費上限邏輯不對（超出上限後沒有顯示警示文字），追加一句：</div>
+            <span class="ds-code">若每日餐費超過 400 元，輸入框變橘色邊框並顯示「已截斷至上限 400 元」</span>
+          </div>
+        </div>
+        <div class="demo-step">
+          <div class="ds-num">④</div>
+          <div class="ds-content">
+            <div class="ds-title">存檔完成（3 min）</div>
+            <div class="ds-text">存為「差旅費報銷計算器_2024-03.html」，加到瀏覽器書籤列。下次出差回來，直接打開填數字，30 秒搞定報銷單。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S4 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 04</div>
+    <h2 class="section-heading">常見陷阱：<em>新手最容易踩的三個坑</em></h2>
+    <p class="body-text">在自己做工具的初期，很多人會卡在以下幾個地方。認識它們，就能快速跳過：</p>
+
+    <div class="trap-list">
+      <div class="trap-item">
+        <div class="trap-bad">要求「一次做完所有功能」，結果輸出又長又亂，測試時一堆問題</div>
+        <div class="trap-good">先做核心功能，確認可用後再用追加指令加功能</div>
+      </div>
+      <div class="trap-item">
+        <div class="trap-bad">Prompt 只寫「幫我做個計算機」，AI 猜測你要什麼，輸出不符期待</div>
+        <div class="trap-good">明確描述：輸入欄位有哪些、輸出顯示什麼、有什麼特殊邏輯</div>
+      </div>
+      <div class="trap-item">
+        <div class="trap-bad">工具有小問題就要求 AI「重寫整個」，浪費時間也丟失已有的好東西</div>
+        <div class="trap-good">每次只針對一個問題給出精確的修正指令，逐步完善</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">✦</div>
+      <div class="callout-body">
+        <strong>最重要的心態：</strong>第一個工具不需要完美。做出來、存起來、用三次——用過了你才知道哪裡需要改。先完成，再完善。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S5 課程收尾 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">課程完結</div>
+    <h2 class="section-heading">你已經是<em>「會做工具的人」</em>了</h2>
+    <p class="body-text">回顧一下你在這門課學到的東西：</p>
+    <p class="body-text">你學會了怎麼和 AI 溝通，讓它產出你要的結果，而不是猜來猜去。你做過了計算工具、邏輯轉換工具、互動視覺化工具。你知道怎麼把工具存好、設好捷徑、讓它在會議上派上用場。你建立了一套 Prompt 庫，讓每次的努力都能積累下來。</p>
+
+    <div class="finish-card">
+      <div class="finish-title">從今天開始，<br>每個工作痛點都是你的開發機會</div>
+      <div class="finish-body">不需要學會寫程式，不需要懂技術細節。你需要的只是：一個清楚描述的痛點、一個 Prompt 框架，和 20 分鐘的時間。</div>
+      <div class="finish-tags">
+        <span class="finish-tag">AI 溝通</span>
+        <span class="finish-tag">計算工具</span>
+        <span class="finish-tag">排程邏輯</span>
+        <span class="finish-tag">SVG 互動圖表</span>
+        <span class="finish-tag">工具部署</span>
+        <span class="finish-tag">Prompt 庫</span>
+        <span class="finish-tag">黑客松思維</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a class="nav-btn prev" href="CH4-2.html">
+    <span>←</span>
+    <div>
+      <div class="nav-btn-label">上一節</div>
+      <div class="nav-btn-title">4.2 建立專屬 Prompt 庫</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="../index.html">
+    <div>
+      <div class="nav-btn-label">回到</div>
+      <div class="nav-btn-title">課程目錄</div>
+    </div>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Part 4 · 3 of 3 · 課程完結</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollHeight - d.clientHeight > 0
+    ? (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.1, rootMargin:'0px 0px -48px 0px'});
+  document.querySelectorAll('.lesson-section, .section-rule').forEach(el => { el.classList.add('reveal'); io.observe(el); });
+})();
+(function(){
+  const sections = Array.from(document.querySelectorAll('.lesson-section'));
+  const nav = document.getElementById('sectionDots');
+  if(!sections.length||!nav) return;
+  sections.forEach((sec,i) => {
+    const btn = document.createElement('button');
+    btn.className='sdot';
+    btn.title = sec.querySelector('.section-heading')?.textContent?.trim().slice(0,20)||('第'+(i+1)+'節');
+    btn.addEventListener('click',()=>sec.scrollIntoView({behavior:'smooth',block:'start'}));
+    nav.appendChild(btn);
+  });
+  const dotIo = new IntersectionObserver(entries => {
+    entries.forEach(e => { const i=sections.indexOf(e.target); if(i>=0) nav.children[i]?.classList.toggle('active',e.isIntersecting); });
+    nav.classList.toggle('visible', Array.from(nav.children).some(d=>d.classList.contains('active')));
+  },{threshold:.3});
+  sections.forEach(s=>dotIo.observe(s));
+})();
+</script>
+</body>
+</html>

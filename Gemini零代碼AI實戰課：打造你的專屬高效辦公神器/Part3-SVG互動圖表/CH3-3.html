@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH3-3 數據儀表板：實作互動式銷售漏斗｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a3);border:1px solid rgba(90,122,90,.3);background:rgba(90,122,90,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a3);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a3);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a3);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a3);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a3);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a3);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a3);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.inline-code{font-family:'Courier New',monospace;font-size:.85em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+
+/* ── 統計卡 ── */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0;}
+.stat-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:20px 22px;}
+.stat-label{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;margin-bottom:6px;}
+.stat-value{font-family:'Shippori Mincho',serif;font-size:1.75rem;font-weight:700;color:var(--c-text);line-height:1.1;}
+.stat-note{font-size:.72rem;color:var(--c-a3);margin-top:4px;}
+
+/* ── SVG 互動示範 ── */
+.svg-demo-wrap{margin:32px 0;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;}
+.svg-demo-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+.svg-demo-title{font-size:.72rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;}
+.svg-demo-hint{font-size:.7rem;color:var(--c-a3);font-weight:500;}
+.svg-demo-body{padding:28px 24px;display:flex;justify-content:center;overflow-x:auto;}
+
+/* ── 工具解剖 ── */
+.anatomy-wrap{margin:32px 0;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;}
+.anatomy-head{padding:16px 24px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;}
+.anatomy-title{font-size:.78rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;}
+.anatomy-badge{font-size:.68rem;color:var(--c-a3);border:1px solid rgba(90,122,90,.3);background:rgba(90,122,90,.07);padding:2px 10px;border-radius:99px;font-weight:500;}
+.anatomy-body{padding:24px;}
+.anatomy-zones{display:flex;flex-direction:column;gap:10px;}
+.anatomy-zone{display:flex;gap:16px;align-items:flex-start;padding:14px 16px;background:var(--c-surface);border-radius:var(--radius-sm);}
+.zone-label{font-size:.72rem;color:var(--c-a3);font-weight:700;letter-spacing:.5px;white-space:nowrap;min-width:64px;padding-top:1px;}
+.zone-content{font-size:.82rem;color:var(--c-text);line-height:1.7;}
+
+/* ── Prompt 框 ── */
+.prompt-wrap{margin:32px 0;}
+.prompt-label{font-size:.7rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.prompt-dot{width:6px;height:6px;border-radius:50%;background:var(--c-a3);}
+.prompt-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.85;padding:24px 28px;border-radius:var(--radius);white-space:pre-wrap;word-break:break-word;border:1px solid rgba(90,122,90,.3);}
+.ph{color:var(--c-a2);}
+.pg{color:#8ab48a;}
+.pb{color:#7a9ea3;}
+.pc{color:#6b6a68;}
+
+/* ── 追加指令 ── */
+.addon-list{display:flex;flex-direction:column;gap:10px;margin:24px 0;}
+.addon-item{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:flex-start;gap:14px;}
+.addon-tag{font-size:.65rem;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:99px;white-space:nowrap;flex-shrink:0;margin-top:1px;}
+.tag-v{background:rgba(90,122,90,.12);color:var(--c-a3);}
+.tag-u{background:rgba(107,127,163,.12);color:var(--c-a4);}
+.tag-e{background:rgba(201,150,58,.12);color:var(--c-a2);}
+.addon-text{font-family:'Courier New',monospace;font-size:.8rem;color:var(--c-text);line-height:1.7;}
+.addon-desc{font-size:.75rem;color:var(--c-muted);margin-top:3px;line-height:1.5;}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(90,122,90,.07);border:1px solid rgba(90,122,90,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 動態進場 ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.lesson-hero .back-link      {animation:fadeUp .4s ease both;}
+.lesson-hero .hero-meta      {animation:fadeUp .45s .08s ease both;}
+.lesson-hero .lesson-title   {animation:fadeUp .55s .15s ease both;}
+.lesson-hero .lesson-tagline {animation:fadeUp .5s .26s ease both;}
+.lesson-hero .outcomes       {animation:fadeUp .45s .36s ease both;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+.section-rule{transform-origin:left center;opacity:0;transition:opacity .4s ease,transform .6s cubic-bezier(.16,1,.3,1);transform:scaleX(.3);}
+.section-rule.in{opacity:1;transform:scaleX(1);}
+.section-dots{position:fixed;left:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40;opacity:0;transition:opacity .4s ease;}
+.section-dots.visible{opacity:1;}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--c-border);cursor:pointer;transition:background .3s ease,transform .3s ease;border:none;padding:0;}
+.sdot.active{background:var(--c-a3);transform:scale(1.5);}
+@media(max-width:1100px){.section-dots{display:none;}}
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a3);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">CH3-3</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="section-dots" id="sectionDots" aria-label="章節導航"></nav>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 返回課程目錄</a>
+  <div class="hero-meta">
+    <span class="hero-part">PART 3 · 讓數據「動」起來的視覺魔法</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">3.3</span>
+  </div>
+  <h1 class="lesson-title">數據儀表板：<br>實作互動式銷售漏斗</h1>
+  <p class="lesson-tagline">老闆問「這個月成交率多少？」你打開 Excel 截圖給他看——還是直接打開一個會動的漏斗圖，讓他自己移到每個階段，立刻看到轉換率和流失量？同樣的數字，互動呈現的說服力遠比靜態報表強。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">學完這節，你會有</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>一份「互動式銷售漏斗」的完整 Prompt，可直接複製使用</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>客製化階段數、顏色、標籤的追加指令</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>加入目標值對比與即時編輯的進階做法</div>
+  </div>
+</section>
+
+<main class="lesson-body">
+
+  <!-- S1 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 01</div>
+    <h2 class="section-heading">為什麼漏斗圖要做成<em>互動版本</em></h2>
+    <p class="body-text">銷售漏斗是管理層最常看的報表之一，但大多數公司的漏斗圖還停在 Excel 截圖或 PPT 靜態圖的階段。問題不在於「圖好不好看」，而在於<strong>靜態圖無法讓對方自己探索數據</strong>。</p>
+    <p class="body-text">當你在會議上說「從詢問到提案的轉換率是 27%」，大多數人腦子裡其實沒有畫面。但如果你打開互動漏斗圖，讓他們自己移到那一層，浮動資訊卡立刻顯示「流失了 495 人、轉換 27.2%」——數字馬上有感覺，討論的層次也立刻不一樣。</p>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-label">本季總曝光</div>
+        <div class="stat-value">10,000</div>
+        <div class="stat-note">廣告觸及人數</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">最終成交</div>
+        <div class="stat-value">42</div>
+        <div class="stat-note">簽約客戶數</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">整體轉換率</div>
+        <div class="stat-value">0.42%</div>
+        <div class="stat-note">曝光 → 成交</div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">✦</div>
+      <div class="callout-body">
+        <strong>互動優勢：</strong>靜態漏斗只能「看到」結果，互動版本讓每個人在自己有疑問的地方停下來探索——哪個環節流失最嚴重、哪個轉換率異常低，一 hover 就清楚，不需要再翻第二頁報表。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S2 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 02</div>
+    <h2 class="section-heading">互動示範：<em>移到每一層看看</em></h2>
+    <p class="body-text">以下是一個真實可互動的銷售漏斗。滑鼠移到任何一層，立刻顯示該階段的人數、轉換率與流失量：</p>
+
+    <div class="svg-demo-wrap">
+      <div class="svg-demo-head">
+        <span class="svg-demo-title">互動式銷售漏斗 · 2024 Q1 業務數據</span>
+        <span class="svg-demo-hint">↑ 移到各層查看詳細數據</span>
+      </div>
+      <div class="svg-demo-body">
+        <svg id="funnelSvg" viewBox="0 0 700 300" width="700" height="300"
+             style="font-family:'Noto Sans TC',sans-serif;max-width:100%;overflow:visible;">
+
+          <!-- 欄位標題 -->
+          <text x="88" y="8" text-anchor="end" font-size="9" fill="#8c8880" letter-spacing="0.5">轉換率</text>
+          <text x="612" y="8" text-anchor="start" font-size="9" fill="#8c8880" letter-spacing="0.5">人數</text>
+
+          <!-- Stage 1 · 廣告曝光 10,000 -->
+          <g class="funnel-sg"
+             data-stage="廣告曝光"
+             data-count="10,000"
+             data-rate="—"
+             data-lost="—"
+             data-desc="廣告觸及的潛在受眾總數">
+            <polygon points="100,12 600,12 560,62 140,62"
+                     fill="rgba(90,122,90,0.82)" stroke="rgba(90,122,90,0.3)" stroke-width="1"/>
+            <text x="350" y="42" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">廣告曝光</text>
+            <text x="612" y="42" text-anchor="start" font-size="11" fill="#5a7a5a" font-weight="500">10,000</text>
+          </g>
+
+          <!-- Stage 2 · 點擊訪問 3,200 -->
+          <g class="funnel-sg"
+             data-stage="點擊訪問"
+             data-count="3,200"
+             data-rate="32.0%"
+             data-lost="6,800"
+             data-desc="實際點擊廣告並進入網站的訪客">
+            <polygon points="140,66 560,66 510,116 190,116"
+                     fill="rgba(90,122,90,0.67)" stroke="rgba(90,122,90,0.25)" stroke-width="1"/>
+            <text x="350" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">點擊訪問</text>
+            <text x="612" y="96" text-anchor="start" font-size="11" fill="#5a7a5a" font-weight="500">3,200</text>
+            <text x="88" y="96" text-anchor="end" font-size="10" fill="#8c8880">32.0%</text>
+          </g>
+
+          <!-- Stage 3 · 詢問留資 680 -->
+          <g class="funnel-sg"
+             data-stage="詢問留資"
+             data-count="680"
+             data-rate="21.3%"
+             data-lost="2,520"
+             data-desc="填寫表單或主動聯繫的潛在客戶">
+            <polygon points="190,120 510,120 460,170 240,170"
+                     fill="rgba(90,122,90,0.50)" stroke="rgba(90,122,90,0.2)" stroke-width="1"/>
+            <text x="350" y="150" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">詢問留資</text>
+            <text x="612" y="150" text-anchor="start" font-size="11" fill="#5a7a5a" font-weight="500">680</text>
+            <text x="88" y="150" text-anchor="end" font-size="10" fill="#8c8880">21.3%</text>
+          </g>
+
+          <!-- Stage 4 · 提案報價 185 -->
+          <g class="funnel-sg"
+             data-stage="提案報價"
+             data-count="185"
+             data-rate="27.2%"
+             data-lost="495"
+             data-desc="進入正式提案或報價討論的客戶">
+            <polygon points="240,174 460,174 415,224 285,224"
+                     fill="rgba(90,122,90,0.35)" stroke="rgba(90,122,90,0.18)" stroke-width="1"/>
+            <text x="350" y="204" text-anchor="middle" font-size="13" font-weight="700" fill="#2c2b28">提案報價</text>
+            <text x="612" y="204" text-anchor="start" font-size="11" fill="#5a7a5a" font-weight="500">185</text>
+            <text x="88" y="204" text-anchor="end" font-size="10" fill="#8c8880">27.2%</text>
+          </g>
+
+          <!-- Stage 5 · 成交簽約 42 -->
+          <g class="funnel-sg"
+             data-stage="成交簽約"
+             data-count="42"
+             data-rate="22.7%"
+             data-lost="143"
+             data-desc="完成簽約、正式成為付費客戶">
+            <polygon points="285,228 415,228 385,278 315,278"
+                     fill="rgba(90,122,90,0.22)" stroke="rgba(90,122,90,0.15)" stroke-width="1"/>
+            <text x="350" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#2c2b28">成交簽約</text>
+            <text x="612" y="258" text-anchor="start" font-size="11" fill="#5a7a5a" font-weight="500">42</text>
+            <text x="88" y="258" text-anchor="end" font-size="10" fill="#8c8880">22.7%</text>
+          </g>
+
+          <!-- Tooltip -->
+          <g id="funnelTooltip" opacity="0" pointer-events="none">
+            <rect id="ftBg" rx="6" fill="#2c2b28" opacity=".93" width="196" height="96"/>
+            <text id="ftStage" font-size="12" font-weight="700" fill="#8ab48a" x="12" y="22"></text>
+            <text id="ftCount" font-size="11" fill="#e8e4dc" x="12" y="42"></text>
+            <text id="ftRate"  font-size="11" fill="#c9963a"  x="12" y="58"></text>
+            <text id="ftLost"  font-size="11" fill="#a08878"  x="12" y="74"></text>
+            <text id="ftDesc"  font-size="9"  fill="#6b6a68"  x="12" y="88"></text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="anatomy-wrap">
+      <div class="anatomy-head">
+        <span class="anatomy-title">工具解剖 · 互動式銷售漏斗</span>
+        <span class="anatomy-badge">功能拆解</span>
+      </div>
+      <div class="anatomy-body">
+        <div class="anatomy-zones">
+          <div class="anatomy-zone">
+            <span class="zone-label">梯形層</span>
+            <span class="zone-content">每一層代表一個銷售階段，寬度反映人數比例——越往下人數越少，視覺上自然形成「漏斗」形狀</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">側標籤</span>
+            <span class="zone-content">右側顯示各層人數，左側顯示相對上一層的轉換率（第一層為頂端，不顯示轉換率）</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">Hover 卡</span>
+            <span class="zone-content">滑鼠移到任何一層時，浮動資訊卡顯示：階段名稱、人數、轉換率、流失量、階段說明</span>
+          </div>
+          <div class="anatomy-zone">
+            <span class="zone-label">高亮效果</span>
+            <span class="zone-content">被 hover 的層維持原色，其他層降低透明度，讓視線自然聚焦在當前探索的階段</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S3 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 03</div>
+    <h2 class="section-heading">完整 Prompt：<em>互動式銷售漏斗</em></h2>
+    <p class="body-text">把以下 Prompt 貼給 Claude 或 ChatGPT，替換掉 <span class="inline-code">【】</span> 內的數字和名稱，就能生成你自己的互動漏斗圖：</p>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label"><span class="prompt-dot"></span>互動式銷售漏斗 · 完整 Prompt</div>
+      <div class="prompt-box"><span class="ph">你是一位擅長數據視覺化的資深前端工程師。</span>
+
+<span class="pg">請幫我用純 HTML + SVG + JavaScript 製作一個「互動式銷售漏斗圖」，規格如下：</span>
+
+<span class="pc">【漏斗階段設定】（由寬到窄，共五層）</span>
+第一層：廣告曝光｜10,000 人
+第二層：點擊訪問｜3,200 人
+第三層：詢問留資｜680 人
+第四層：提案報價｜185 人
+第五層：成交簽約｜42 人
+
+<span class="pc">【互動功能】</span>
+1. 滑鼠移到任何一層時顯示浮動資訊卡，內容包含：
+   - 階段名稱
+   - 該層人數
+   - 與上一層的轉換率（第一層顯示「漏斗頂層」）
+   - 流失人數（上一層 - 本層）
+   - 各層說明文字
+2. Hover 的層維持原色；其他層透明度降至 0.35
+
+<span class="pc">【視覺規格】</span>
+- 梯形顏色：同色系由深到淺，第一層最深
+- 右側標示各層人數，左側標示轉換率
+- 梯形間留 4px 間距，不要連在一起
+- 整體置中，viewBox 自動縮放適應容器寬度
+
+<span class="pc">【技術要求】</span>
+- 單一 HTML 檔案，不依賴任何外部 library
+- RWD：手機螢幕自動縮放，資訊卡不超出邊界
+- 所有階段資料集中在 JavaScript 陣列方便修改
+- 頁面載入時各層依序淡入，有進場動畫</div>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ</div>
+      <div class="callout-body">
+        <strong>替換哪些地方：</strong>把五個階段的名稱和人數換成你自己的業務數據即可。如果流程不是五個階段，直接增減層數，AI 會自動重算各層的寬度比例。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S4 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 04</div>
+    <h2 class="section-heading">追加指令：<em>擴充你的漏斗功能</em></h2>
+    <p class="body-text">基礎版生成後，用以下追加指令逐步擴充，每條都可以單獨使用：</p>
+
+    <div class="addon-list">
+      <div class="addon-item">
+        <span class="addon-tag tag-v">視覺</span>
+        <div>
+          <div class="addon-text">把漏斗顏色改為【陶土橘 #b5703a】色系，由深到淺，最底層透明度約 20%</div>
+          <div class="addon-desc">換色系——適合有品牌色指定的場合，也可換成任意 HEX 色碼</div>
+        </div>
+      </div>
+      <div class="addon-item">
+        <span class="addon-tag tag-u">功能</span>
+        <div>
+          <div class="addon-text">每層新增「目標值」欄位，並在梯形上用白色虛線標出目標線；若實際人數低於目標，該層邊框改為橘色警示</div>
+          <div class="addon-desc">目標對比——讓「差多少」一眼看清楚，適合 OKR 或業績追蹤報告</div>
+        </div>
+      </div>
+      <div class="addon-item">
+        <span class="addon-tag tag-u">功能</span>
+        <div>
+          <div class="addon-text">在漏斗上方加「時間篩選器」，可切換本週 / 本月 / 本季，切換時各層數字即時更新並重新繪製</div>
+          <div class="addon-desc">期間篩選——同一份工具可以報告不同週期，不需要重新截圖</div>
+        </div>
+      </div>
+      <div class="addon-item">
+        <span class="addon-tag tag-e">進階</span>
+        <div>
+          <div class="addon-text">在頁面底部加一個輸入表格，讓使用者直接輸入各層人數，漏斗圖即時重新繪製</div>
+          <div class="addon-desc">即時編輯——會議中可以現場改數字，不需要另開 Excel 再截圖貼回</div>
+        </div>
+      </div>
+      <div class="addon-item">
+        <span class="addon-tag tag-e">進階</span>
+        <div>
+          <div class="addon-text">在漏斗右側加「流失排行」區塊，自動計算並排列各階段的流失率，最高的標記為紅色警示標籤</div>
+          <div class="addon-desc">流失排行——快速定位「最需要改善」的環節，直接帶著去開改善會議</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <div class="callout-icon">★</div>
+      <div class="callout-body">
+        <strong>實用建議：</strong>把「即時編輯」追加指令和基礎版合在一起，就是一個輕量版業務儀表板。開會前 5 分鐘填進最新數字，打開瀏覽器直接報告——比 Excel 省時，比 BI 工具省錢，一個 HTML 檔案全搞定。
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a class="nav-btn prev" href="CH3-2.html">
+    <span>←</span>
+    <div>
+      <div class="nav-btn-label">上一節</div>
+      <div class="nav-btn-title">3.2 動態專案路徑圖</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="../Part4-成果發表與工作流/CH4-1.html">
+    <div>
+      <div class="nav-btn-label">下一節</div>
+      <div class="nav-btn-title">4.1 工具部署：存下來、隨時用</div>
+    </div>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Part 3 · 3 of 3</div>
+</footer>
+
+<script>
+// 閱讀進度條
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollHeight - d.clientHeight > 0
+    ? (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+
+// Reveal 動畫
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:.1, rootMargin:'0px 0px -48px 0px'});
+  document.querySelectorAll('.lesson-section, .section-rule').forEach(el => {
+    el.classList.add('reveal'); io.observe(el);
+  });
+})();
+
+// 側邊章節導航點
+(function(){
+  const sections = Array.from(document.querySelectorAll('.lesson-section'));
+  const nav = document.getElementById('sectionDots');
+  if (!sections.length || !nav) return;
+  sections.forEach((sec, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'sdot';
+    btn.title = sec.querySelector('.section-heading')?.textContent?.trim().slice(0, 20) || ('第' + (i+1) + '節');
+    btn.addEventListener('click', () => sec.scrollIntoView({behavior:'smooth', block:'start'}));
+    nav.appendChild(btn);
+  });
+  const dotIo = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      const i = sections.indexOf(e.target);
+      if (i >= 0) nav.children[i]?.classList.toggle('active', e.isIntersecting);
+    });
+    nav.classList.toggle('visible', Array.from(nav.children).some(d => d.classList.contains('active')));
+  }, {threshold:.3});
+  sections.forEach(s => dotIo.observe(s));
+})();
+
+// 互動式銷售漏斗
+(function(){
+  const svg = document.getElementById('funnelSvg');
+  if (!svg) return;
+
+  const tooltip = document.getElementById('funnelTooltip');
+  const ftStage = document.getElementById('ftStage');
+  const ftCount = document.getElementById('ftCount');
+  const ftRate  = document.getElementById('ftRate');
+  const ftLost  = document.getElementById('ftLost');
+  const ftDesc  = document.getElementById('ftDesc');
+
+  const stages = Array.from(document.querySelectorAll('.funnel-sg'));
+
+  function toSVGCoords(clientX, clientY) {
+    const pt = svg.createSVGPoint();
+    pt.x = clientX; pt.y = clientY;
+    return pt.matrixTransform(svg.getScreenCTM().inverse());
+  }
+
+  stages.forEach(g => {
+    g.style.cursor = 'pointer';
+
+    g.addEventListener('mouseenter', () => {
+      // 高亮效果
+      stages.forEach(s => {
+        s.querySelector('polygon').style.opacity = (s === g) ? '1' : '0.35';
+      });
+
+      // 填入資料
+      const stage = g.dataset.stage || '';
+      const count = g.dataset.count || '';
+      const rate  = g.dataset.rate  || '';
+      const lost  = g.dataset.lost  || '';
+      const desc  = g.dataset.desc  || '';
+
+      ftStage.textContent = stage;
+      ftCount.textContent = '人數：' + count;
+      ftRate.textContent  = rate === '—' ? '（漏斗頂層）' : '轉換率：' + rate;
+      ftLost.textContent  = lost === '—' ? '' : '流失：' + lost + ' 人';
+      ftDesc.textContent  = desc;
+    });
+
+    g.addEventListener('mousemove', (e) => {
+      const sp = toSVGCoords(e.clientX, e.clientY);
+      const vbW = svg.viewBox.baseVal.width;
+      const vbH = svg.viewBox.baseVal.height;
+      const ttW = 196, ttH = 96;
+      let tx = sp.x - ttW / 2;
+      let ty = sp.y - ttH - 12;
+      if (tx + ttW > vbW - 4) tx = vbW - ttW - 4;
+      if (tx < 4) tx = 4;
+      if (ty < 4) ty = sp.y + 12;
+      if (ty + ttH > vbH) ty = sp.y - ttH - 4;
+      tooltip.setAttribute('transform', `translate(${tx},${ty})`);
+      tooltip.setAttribute('opacity', '1');
+    });
+
+    g.addEventListener('mouseleave', () => {
+      stages.forEach(s => { s.querySelector('polygon').style.opacity = '1'; });
+      tooltip.setAttribute('opacity', '0');
+    });
+  });
+
+  // 進場動畫
+  const demoWrap = document.querySelector('.svg-demo-wrap');
+  let done = false;
+  const obs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && !done) {
+      done = true;
+      stages.forEach((g, i) => {
+        g.style.opacity = '0';
+        g.style.transition = `opacity .45s ease ${i * 0.13}s`;
+        setTimeout(() => { g.style.opacity = '1'; }, 50);
+      });
+    }
+  }, {threshold:.3});
+  if (demoWrap) obs.observe(demoWrap);
+})();
+</script>
+</body>
+</html>

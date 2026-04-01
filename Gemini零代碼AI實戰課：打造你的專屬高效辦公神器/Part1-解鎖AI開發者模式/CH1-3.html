@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH1-3 暖身實作｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a1);border:1px solid rgba(181,112,58,.3);background:rgba(181,112,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a1);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a1);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a1);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a1);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a1);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a1);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a1);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.inline-code{font-family:'Courier New',monospace;font-size:.85em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+
+/* ── Prompt 框 ── */
+.prompt-wrap{margin:32px 0;}
+.prompt-label{font-size:.7rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.prompt-dot{width:6px;height:6px;border-radius:50%;background:var(--c-a3);}
+.prompt-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.85;padding:24px 28px;border-radius:var(--radius);white-space:pre-wrap;word-break:break-word;border:1px solid rgba(90,122,90,.3);}
+.prompt-comment{color:#6b6a68;}
+.prompt-highlight{color:var(--c-a2);}
+.prompt-highlight-blue{color:#7a9ea3;}
+.prompt-highlight-green{color:#8ab48a;}
+
+/* ── 步驟清單 ── */
+.steps-list{display:flex;flex-direction:column;gap:0;margin:32px 0;}
+.step-item{display:flex;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:20px;top:44px;bottom:0;width:1px;background:var(--c-border);}
+.step-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px;padding-top:4px;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--c-card);border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-text);flex-shrink:0;}
+.step-item.done .step-num{background:rgba(90,122,90,.1);border-color:var(--c-a3);color:var(--c-a3);}
+.step-body{flex:1;padding:4px 0 32px 24px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;line-height:1.4;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+.step-desc strong{color:var(--c-text);font-weight:700;}
+.step-img-placeholder{margin-top:14px;height:100px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:.78rem;color:var(--c-muted);}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(181,112,58,.07);border:1px solid rgba(181,112,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 互動示範：倒數計時器預覽 ── */
+.demo-wrap{margin:32px 0;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;}
+.demo-topbar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.demo-dot{width:10px;height:10px;border-radius:50%;}
+.demo-dot-r{background:#ff6058;}
+.demo-dot-y{background:#ffbd2e;}
+.demo-dot-g{background:#28c840;}
+.demo-url{flex:1;background:var(--c-card);border:1px solid var(--c-border);border-radius:4px;font-size:.72rem;color:var(--c-muted);padding:4px 12px;font-family:'Courier New',monospace;}
+.demo-body{padding:40px;display:flex;flex-direction:column;align-items:center;gap:20px;}
+.demo-title-text{font-size:.78rem;color:var(--c-muted);letter-spacing:1px;}
+.demo-timer{font-family:'Shippori Mincho',serif;font-size:4.5rem;font-weight:700;color:var(--c-text);letter-spacing:.05em;line-height:1;}
+.demo-timer.warning{color:var(--c-a1);}
+.demo-controls{display:flex;gap:12px;}
+.demo-btn{padding:10px 28px;border-radius:var(--radius-sm);font-size:.85rem;font-weight:500;cursor:pointer;border:1px solid var(--c-border);font-family:'Noto Sans TC',sans-serif;}
+.demo-btn.start{background:var(--c-a1);color:#fff;border-color:var(--c-a1);}
+.demo-btn.reset{background:var(--c-card);color:var(--c-muted);}
+.demo-input-row{display:flex;align-items:center;gap:10px;font-size:.85rem;color:var(--c-muted);}
+.demo-input{width:60px;padding:6px 10px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.85rem;text-align:center;background:var(--c-card);}
+.demo-label{font-size:.8rem;color:var(--c-text);}
+
+/* ── 挑戰框 ── */
+.challenge-box{padding:28px 32px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);margin:28px 0;}
+.challenge-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.challenge-list{display:flex;flex-direction:column;gap:12px;}
+.challenge-item{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;color:var(--c-text);line-height:1.7;}
+.challenge-icon{flex-shrink:0;font-size:.9rem;}
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a1);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.nav-part-end{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:6px;padding:20px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);}
+.nav-part-badge{font-size:.7rem;color:var(--c-a3);letter-spacing:1px;font-weight:500;}
+.nav-part-text{font-size:.85rem;font-weight:700;color:var(--c-text);}
+.nav-part-next{font-size:.78rem;color:var(--c-muted);}
+
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+
+/* ── 動態進場系統 ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.lesson-hero .back-link      { animation:fadeUp .4s ease both; }
+.lesson-hero .hero-meta      { animation:fadeUp .45s .08s ease both; }
+.lesson-hero .lesson-title   { animation:fadeUp .55s .15s ease both; }
+.lesson-hero .lesson-tagline { animation:fadeUp .5s  .26s ease both; }
+.lesson-hero .outcomes       { animation:fadeUp .45s .36s ease both; }
+
+.reveal {
+  opacity:0; transform:translateY(22px);
+  transition:opacity .65s cubic-bezier(.16,1,.3,1), transform .65s cubic-bezier(.16,1,.3,1);
+}
+.reveal.in { opacity:1; transform:translateY(0); }
+
+.section-rule {
+  transform-origin:left center; opacity:0;
+  transition:opacity .4s ease, transform .6s cubic-bezier(.16,1,.3,1);
+  transform:scaleX(.3);
+}
+.section-rule.in { opacity:1; transform:scaleX(1); }
+
+.preview-card { transition:transform .22s cubic-bezier(.16,1,.3,1), box-shadow .22s ease; }
+.preview-card:hover { transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.09); }
+
+.section-dots {
+  position:fixed; left:20px; top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:10px; z-index:40;
+  opacity:0; transition:opacity .4s ease;
+}
+.section-dots.visible { opacity:1; }
+.sdot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--c-border); cursor:pointer;
+  transition:background .3s ease, transform .3s ease;
+  border:none; padding:0;
+}
+.sdot.active { background:var(--c-a1); transform:scale(1.5); }
+@media (max-width:1100px) { .section-dots { display:none; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">CH1-3</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="section-dots" id="sectionDots" aria-label="章節導航"></nav>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 返回課程目錄</a>
+  <div class="hero-meta">
+    <span class="hero-part">PART 1 · 解鎖 AI 開發者模式</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">1.3</span>
+  </div>
+  <h1 class="lesson-title">暖身實作：<br>30 秒生成一個<br>「會議倒數計時器」</h1>
+  <p class="lesson-tagline">理論夠了，現在動手。這一節我們把前兩節學到的一次用上——從打開 AI Studio、貼上 Prompt、到存成一個你可以馬上帶去開會用的工具，整個過程不超過 5 分鐘。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">這節結束時，你會有</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>一個可以直接在瀏覽器開啟使用的「會議倒數計時器」.html 檔案</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>完整走過一遍「描述 → 生成 → 存檔 → 使用」的標準流程</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>知道如何繼續調整、讓工具更符合自己的需求</div>
+  </div>
+</section>
+
+<main class="lesson-body">
+
+  <!-- S1 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 01</div>
+    <h2 class="section-heading">你會做出<em>這個</em></h2>
+    <p class="body-text">在這節實作結束後，你會擁有一個長這樣的工具——可以設定時間、倒數、時間到會有提醒。很簡單，但這是你第一個親手「指揮 AI 建出來」的軟體：</p>
+
+    <!-- 互動示範 -->
+    <div class="demo-wrap">
+      <div class="demo-topbar">
+        <div class="demo-dot demo-dot-r"></div>
+        <div class="demo-dot demo-dot-y"></div>
+        <div class="demo-dot demo-dot-g"></div>
+        <div class="demo-url">meeting-timer.html</div>
+      </div>
+      <div class="demo-body">
+        <div class="demo-title-text">會議倒數計時器</div>
+        <div class="demo-timer" id="demoTimer">25:00</div>
+        <div class="demo-input-row">
+          <span class="demo-label">時長</span>
+          <input class="demo-input" type="number" id="demoMinutes" value="25" min="1" max="120">
+          <span class="demo-label">分鐘</span>
+        </div>
+        <div class="demo-controls">
+          <button class="demo-btn start" id="demoStart">開始</button>
+          <button class="demo-btn reset" id="demoReset">重設</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="body-text">上方的示範是真實可互動的——你現在就可以按「開始」試試看。這個就是我們等一下要讓 AI 幫你從零生成的工具。</p>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S2 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 02</div>
+    <h2 class="section-heading">你的<em>黃金公式 Prompt</em></h2>
+    <p class="body-text">以下是這次實作要用的完整 Prompt，已經套用了上一節的黃金公式（角色＋任務＋限制＋呈現）。你可以直接複製使用：</p>
+
+    <div class="prompt-wrap">
+      <div class="prompt-label">
+        <span class="prompt-dot"></span>
+        複製這段 Prompt，貼到 AI Studio
+      </div>
+      <div class="prompt-box">
+<span class="prompt-highlight">你是一位熟悉商業應用的資深前端工程師。</span>
+
+<span class="prompt-highlight-green">請製作一個「會議倒數計時器」網頁工具，功能需求如下：
+- 使用者可以輸入會議時長（分鐘），預設值為 25 分鐘
+- 點擊「開始」後進入倒數計時
+- 剩餘時間以大字體清楚顯示，格式為「分:秒」
+- 剩餘 5 分鐘以內時，計時器顯示紅色，提醒時間快到
+- 時間歸零時自動播放提示音並顯示「時間到！」
+- 提供「暫停」和「重設」按鈕
+- 整體介面簡潔，以白色為主色調，適合在會議室投影</span>
+
+<span class="prompt-highlight-blue">只使用純 HTML、CSS 與原生 JavaScript，
+不引入任何外部函式庫、CDN 或框架。
+提示音使用 Web Audio API 產生，不依賴外部音效檔。</span>
+
+<span class="prompt-highlight">輸出完整、可直接在瀏覽器執行的單一 HTML 檔案。
+不需要任何說明文字，只輸出程式碼本身。</span></div>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ</div>
+      <div class="callout-body">
+        <strong>關於提示音的說明：</strong>加上「使用 Web Audio API 產生提示音」是為了讓計時器在沒有外部音效檔的情況下也能發出聲音——這樣你的 .html 檔案就是完全自足的，不需要搭配其他檔案。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S3 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 03</div>
+    <h2 class="section-heading">逐步操作：<em>從 Prompt 到可用工具</em></h2>
+    <p class="body-text">以下是完整的操作步驟。第一次做可以慢慢來，熟了之後整個流程不超過 3 分鐘：</p>
+
+    <div class="steps-list">
+
+      <div class="step-item done">
+        <div class="step-num-col"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">打開 Google AI Studio</div>
+          <div class="step-desc">在瀏覽器輸入 <strong>aistudio.google.com</strong>，用你的 Google 帳號登入。進入後選擇「New prompt」（新建提示），選 <strong>Gemini 2.0 Flash</strong> 或以上的模型。</div>
+        </div>
+      </div>
+
+      <div class="step-item done">
+        <div class="step-num-col"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">貼上 Prompt</div>
+          <div class="step-desc">把上方的完整 Prompt 複製，貼到 AI Studio 的輸入框，按 <strong>Enter</strong> 或送出按鈕。等待約 10–30 秒，Gemini 會開始輸出程式碼。</div>
+        </div>
+      </div>
+
+      <div class="step-item done">
+        <div class="step-num-col"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">複製輸出的程式碼</div>
+          <div class="step-desc">Gemini 輸出完成後，你會看到一大段以 <span class="inline-code">&lt;!DOCTYPE html&gt;</span> 開頭的文字。點擊右上角的「複製」按鈕，或是全選後按 <strong>Ctrl+C / Cmd+C</strong>。</div>
+          <div class="callout tip" style="margin-top:12px;">
+            <div class="callout-icon">✦</div>
+            <div class="callout-body">如果輸出夾雜著說明文字，只需要複製從 <span class="inline-code">&lt;!DOCTYPE html&gt;</span> 到最後 <span class="inline-code">&lt;/html&gt;</span> 之間的部分即可。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item done">
+        <div class="step-num-col"><div class="step-num">4</div></div>
+        <div class="step-body">
+          <div class="step-title">存成 .html 檔案</div>
+          <div class="step-desc">
+            開啟電腦上的「記事本」（Windows）或「TextEdit 文字編輯器」（Mac），貼上剛才複製的程式碼，然後：
+          </div>
+          <div class="callout info" style="margin-top:12px;">
+            <div class="callout-icon">ℹ</div>
+            <div class="callout-body">
+              <strong>Windows：</strong>點「檔案」→「另存新檔」→ 檔案名稱輸入 <span class="inline-code">meeting-timer.html</span>，存檔類型選「所有檔案」，按存檔。<br><br>
+              <strong>Mac：</strong>TextEdit 請先到「格式」→「純文字格式」，再「檔案」→「儲存」，輸入名稱 <span class="inline-code">meeting-timer.html</span>，確認存為純文字。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item done">
+        <div class="step-num-col"><div class="step-num">5</div></div>
+        <div class="step-body">
+          <div class="step-title">打開並使用你的工具</div>
+          <div class="step-desc">找到你剛存的 <span class="inline-code">meeting-timer.html</span>，<strong>雙擊</strong>它——瀏覽器應該會自動打開這個檔案，你的會議倒數計時器就完成了。試著輸入時間，按下開始。</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S4 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 04</div>
+    <h2 class="section-heading">做出來了，<em>然後呢</em>？</h2>
+    <p class="body-text">工具做好之後，試著回到 AI Studio，在<strong>同一個對話視窗</strong>繼續調整——這是練習「迭代」最好的機會：</p>
+
+    <div class="challenge-box">
+      <div class="challenge-label">挑戰題 · 試著說出這些調整</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="challenge-icon">🎨</div>
+          <div>「把計時器的數字顏色改成深藍色，背景改成米白色」——練習修改視覺樣式</div>
+        </div>
+        <div class="challenge-item">
+          <div class="challenge-icon">➕</div>
+          <div>「增加一個『+5 分鐘』的按鈕，可以在倒數中途延長時間」——練習新增功能</div>
+        </div>
+        <div class="challenge-item">
+          <div class="challenge-icon">📋</div>
+          <div>「在頁面頂部加一個輸入框，讓使用者填入今天的會議主題，並顯示在計時器下方」——練習新增欄位</div>
+        </div>
+        <div class="challenge-item">
+          <div class="challenge-icon">📱</div>
+          <div>「讓這個工具在手機上也能好看地顯示」——練習響應式設計</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <div class="callout-icon">★</div>
+      <div class="callout-body">
+        <strong>你剛剛完成了最重要的第一步。</strong>從這個計時器開始，你已經知道整個流程怎麼跑了。接下來的 Part 2，我們會用同樣的流程，做出更複雜、更實用、真正解決你工作痛點的商務工具。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S5 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 05</div>
+    <h2 class="section-heading">Part 1 <em>小結</em></h2>
+    <p class="body-text">完成了 Part 1，你現在具備了：</p>
+
+    <div style="display:flex;flex-direction:column;gap:12px;margin:24px 0;">
+      <div style="display:flex;align-items:flex-start;gap:16px;padding:18px 20px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);">
+        <div style="font-size:1.1rem;flex-shrink:0;">🧠</div>
+        <div>
+          <div style="font-size:.85rem;font-weight:700;margin-bottom:4px;">正確的認知</div>
+          <div style="font-size:.82rem;color:var(--c-muted);line-height:1.7;">Gemini 不只是聊天工具，它是你的軟體開發夥伴。你不需要學程式，你需要學的是描述需求。</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:16px;padding:18px 20px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);">
+        <div style="font-size:1.1rem;flex-shrink:0;">📐</div>
+        <div>
+          <div style="font-size:.85rem;font-weight:700;margin-bottom:4px;">黃金公式</div>
+          <div style="font-size:.82rem;color:var(--c-muted);line-height:1.7;">角色 ＋ 任務 ＋ 限制 ＋ 呈現，四個元素讓你的 Prompt 品質大幅提升。</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:16px;padding:18px 20px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);">
+        <div style="font-size:1.1rem;flex-shrink:0;">🛠</div>
+        <div>
+          <div style="font-size:.85rem;font-weight:700;margin-bottom:4px;">完整流程</div>
+          <div style="font-size:.82rem;color:var(--c-muted);line-height:1.7;">AI Studio → 輸出程式碼 → 存成 .html → 雙擊開啟使用。一個完整的工具製作循環。</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="body-text">Part 2 開始，我們進入真正的商務工具製作——更複雜的計算邏輯、更多欄位的互動介面，還有讓你的工具「看起來像花了百萬開發」的 UI 升級技巧。</p>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a class="nav-btn prev" href="CH1-2.html">
+    <span>←</span>
+    <div>
+      <div class="nav-btn-label">上一節</div>
+      <div class="nav-btn-title">1.2 黃金公式</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="../Part2-商務軍火庫/CH2-1.html">
+    <div>
+      <div class="nav-btn-label">進入 Part 2</div>
+      <div class="nav-btn-title">2.1 自動化計算工具</div>
+    </div>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Part 1 · 3 of 3</div>
+</footer>
+
+<script>
+// Scroll reveal
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: .1, rootMargin: '0px 0px -48px 0px' });
+  document.querySelectorAll('.lesson-section, .section-rule').forEach(el => {
+    el.classList.add('reveal'); io.observe(el);
+  });
+})();
+
+// 側邊章節導航點
+(function(){
+  const sections = Array.from(document.querySelectorAll('.lesson-section'));
+  const nav = document.getElementById('sectionDots');
+  if (!sections.length || !nav) return;
+  sections.forEach((sec, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'sdot';
+    btn.title = sec.querySelector('.section-heading')?.textContent?.trim().slice(0, 20) || ('第 ' + (i+1) + ' 節');
+    btn.addEventListener('click', () => sec.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    nav.appendChild(btn);
+  });
+  const dotIo = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      const i = sections.indexOf(e.target);
+      if (i >= 0) nav.children[i]?.classList.toggle('active', e.isIntersecting);
+    });
+    nav.classList.toggle('visible', Array.from(nav.children).some(d => d.classList.contains('active')));
+  }, { threshold: .3 });
+  sections.forEach(s => dotIo.observe(s));
+})();
+
+// 閱讀進度
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollHeight - d.clientHeight > 0
+    ? (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+
+// 互動示範計時器
+(function(){
+  let totalSec = 25 * 60;
+  let remaining = totalSec;
+  let timer = null;
+  let running = false;
+
+  const display = document.getElementById('demoTimer');
+  const startBtn = document.getElementById('demoStart');
+  const resetBtn = document.getElementById('demoReset');
+  const minInput = document.getElementById('demoMinutes');
+
+  function fmt(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+  }
+
+  function render() {
+    display.textContent = fmt(remaining);
+    display.classList.toggle('warning', remaining <= 300 && remaining > 0);
+  }
+
+  function tick() {
+    if (remaining <= 0) {
+      clearInterval(timer);
+      running = false;
+      startBtn.textContent = '開始';
+      display.textContent = '時間到！';
+      return;
+    }
+    remaining--;
+    render();
+  }
+
+  startBtn.addEventListener('click', () => {
+    if (!running) {
+      if (remaining === 0) {
+        remaining = parseInt(minInput.value || 25) * 60;
+      }
+      timer = setInterval(tick, 1000);
+      running = true;
+      startBtn.textContent = '暫停';
+    } else {
+      clearInterval(timer);
+      running = false;
+      startBtn.textContent = '繼續';
+    }
+  });
+
+  resetBtn.addEventListener('click', () => {
+    clearInterval(timer);
+    running = false;
+    startBtn.textContent = '開始';
+    remaining = parseInt(minInput.value || 25) * 60;
+    render();
+  });
+
+  minInput.addEventListener('change', () => {
+    if (!running) {
+      remaining = parseInt(minInput.value || 25) * 60;
+      render();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

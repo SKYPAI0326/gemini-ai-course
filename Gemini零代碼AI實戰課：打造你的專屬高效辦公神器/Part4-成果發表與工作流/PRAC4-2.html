@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成果發表與工作流 · 實例演練 2｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a4);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a4);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a4);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.tool-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:32px 0;}
+.tool-topbar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.tool-dot{width:10px;height:10px;border-radius:50%;}
+.tool-dot-r{background:#ff6058;} .tool-dot-y{background:#ffbd2e;} .tool-dot-g{background:#28c840;}
+.tool-label{flex:1;font-size:.72rem;color:var(--c-muted);font-family:'Courier New',monospace;}
+.tool-body{padding:28px 32px;}
+.copy-btn-blue{font-size:.72rem;color:var(--c-a4);background:none;border:1px solid rgba(107,127,163,.3);padding:3px 12px;border-radius:99px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.copy-btn-blue:hover{background:rgba(107,127,163,.08);}
+
+/* ── Prompt 庫 ── */
+.plib-toprow{display:flex;gap:10px;margin-bottom:16px;}
+.plib-search{flex:1;padding:10px 14px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.87rem;color:var(--c-text);background:var(--c-bg);}
+.plib-search:focus{outline:none;border-color:var(--c-a4);}
+.plib-search::placeholder{color:var(--c-muted);}
+.plib-tag-filter{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.tag-btn{font-size:.72rem;padding:4px 12px;border-radius:99px;border:1px solid var(--c-border);background:none;cursor:pointer;font-family:'Noto Sans TC',sans-serif;color:var(--c-muted);transition:all .15s;}
+.tag-btn.active{background:rgba(107,127,163,.12);border-color:var(--c-a4);color:var(--c-a4);}
+.plib-cards{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.plib-card{background:var(--c-bg);border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:14px 16px;}
+.plib-card-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.plib-card-title{font-size:.9rem;font-weight:700;color:var(--c-text);flex:1;}
+.plib-card-tag{font-size:.68rem;padding:2px 8px;border-radius:99px;background:rgba(107,127,163,.1);color:var(--c-a4);border:1px solid rgba(107,127,163,.2);}
+.plib-card-body{font-size:.82rem;color:var(--c-muted);line-height:1.7;margin-bottom:8px;white-space:pre-wrap;}
+.plib-card-footer{display:flex;justify-content:space-between;align-items:center;}
+.plib-card-date{font-size:.7rem;color:var(--c-muted);}
+.plib-copy-btn{font-size:.72rem;color:var(--c-a4);background:none;border:1px solid rgba(107,127,163,.25);padding:4px 12px;border-radius:99px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:background .15s;}
+.plib-copy-btn:hover{background:rgba(107,127,163,.1);}
+.plib-empty{text-align:center;padding:32px;font-size:.85rem;color:var(--c-muted);}
+.plib-add-form{background:var(--c-surface);border-radius:var(--radius-sm);padding:16px 18px;border:1px solid var(--c-border);}
+.plib-form-label{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;margin-bottom:10px;}
+.plib-form-row{display:flex;gap:10px;margin-bottom:10px;}
+.plib-form-input{flex:1;padding:9px 12px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.87rem;color:var(--c-text);background:var(--c-card);}
+.plib-form-input:focus{outline:none;border-color:var(--c-a4);}
+.plib-form-input::placeholder{color:var(--c-muted);}
+.plib-form-textarea{width:100%;padding:10px 12px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.85rem;color:var(--c-text);background:var(--c-card);resize:vertical;min-height:80px;line-height:1.7;margin-bottom:10px;}
+.plib-form-textarea:focus{outline:none;border-color:var(--c-a4);}
+.plib-form-textarea::placeholder{color:var(--c-muted);}
+.plib-save-btn{padding:10px 24px;background:var(--c-a4);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.87rem;font-weight:500;cursor:pointer;}
+.plib-save-btn:hover{opacity:.88;}
+
+.steps-list{display:flex;flex-direction:column;gap:0;margin:32px 0;}
+.step-item{display:flex;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:20px;top:44px;bottom:0;width:1px;background:var(--c-border);}
+.step-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px;padding-top:4px;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--c-card);border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-text);}
+.step-body{flex:1;padding:4px 0 32px 24px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+.step-desc strong{color:var(--c-text);font-weight:700;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.tip{background:rgba(107,127,163,.06);border:1px solid rgba(107,127,163,.2);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+.result-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.82rem;line-height:1.85;padding:22px 24px;border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;}
+.challenge-box{padding:28px 32px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);margin:28px 0;}
+.challenge-label{font-size:.7rem;color:var(--c-a4);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.challenge-list{display:flex;flex-direction:column;gap:12px;}
+.challenge-item{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;line-height:1.7;}
+.ci-num{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-a4);flex-shrink:0;width:20px;}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a4);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">實例演練</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回課程目錄</a>
+  <div class="hero-meta">
+    <div class="hero-part">PART 4 · 成果發表與工作流</div>
+    <div class="hero-divider-v"></div>
+    <div class="hero-num">實例演練 2</div>
+  </div>
+  <h1 class="lesson-title">個人 Prompt 庫管理器</h1>
+  <p class="lesson-tagline">把你在課程中練習的、工作中用過的、覺得好用的 AI 指令，統一存入這個工具，加上標籤和標題，隨時搜尋複製取用。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">PRACTICE GOALS</div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>建立你自己的第一個 Prompt 庫，存入至少 5 條指令</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>理解「新增、搜尋、過濾、複製」的 CRUD 工具邏輯</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>養成把好用 Prompt 即時記錄的習慣</span></div>
+  </div>
+</div>
+
+<div class="lesson-body">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">TOOL · 互動工具</div>
+    <h2 class="section-heading">新增、搜尋、一鍵複製你的 Prompt 庫</h2>
+    <p class="body-text">在下方填入標題、分類標籤和 Prompt 內容，儲存後即可在列表中搜尋和複製。注意：這個工具的資料存在記憶體中，重新整理頁面後會重置，課程結束後你可以用 Gemini 替它加上 localStorage 儲存功能。</p>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">prompt-library.html</div>
+      </div>
+      <div class="tool-body">
+        <div class="plib-toprow">
+          <input class="plib-search" type="text" placeholder="搜尋 Prompt 標題或內容…" id="plib-search" oninput="renderCards()">
+        </div>
+        <div class="plib-tag-filter" id="plib-tags"></div>
+        <div class="plib-cards" id="plib-cards"></div>
+        <div class="plib-add-form">
+          <div class="plib-form-label">＋ 新增 Prompt</div>
+          <div class="plib-form-row">
+            <input class="plib-form-input" type="text" placeholder="Prompt 標題" id="pf-title">
+            <input class="plib-form-input" type="text" placeholder="標籤（例：寫作、分析）" id="pf-tag" style="max-width:160px">
+          </div>
+          <textarea class="plib-form-textarea" placeholder="在這裡貼入你的完整 Prompt 指令…" id="pf-body"></textarea>
+          <button class="plib-save-btn" onclick="savePrompt()">儲存到庫</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>Prompt 庫的價值不在量，在品。</strong>只把真正用過、效果好的 Prompt 存進去，附上清楚的標題，讓自己一眼就知道這條指令是用來做什麼的。這是你最值錢的個人數位資產之一。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">HOW TO REPLICATE · 如何自己做出這個工具</div>
+    <h2 class="section-heading">讓 Gemini 幫你做一個有永久儲存功能的 Prompt 庫</h2>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">確定你需要哪些欄位</div>
+          <div class="step-desc">最基本的是標題和內容。如果你有很多種類的 Prompt，加上「分類標籤」可以讓搜尋更快。還需要「使用場景說明」嗎？先想清楚。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">複製以下指令貼入 Gemini</div>
+          <div class="step-desc">這個指令特別要求使用 <strong>localStorage</strong>，讓資料在關掉瀏覽器後也不會消失。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">存好後立刻把課程中最好的 5 個 Prompt 存入</div>
+          <div class="step-desc">趁記憶猶新，把這門課程學到的最好用的幾個 Prompt 全存進去，讓這個工具立刻有實質內容。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">→ 複製這段 Prompt 貼入 Gemini</div>
+        <button class="copy-btn-blue" style="margin-left:auto;" onclick="copyInstructions()">複製指令</button>
+      </div>
+      <div class="tool-body" style="padding:24px 28px;">
+        <div class="result-box" id="instruction-box">你是一位擅長製作互動工具的前端工程師。
+
+請製作一個「個人 Prompt 庫管理器」的單頁 HTML 工具，功能如下：
+
+【功能需求】
+- 新增 Prompt：包含「標題」、「分類標籤」（文字）、「Prompt 內容」三個欄位
+- 所有資料使用 localStorage 儲存，關閉視窗重開後資料仍在
+- 顯示所有已儲存的 Prompt 卡片，每張卡片包含：
+  · 標題（粗體）
+  · 標籤 badge
+  · Prompt 內容（最多顯示 3 行，可點擊展開）
+  · 儲存日期
+  · 「複製」按鈕、「刪除」按鈕
+- 頂部搜尋框：即時過濾（標題 + 內容 關鍵字搜尋）
+- 標籤過濾器：點選任一標籤可篩選同標籤的 Prompt
+- 空狀態提示（當庫中無內容時顯示引導文字）
+
+【設計要求】
+- 無印良品風格：背景 #f5f3ee，卡片 #ffffff，邊框 #d8d4cb
+- 強調色 #6b7fa3（霧藍），標籤 badge 用此色系
+- 字體：Shippori Mincho + Noto Sans TC（Google Fonts）
+- 圓角 6px，無陰影，無漸層
+
+請生成完整的單一 HTML 檔案。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">CHALLENGE · 進階挑戰</div>
+    <h2 class="section-heading">把 Prompt 庫打造成你的知識管理中心</html>
+    <div class="challenge-box">
+      <div class="challenge-label">PRACTICE VARIATIONS</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="ci-num">01</div>
+          <div>加入「使用次數計數」功能——每次點複製就 +1，讓最常用的 Prompt 自然排到最上方，建立你的個人熱門榜單。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">02</div>
+          <div>加入「匯出為 JSON」和「匯入 JSON」功能，讓你的 Prompt 庫可以備份到雲端或在不同設備間同步。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">03</div>
+          <div>把課程中 12 個單元最核心的 Prompt（每個單元選 1 個）全部存入，打造你的「課程精華 Prompt 集」，這就是你完課的最大收穫。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn" href="PRAC4-1.html">
+    <div>
+      <div class="nav-btn-label">← 上一個演練</div>
+      <div class="nav-btn-title">實例演練 1：工具上線前部署清單</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="PRAC4-3.html">
+    <div>
+      <div class="nav-btn-label">下一個演練 →</div>
+      <div class="nav-btn-title">實例演練 3：20 分鐘黑客松挑戰台</div>
+    </div>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Gemini 零代碼 AI 實戰課 · Part 4 實例演練</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('prog').style.width = (window.scrollY / total * 100) + '%';
+});
+
+let prompts = [
+  { id: 1, title: 'Prompt 黃金公式模板', tag: '通用', body: '【角色】\n你是一位（身分描述）。\n\n【任務】\n請幫我（動作 + 材料）。\n\n【限制】\n（語氣 / 字數 / 禁止事項）。\n\n【呈現格式】\n以（格式）呈現。', date: '2026-04-01' },
+  { id: 2, title: '會議記錄快速整理', tag: '會議', body: '你是一位高效的行政助理，擅長整理會議紀錄。\n請把以下會議記錄整理成「決議事項」和「待辦清單（含負責人）」兩個區塊，語氣正式，300 字以內。', date: '2026-04-01' },
+  { id: 3, title: '商業文件改寫（正式版）', tag: '寫作', body: '你是一位擅長商業文書的資深文字編輯。\n請把以下文字改寫為正式、專業的商業語氣，保留原意，字數可略增，繁體中文。', date: '2026-04-01' },
+];
+let nextId = 4;
+let activeTag = '';
+
+const TAGS = () => [...new Set(prompts.map(p => p.tag).filter(Boolean))];
+
+function renderTags() {
+  const allTags = TAGS();
+  const el = document.getElementById('plib-tags');
+  el.innerHTML = ['全部', ...allTags].map(t =>
+    `<button class="tag-btn ${(t === '全部' && !activeTag) || t === activeTag ? 'active' : ''}" onclick="filterTag('${t}')">${t}</button>`
+  ).join('');
+}
+
+function filterTag(tag) {
+  activeTag = tag === '全部' ? '' : tag;
+  renderTags();
+  renderCards();
+}
+
+function renderCards() {
+  const q = document.getElementById('plib-search').value.toLowerCase();
+  let list = prompts.filter(p =>
+    (!activeTag || p.tag === activeTag) &&
+    (!q || p.title.toLowerCase().includes(q) || p.body.toLowerCase().includes(q))
+  );
+  const el = document.getElementById('plib-cards');
+  if (list.length === 0) {
+    el.innerHTML = `<div class="plib-empty">暫無符合的 Prompt。試試其他關鍵字，或新增一條。</div>`;
+    return;
+  }
+  el.innerHTML = list.map(p => `
+    <div class="plib-card" id="pcard-${p.id}">
+      <div class="plib-card-header">
+        <div class="plib-card-title">${p.title}</div>
+        ${p.tag ? `<span class="plib-card-tag">${p.tag}</span>` : ''}
+      </div>
+      <div class="plib-card-body">${p.body.substring(0, 200)}${p.body.length > 200 ? '…' : ''}</div>
+      <div class="plib-card-footer">
+        <span class="plib-card-date">${p.date}</span>
+        <div style="display:flex;gap:6px">
+          <button class="plib-copy-btn" onclick="copyPromptById(${p.id}, this)">複製</button>
+          <button class="plib-copy-btn" style="color:var(--c-muted);border-color:var(--c-border)" onclick="deletePrompt(${p.id})">刪除</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function savePrompt() {
+  const title = document.getElementById('pf-title').value.trim();
+  const tag = document.getElementById('pf-tag').value.trim();
+  const body = document.getElementById('pf-body').value.trim();
+  if (!title || !body) { alert('請填入標題和 Prompt 內容。'); return; }
+  const now = new Date().toISOString().slice(0,10);
+  prompts.unshift({ id: nextId++, title, tag, body, date: now });
+  document.getElementById('pf-title').value = '';
+  document.getElementById('pf-tag').value = '';
+  document.getElementById('pf-body').value = '';
+  renderTags();
+  renderCards();
+}
+
+function deletePrompt(id) {
+  if (!confirm('確定要刪除這條 Prompt？')) return;
+  prompts = prompts.filter(p => p.id !== id);
+  renderTags();
+  renderCards();
+}
+
+function copyPromptById(id, btn) {
+  const p = prompts.find(x => x.id === id);
+  if (!p) return;
+  navigator.clipboard.writeText(p.body).then(() => {
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製', 1800);
+  });
+}
+
+function copyInstructions() {
+  const text = document.getElementById('instruction-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製指令', 1800);
+  });
+}
+
+renderTags();
+renderCards();
+</script>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>打造你的商務軍火庫 · 實例演練 2｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a2);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a2);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a2);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a2);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.tool-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:32px 0;}
+.tool-topbar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.tool-dot{width:10px;height:10px;border-radius:50%;}
+.tool-dot-r{background:#ff6058;} .tool-dot-y{background:#ffbd2e;} .tool-dot-g{background:#28c840;}
+.tool-label{flex:1;font-size:.72rem;color:var(--c-muted);font-family:'Courier New',monospace;}
+.tool-body{padding:32px 36px;}
+.copy-btn{font-size:.72rem;color:var(--c-a2);background:none;border:1px solid rgba(201,150,58,.3);padding:3px 12px;border-radius:99px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.copy-btn:hover{background:rgba(201,150,58,.08);}
+
+/* ── 時區協調板 ── */
+.tz-setup{display:flex;flex-direction:column;gap:16px;margin-bottom:24px;}
+.tz-row{display:flex;gap:10px;align-items:center;}
+.tz-select{flex:1;padding:10px 12px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.87rem;color:var(--c-text);background:var(--c-bg);appearance:none;cursor:pointer;}
+.tz-select:focus{outline:none;border-color:var(--c-a2);}
+.tz-name-input{flex:1;padding:10px 12px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.87rem;color:var(--c-text);background:var(--c-bg);}
+.tz-name-input:focus{outline:none;border-color:var(--c-a2);}
+.tz-remove{width:32px;height:32px;border:none;background:none;color:var(--c-muted);cursor:pointer;font-size:1.1rem;flex-shrink:0;}
+.tz-remove:hover{color:var(--c-text);}
+.tz-add-btn{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--c-muted);background:none;border:1px dashed var(--c-border);padding:8px 16px;border-radius:var(--radius-sm);cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.tz-add-btn:hover{border-color:var(--c-a2);color:var(--c-a2);}
+.tz-check-btn{width:100%;padding:12px;background:var(--c-a2);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;transition:opacity .2s;margin-top:8px;}
+.tz-check-btn:hover{opacity:.88;}
+.time-grid{display:none;margin-top:20px;overflow-x:auto;}
+.time-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+.time-table th{padding:8px 10px;text-align:center;font-weight:500;color:var(--c-muted);border-bottom:1px solid var(--c-border);white-space:nowrap;}
+.time-table td{padding:7px 8px;text-align:center;border-bottom:1px solid rgba(216,212,203,.5);white-space:nowrap;}
+.time-table tr:last-child td{border-bottom:none;}
+.time-cell-ok{background:rgba(90,122,90,.1);color:var(--c-a3);font-weight:700;border-radius:3px;}
+.time-cell-bad{color:var(--c-muted);}
+.tz-legend{display:flex;gap:20px;margin-top:12px;font-size:.75rem;color:var(--c-muted);}
+.legend-item{display:flex;align-items:center;gap:6px;}
+.legend-dot{width:10px;height:10px;border-radius:2px;}
+
+.steps-list{display:flex;flex-direction:column;gap:0;margin:32px 0;}
+.step-item{display:flex;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:20px;top:44px;bottom:0;width:1px;background:var(--c-border);}
+.step-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px;padding-top:4px;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--c-card);border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-text);}
+.step-body{flex:1;padding:4px 0 32px 24px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+.step-desc strong{color:var(--c-text);font-weight:700;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+.result-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.82rem;line-height:1.85;padding:22px 24px;border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;}
+.challenge-box{padding:28px 32px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);margin:28px 0;}
+.challenge-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.challenge-list{display:flex;flex-direction:column;gap:12px;}
+.challenge-item{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;line-height:1.7;}
+.ci-num{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-a2);flex-shrink:0;width:20px;}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a2);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">實例演練</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回課程目錄</a>
+  <div class="hero-meta">
+    <div class="hero-part">PART 2 · 打造你的商務軍火庫</div>
+    <div class="hero-divider-v"></div>
+    <div class="hero-num">實例演練 2</div>
+  </div>
+  <h1 class="lesson-title">跨時區會議時段協調板</h1>
+  <p class="lesson-tagline">選擇多個城市的時區，工具自動顯示各時區在一天 24 小時內的對應時間，並標示出所有人都在上班時間的「黃金時段」。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">PRACTICE GOALS</div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>理解「邏輯轉換」類工具的核心設計思路</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>練習操作多選項輸入 + 條件判斷的工具類型</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>將這個工具改成你自己的遠距工作時區版本</span></div>
+  </div>
+</div>
+
+<div class="lesson-body">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">TOOL · 互動工具</div>
+    <h2 class="section-heading">選擇時區，找出共同可用時段</h2>
+    <p class="body-text">選擇要協調的城市（可新增多個），點「查看時段」後，工具會列出各城市在不同小時的本地時間，並以綠色標示所有參與者都在正常上班時間（9:00–18:00）的時段。</p>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">timezone-meeting-planner.html</div>
+      </div>
+      <div class="tool-body">
+        <div class="tz-setup">
+          <div id="tz-list"></div>
+          <button class="tz-add-btn" onclick="addTzRow()">＋ 新增城市</button>
+        </div>
+        <button class="tz-check-btn" onclick="calcTimezone()">查看共同可用時段 →</button>
+        <div class="time-grid" id="time-grid">
+          <div class="time-table" id="time-table-wrap"></div>
+          <div class="tz-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(90,122,90,.2)"></div><span>所有人皆可開會（9:00–18:00）</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--c-surface)"></div><span>有人不在上班時間</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>這個工具的核心是「邏輯轉換」：</strong>把一個城市的時間，按照時差規則換算成另一個城市的時間，再用條件判斷找出交集。你可以用同樣的邏輯，製作「庫存換算」、「單位轉換」等各種轉換工具。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">HOW TO REPLICATE · 如何自己做出這個工具</div>
+    <h2 class="section-heading">讓 Gemini 幫你做一個時區協調工具</h2>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">確認你需要哪幾個固定的城市選項</div>
+          <div class="step-desc">如果你常和固定幾個城市的同事開會，可以在指令中直接寫死城市列表，這樣工具更輕巧。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">複製以下指令並貼入 Gemini Canvas</div>
+          <div class="step-desc">關鍵描述是「<strong>用 UTC 偏移量計算各時區對應時間</strong>」——這樣 Gemini 就知道核心邏輯要用時差換算，而不是寫死答案。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">用你實際需要的城市組合測試</div>
+          <div class="step-desc">選擇你最常用的城市組合，確認時差計算正確，再存檔。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">→ 複製這段 Prompt 貼入 Gemini</div>
+        <button class="copy-btn" style="margin-left:auto;" onclick="copyInstructions()">複製指令</button>
+      </div>
+      <div class="tool-body" style="padding:24px 28px;">
+        <div class="result-box" id="instruction-box">你是一位擅長製作互動工具的前端工程師。
+
+請製作一個「跨時區會議時段協調板」的單頁 HTML 工具，功能如下：
+
+【功能需求】
+- 使用者可選擇 2–5 個城市（下拉選單，包含：台北、東京、新加坡、首爾、上海、香港、雪梨、倫敦、巴黎、紐約、洛杉磯、芝加哥，含 UTC 偏移量）
+- 可自行標注每個城市的備註名稱（例如「客戶端」、「台灣辦公室」）
+- 「查看時段」按鈕：生成一個時間對照表，顯示以台北時間 0:00–23:00 為基準，每隔 1 小時各城市的對應本地時間
+- 用綠色背景標示「所有城市皆在 9:00–18:00 上班時間」的時段
+- 圖例說明顏色意義
+
+【設計要求】
+- 無印良品風格：背景 #f5f3ee，卡片 #ffffff，邊框 #d8d4cb
+- 強調色 #c9963a（芥末黃），字體 Shippori Mincho + Noto Sans TC（Google Fonts）
+- 可用時段用 rgba(90,122,90,.15) 淡綠色標示
+- 圓角 6px，無陰影，無漸層
+
+請生成完整的單一 HTML 檔案。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">CHALLENGE · 進階挑戰</div>
+    <h2 class="section-heading">把這個工具擴展到更多場景</h2>
+    <div class="challenge-box">
+      <div class="challenge-label">PRACTICE VARIATIONS</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="ci-num">01</div>
+          <div>讓工具允許每個城市自訂「上班時間」（不一定是 9–18），例如某些城市可能有午休空缺，或有彈性工時。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">02</div>
+          <div>加入「複製可用時段」功能——把所有綠色標示的時段整理成一段文字，可直接貼到 Email 或 Slack 邀約。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">03</div>
+          <div>把「時區轉換」的邏輯改成「貨幣轉換」——輸入匯率、輸入金額，計算多種貨幣的等值金額。這是同一種工具邏輯的延伸應用。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn" href="PRAC2-1.html">
+    <div>
+      <div class="nav-btn-label">← 上一個演練</div>
+      <div class="nav-btn-title">實例演練 1：專案工時費用試算機</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="PRAC2-3.html">
+    <div>
+      <div class="nav-btn-label">下一個演練 →</div>
+      <div class="nav-btn-title">實例演練 3：介面配色方案速查器</div>
+    </div>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Gemini 零代碼 AI 實戰課 · Part 2 實例演練</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('prog').style.width = (window.scrollY / total * 100) + '%';
+});
+
+const TZ_LIST = [
+  { name: '台北', offset: 8 }, { name: '東京', offset: 9 }, { name: '新加坡', offset: 8 },
+  { name: '首爾', offset: 9 }, { name: '上海', offset: 8 }, { name: '香港', offset: 8 },
+  { name: '雪梨', offset: 10 }, { name: '倫敦', offset: 0 }, { name: '巴黎', offset: 1 },
+  { name: '紐約', offset: -5 }, { name: '洛杉磯', offset: -8 }, { name: '芝加哥', offset: -6 }
+];
+
+let rowId = 0;
+
+function addTzRow(defaultIdx = 0, defaultLabel = '') {
+  rowId++;
+  const id = rowId;
+  const div = document.createElement('div');
+  div.className = 'tz-row';
+  div.id = 'tzrow-' + id;
+  const opts = TZ_LIST.map((t, i) => `<option value="${i}" ${i === defaultIdx ? 'selected' : ''}>${t.name} (UTC${t.offset >= 0 ? '+' : ''}${t.offset})</option>`).join('');
+  div.innerHTML = `
+    <select class="tz-select" id="tzsel-${id}">${opts}</select>
+    <input class="tz-name-input" type="text" placeholder="備註（例：台灣辦公室）" value="${defaultLabel}" id="tzlabel-${id}">
+    <button class="tz-remove" onclick="removeTzRow(${id})">×</button>`;
+  document.getElementById('tz-list').appendChild(div);
+}
+
+function removeTzRow(id) {
+  const el = document.getElementById('tzrow-' + id);
+  if (el) el.remove();
+}
+
+function calcTimezone() {
+  const rows = document.querySelectorAll('[id^="tzrow-"]');
+  if (rows.length < 2) { alert('請至少選擇兩個城市。'); return; }
+
+  const selected = [];
+  rows.forEach(row => {
+    const id = row.id.replace('tzrow-', '');
+    const idx = parseInt(document.getElementById('tzsel-' + id).value);
+    const label = document.getElementById('tzlabel-' + id).value.trim();
+    selected.push({ ...TZ_LIST[idx], label: label || TZ_LIST[idx].name });
+  });
+
+  const baseOffset = 8; // 台北
+  let html = `<table class="time-table"><thead><tr><th>台北時間</th>`;
+  selected.forEach(tz => { html += `<th>${tz.label}<br><small style="font-weight:400;color:var(--c-muted)">UTC${tz.offset >= 0 ? '+' : ''}${tz.offset}</small></th>`; });
+  html += `</tr></thead><tbody>`;
+
+  for (let h = 0; h < 24; h++) {
+    const times = selected.map(tz => {
+      let localH = ((h - baseOffset + tz.offset) % 24 + 24) % 24;
+      return localH;
+    });
+    const allOk = times.every(t => t >= 9 && t < 18);
+    html += `<tr>`;
+    html += `<td style="color:var(--c-muted)">${String(h).padStart(2, '0')}:00</td>`;
+    times.forEach(t => {
+      const cls = allOk ? 'time-cell-ok' : 'time-cell-bad';
+      html += `<td class="${cls}">${String(t).padStart(2, '0')}:00</td>`;
+    });
+    html += `</tr>`;
+  }
+  html += `</tbody></table>`;
+
+  document.getElementById('time-table-wrap').innerHTML = html;
+  document.getElementById('time-grid').style.display = 'block';
+  document.getElementById('time-grid').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copyInstructions() {
+  const text = document.getElementById('instruction-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製指令', 1800);
+  });
+}
+
+// 預設城市
+addTzRow(0, '台灣辦公室');
+addTzRow(7, '倫敦客戶');
+addTzRow(9, '紐約合作方');
+</script>
+</body>
+</html>

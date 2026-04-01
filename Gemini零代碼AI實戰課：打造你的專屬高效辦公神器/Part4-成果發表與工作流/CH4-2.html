@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH4-2 建立專屬 Prompt 庫｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a4);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a4);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a4);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a4);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.inline-code{font-family:'Courier New',monospace;font-size:.85em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+
+/* ── Prompt 解剖卡 ── */
+.formula-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0;}
+.formula-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:18px 16px;text-align:center;}
+.formula-num{font-family:'Shippori Mincho',serif;font-size:1.5rem;font-weight:700;color:var(--c-a4);margin-bottom:6px;}
+.formula-name{font-size:.9rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.formula-desc{font-size:.75rem;color:var(--c-muted);line-height:1.55;}
+.formula-plus{display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--c-border);font-weight:700;padding-top:16px;}
+
+/* ── Prompt 範本卡 ── */
+.template-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:28px 0;}
+.template-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+.template-title{font-size:.72rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;}
+.template-tag{font-size:.68rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.07);padding:2px 10px;border-radius:99px;font-weight:500;}
+.template-body{padding:24px 28px;font-family:'Courier New',monospace;font-size:.83rem;line-height:1.9;color:var(--c-text);}
+.t-label{color:var(--c-a4);font-weight:700;}
+.t-fill{color:var(--c-a2);}
+.t-note{color:var(--c-muted);font-size:.75rem;}
+
+/* ── 分類卡列 ── */
+.cat-list{display:flex;flex-direction:column;gap:10px;margin:28px 0;}
+.cat-item{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:16px 20px;display:flex;gap:16px;align-items:flex-start;}
+.cat-icon{font-size:1.2rem;flex-shrink:0;margin-top:2px;}
+.cat-name{font-size:.9rem;font-weight:700;color:var(--c-text);margin-bottom:4px;}
+.cat-desc{font-size:.8rem;color:var(--c-muted);line-height:1.65;}
+.cat-examples{font-size:.75rem;color:var(--c-a4);margin-top:4px;font-family:'Courier New',monospace;}
+
+/* ── 迭代展示 ── */
+.iter-list{display:flex;flex-direction:column;gap:0;margin:28px 0;}
+.iter-item{display:flex;gap:20px;padding:20px 0;border-bottom:1px solid var(--c-border);}
+.iter-item:last-child{border-bottom:none;}
+.iter-ver{font-size:.72rem;font-weight:700;letter-spacing:.5px;padding:3px 10px;border-radius:99px;height:fit-content;white-space:nowrap;margin-top:2px;}
+.ver-v1{background:rgba(201,150,58,.12);color:var(--c-a2);}
+.ver-v2{background:rgba(107,127,163,.12);color:var(--c-a4);}
+.ver-v3{background:rgba(90,122,90,.12);color:var(--c-a3);}
+.iter-body{}
+.iter-title{font-size:.88rem;font-weight:700;color:var(--c-text);margin-bottom:4px;}
+.iter-box{font-family:'Courier New',monospace;font-size:.78rem;background:var(--c-surface);border-radius:var(--radius-sm);padding:10px 14px;color:var(--c-text);line-height:1.7;margin-bottom:6px;}
+.iter-note{font-size:.75rem;color:var(--c-muted);line-height:1.55;}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 動態進場 ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.lesson-hero .back-link      {animation:fadeUp .4s ease both;}
+.lesson-hero .hero-meta      {animation:fadeUp .45s .08s ease both;}
+.lesson-hero .lesson-title   {animation:fadeUp .55s .15s ease both;}
+.lesson-hero .lesson-tagline {animation:fadeUp .5s .26s ease both;}
+.lesson-hero .outcomes       {animation:fadeUp .45s .36s ease both;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+.section-rule{transform-origin:left center;opacity:0;transition:opacity .4s ease,transform .6s cubic-bezier(.16,1,.3,1);transform:scaleX(.3);}
+.section-rule.in{opacity:1;transform:scaleX(1);}
+.section-dots{position:fixed;left:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40;opacity:0;transition:opacity .4s ease;}
+.section-dots.visible{opacity:1;}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--c-border);cursor:pointer;transition:background .3s ease,transform .3s ease;border:none;padding:0;}
+.sdot.active{background:var(--c-a4);transform:scale(1.5);}
+@media(max-width:1100px){.section-dots{display:none;}}
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a4);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">CH4-2</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="progressFill"></div></div>
+<nav class="section-dots" id="sectionDots" aria-label="章節導航"></nav>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 返回課程目錄</a>
+  <div class="hero-meta">
+    <span class="hero-part">PART 4 · 成果發表與未來工作流</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">4.2</span>
+  </div>
+  <h1 class="lesson-title">建立專屬 Prompt 庫：<br>打造你的數位資產</h1>
+  <p class="lesson-tagline">每次你寫出一個好用的 Prompt，就是在積累一項可以反覆使用的技能資產。把它整理好、存起來，三個月後的你會感謝現在這個你。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">學完這節，你會有</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>一套 Prompt 分類框架，可立即套用到自己的工作</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>標準化的 Prompt 範本格式，讓每條指令都可讀、可改</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>Prompt 迭代升級的方法：從 V1 到 V3 的演化路徑</div>
+  </div>
+</section>
+
+<main class="lesson-body">
+
+  <!-- S1 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 01</div>
+    <h2 class="section-heading">Prompt 是一種<em>可以積累的技能資產</em></h2>
+    <p class="body-text">大多數人使用 AI 的方式是「用完就丟」——每次需要的時候臨時想一個 Prompt，用完關掉，下次再重想一次。這樣永遠停在起點。</p>
+    <p class="body-text">真正進階的做法是把每個有效的 Prompt 當成「工具」來對待：<strong>存起來、整理好、可以隨時取用</strong>。當你的 Prompt 庫累積到一定程度，你會發現自己的工作效率和輸出品質跟同事拉開了明顯差距。</p>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ</div>
+      <div class="callout-body">
+        <strong>Prompt 庫的複利效果：</strong>你花 5 分鐘整理一條 Prompt，之後每次使用只需要 30 秒。一年用 50 次，省下超過 4 小時。而且用越多次，Prompt 就越精緻，輸出品質越高。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S2 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 02</div>
+    <h2 class="section-heading">Prompt 公式回顧：<em>四個要素</em></h2>
+    <p class="body-text">在第一章我們學過 Prompt 的四要素公式。在整理 Prompt 庫時，這個框架也是你的組織工具——每一條存起來的 Prompt 都應該對照這四個要素來檢查完整度：</p>
+
+    <div class="formula-grid">
+      <div class="formula-card">
+        <div class="formula-num">①</div>
+        <div class="formula-name">角色</div>
+        <div class="formula-desc">你是一位…<br>擅長…的…工程師</div>
+      </div>
+      <div class="formula-card">
+        <div class="formula-num">②</div>
+        <div class="formula-name">任務</div>
+        <div class="formula-desc">幫我製作…<br>輸出…格式</div>
+      </div>
+      <div class="formula-card">
+        <div class="formula-num">③</div>
+        <div class="formula-name">限制</div>
+        <div class="formula-desc">不使用外部 library<br>單一 HTML 檔</div>
+      </div>
+      <div class="formula-card">
+        <div class="formula-num">④</div>
+        <div class="formula-name">呈現</div>
+        <div class="formula-desc">RWD 設計<br>色彩系統指定</div>
+      </div>
+    </div>
+
+    <p class="body-text">存入 Prompt 庫之前，快速掃一遍這四個要素。缺少「限制」的 Prompt 往往產生不穩定的結果；缺少「角色」的 Prompt 輸出會比較平庸。</p>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S3 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 03</div>
+    <h2 class="section-heading">建立你的<em>分類框架</em></h2>
+    <p class="body-text">依照使用目的分類是最實用的方式。以下是一個以職場工作者為主的分類框架，可以直接套用或依自己需求調整：</p>
+
+    <div class="cat-list">
+      <div class="cat-item">
+        <div class="cat-icon">🛠</div>
+        <div>
+          <div class="cat-name">工具製作類</div>
+          <div class="cat-desc">生成可直接使用的 HTML 工具，是本課程的核心分類</div>
+          <div class="cat-examples">計算機、排班表、漏斗圖、路徑圖、倒數計時器</div>
+        </div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-icon">✍️</div>
+        <div>
+          <div class="cat-name">文字加工類</div>
+          <div class="cat-desc">改寫、潤稿、摘要、翻譯、格式轉換</div>
+          <div class="cat-examples">會議記錄摘要、Email 改寫、報告潤色、條列式整理</div>
+        </div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-icon">📊</div>
+        <div>
+          <div class="cat-name">分析決策類</div>
+          <div class="cat-desc">幫助思考、拆解問題、生成選項</div>
+          <div class="cat-examples">SWOT 分析、競品比較、方案優缺點評估</div>
+        </div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-icon">🎨</div>
+        <div>
+          <div class="cat-name">視覺設計類</div>
+          <div class="cat-desc">生成 UI 組件、設計稿描述、色彩方案</div>
+          <div class="cat-examples">Landing page、卡片元件、配色建議、設計規範</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S4 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 04</div>
+    <h2 class="section-heading">Prompt 範本格式：<em>讓每條指令都可讀可改</em></h2>
+    <p class="body-text">存入 Prompt 庫的指令，建議用固定格式記錄——不只存「指令本身」，還要存「使用情境」和「可替換的變數」，讓三個月後的你不需要重新理解就能直接套用：</p>
+
+    <div class="template-wrap">
+      <div class="template-head">
+        <span class="template-title">Prompt 範本格式</span>
+        <span class="template-tag">可複製的結構</span>
+      </div>
+      <div class="template-body">
+<span class="t-label"># 名稱：</span><span class="t-fill">互動式銷售漏斗生成器</span>
+<span class="t-label"># 分類：</span><span class="t-fill">工具製作類 / 視覺化</span>
+<span class="t-label"># 使用情境：</span><span class="t-fill">需要向老闆報告業務漏斗時，或要給客戶看轉換率分析</span>
+<span class="t-label"># 變數：</span>
+  <span class="t-fill">【漏斗層數】</span><span class="t-note">← 預設 5 層，可改為 3-7 層</span>
+  <span class="t-fill">【各層名稱與數字】</span><span class="t-note">← 換成你自己的業務數據</span>
+  <span class="t-fill">【主色調】</span><span class="t-note">← 預設鼠尾草綠，可換品牌色</span>
+
+<span class="t-label"># 指令：</span>
+你是一位擅長數據視覺化的資深前端工程師。
+請幫我用純 HTML + SVG + JavaScript 製作
+一個「互動式銷售漏斗圖」…（完整指令略）
+
+<span class="t-label"># 上次使用：</span><span class="t-fill">2024-03-15，Q1 業績報告</span>
+<span class="t-label"># 備註：</span><span class="t-fill">輸出後記得把各層標籤改為中文</span>
+      </div>
+    </div>
+
+    <p class="body-text">這個格式的關鍵在於「變數」欄位——把每次需要替換的地方標記出來，下次使用時只需要填入新數字，不需要重讀整段指令。</p>
+
+    <div class="callout tip">
+      <div class="callout-icon">✦</div>
+      <div class="callout-body">
+        <strong>存在哪裡？</strong>Notion、Obsidian、Apple Notes、或是一個 Excel 試算表都可以。重點是放在你每天都會打開的地方，不然存了也不會用。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <!-- S5 -->
+  <div class="lesson-section">
+    <div class="section-eyebrow">Section 05</div>
+    <h2 class="section-heading">迭代升級：<em>從 V1 到 V3 的演化</em></h2>
+    <p class="body-text">一條好的 Prompt 不是第一次就寫好的。每次使用完，把「哪裡輸出得不夠理想」記下來，下次使用前補進去，Prompt 就會越來越精準。以下是一個真實的迭代過程：</p>
+
+    <div class="iter-list">
+      <div class="iter-item">
+        <div class="iter-ver ver-v1">V1</div>
+        <div>
+          <div class="iter-title">第一版：功能正確，但細節粗糙</div>
+          <div class="iter-box">幫我做一個銷售漏斗圖，用 HTML</div>
+          <div class="iter-note">生成了，但沒有互動效果、顏色難看、沒有轉換率標籤</div>
+        </div>
+      </div>
+      <div class="iter-item">
+        <div class="iter-ver ver-v2">V2</div>
+        <div>
+          <div class="iter-title">第二版：加入互動和視覺規格</div>
+          <div class="iter-box">用純 HTML + SVG 製作互動式銷售漏斗，hover 顯示各層人數和轉換率，顏色用鼠尾草綠色系由深到淺</div>
+          <div class="iter-note">好很多，但 hover tooltip 在手機上位置跑掉，也缺少進場動畫</div>
+        </div>
+      </div>
+      <div class="iter-item">
+        <div class="iter-ver ver-v3">V3</div>
+        <div>
+          <div class="iter-title">第三版：加入 RWD 和動畫規格</div>
+          <div class="iter-box">…RWD，tooltip 不超出螢幕邊界；頁面載入時各層依序淡入；所有資料集中在 JS 陣列方便修改</div>
+          <div class="iter-note">現在這個版本就是本課程 CH3-3 用的 Prompt，可以直接複製</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <div class="callout-icon">★</div>
+      <div class="callout-body">
+        <strong>迭代的節奏：</strong>每次使用完，花 2 分鐘把「這次哪裡不夠好」加進備註，下次使用前合併進指令。三次迭代之後，大多數 Prompt 就已經非常精準了。
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<nav class="lesson-nav">
+  <a class="nav-btn prev" href="CH4-1.html">
+    <span>←</span>
+    <div>
+      <div class="nav-btn-label">上一節</div>
+      <div class="nav-btn-title">4.1 工具部署：存下來、隨時用</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="CH4-3.html">
+    <div>
+      <div class="nav-btn-label">下一節</div>
+      <div class="nav-btn-title">4.3 極速黑客松</div>
+    </div>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Part 4 · 2 of 3</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollHeight - d.clientHeight > 0
+    ? (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.1, rootMargin:'0px 0px -48px 0px'});
+  document.querySelectorAll('.lesson-section, .section-rule').forEach(el => { el.classList.add('reveal'); io.observe(el); });
+})();
+(function(){
+  const sections = Array.from(document.querySelectorAll('.lesson-section'));
+  const nav = document.getElementById('sectionDots');
+  if(!sections.length||!nav) return;
+  sections.forEach((sec,i) => {
+    const btn = document.createElement('button');
+    btn.className='sdot';
+    btn.title = sec.querySelector('.section-heading')?.textContent?.trim().slice(0,20)||('第'+(i+1)+'節');
+    btn.addEventListener('click',()=>sec.scrollIntoView({behavior:'smooth',block:'start'}));
+    nav.appendChild(btn);
+  });
+  const dotIo = new IntersectionObserver(entries => {
+    entries.forEach(e => { const i=sections.indexOf(e.target); if(i>=0) nav.children[i]?.classList.toggle('active',e.isIntersecting); });
+    nav.classList.toggle('visible', Array.from(nav.children).some(d=>d.classList.contains('active')));
+  },{threshold:.3});
+  sections.forEach(s=>dotIo.observe(s));
+})();
+</script>
+</body>
+</html>
