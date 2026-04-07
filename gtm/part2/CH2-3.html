@@ -204,10 +204,20 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
 
     <ul class="body-text" style="padding-left: 20px; margin-bottom: 24px;">
       <li>新增代碼，類型選擇 <strong>「Google Analytics: GA4 事件」</strong>。</li>
-      <li>測量 ID：填寫你的 GA4 ID。</li>
+      <li>評估 ID：點欄位旁的選取鈕，選擇在 2.1 建立的 <strong>Google 代碼</strong>（GTM 會顯示「在這個容器中找到了 Google 代碼」的提示，確認後選取即可）。不需要手動輸入 G- 開頭的 ID。</li>
       <li>事件名稱：填寫 <span class="inline-code">click_promo_button</span>。（⚠️請養成使用全小寫英文加底線的好習慣）</li>
       <li>觸發條件：選擇剛剛建立好的 <strong>「點擊 - 特定優惠按鈕」</strong>。儲存。</li>
     </ul>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ</div>
+      <div class="callout-body">
+        <strong>為什麼選取 Google 代碼，而不是手動輸入 ID？</strong><br>
+        選取方式讓所有事件代碼都引用同一個來源。未來若評估 ID 需要更換，只需修改 CH2-1 建立的那一個 Google 代碼，全部事件代碼自動跟著更新，不必逐一修改。<br><br>
+        <strong>進階做法：常數變數（Constant Variable）</strong><br>
+        資深設定者也常在 GTM「變數」中新增一個類型為「常數」的變數，命名為 <span class="inline-code">GA4_ID</span>，內容填入評估 ID。之後所有代碼只要在 ID 欄位選取 <span class="inline-code">{{GA4_ID}}</span> 即可，效果相同。
+      </div>
+    </div>
 
     <div class="callout info">
       <div class="callout-icon">⚡</div>

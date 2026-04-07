@@ -252,7 +252,7 @@ details.cl-detail summary:hover{background:rgba(181,112,58,.04);}
         <summary>查看詳細步驟</summary>
         <div class="cl-detail-body">
           <div class="detail-step"><div class="detail-step-num">1</div><div class="detail-step-text">GTM → 代碼 → 新增，類型選「Google Analytics：GA4 事件」</div></div>
-          <div class="detail-step"><div class="detail-step-num">2</div><div class="detail-step-text">評估 ID 選擇已建立的 Google 代碼（或直接填 <span class="inline-code">G-XXXXXXXX</span>）</div></div>
+          <div class="detail-step"><div class="detail-step-num">2</div><div class="detail-step-text">評估 ID：點欄位旁的選取鈕，選擇已建立的 <strong>Google 代碼</strong>（GTM 會顯示「在這個容器中找到了 Google 代碼」）。不需要手動輸入 G- 開頭的 ID——選取方式可讓所有事件代碼共用同一個來源，日後更換 ID 只需改一處。</div></div>
           <div class="detail-step"><div class="detail-step-num">3</div><div class="detail-step-text">事件名稱依照語意命名（建議格式：<span class="inline-code">動詞_受詞</span>，例如 <span class="inline-code">click_phone_number</span>、<span class="inline-code">submit_contact_form</span>、<span class="inline-code">click_external_link</span>）</div></div>
           <div class="detail-step"><div class="detail-step-num">4</div><div class="detail-step-text">視需要新增事件參數，將有意義的資訊帶入 GA4。常見參數：<br>
             · <span class="inline-code">phone_number</span> = <span class="inline-code">{{Click URL}}</span>（電話點擊）<br>
