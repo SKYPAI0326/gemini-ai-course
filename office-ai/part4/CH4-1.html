@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4.1 找出高價值場景｜辦公室 AI 工具實務應用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a1:#b5703a;--c-a2:#c9963a;--c-a3:#5a7a5a;--c-a4:#6b7fa3;--c-a5:#7a9ea3;--radius:6px;--radius-sm:4px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a2);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a2);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a2);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--c-text);}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a2);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a2);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(201,150,58,.07);border:1px solid rgba(201,150,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;color:var(--c-text);}
+.callout-body strong{font-weight:700;}
+.concept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0;}
+.concept-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:22px 20px;}
+.concept-num{font-family:'Shippori Mincho',serif;font-size:1.5rem;font-weight:700;color:var(--c-a2);margin-bottom:8px;}
+.concept-title{font-size:.85rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.concept-desc{font-size:.78rem;color:var(--c-muted);line-height:1.7;}
+.step-list{display:flex;flex-direction:column;gap:24px;margin:28px 0;}
+.step-item{display:flex;gap:20px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:24px;}
+.step-num{font-family:'Shippori Mincho',serif;font-size:1.4rem;font-weight:700;color:var(--c-a2);flex-shrink:0;width:48px;line-height:1;}
+.step-content{flex:1;}
+.step-title{font-weight:700;font-size:.95rem;color:var(--c-text);margin-bottom:8px;}
+.step-desc{font-size:.88rem;color:var(--c-muted);line-height:1.8;margin-bottom:12px;}
+.step-example{background:var(--c-surface);border-radius:var(--radius-sm);padding:14px 16px;font-family:'Courier New',monospace;font-size:.82rem;color:var(--c-text);line-height:1.8;white-space:pre-wrap;}
+.output-box{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin-top:20px;}
+.output-header{padding:16px 22px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;}
+.output-label{font-size:.72rem;color:var(--c-a2);font-weight:500;letter-spacing:.5px;}
+.copy-btn{font-size:.75rem;color:var(--c-a2);background:rgba(201,150,58,.1);border:1px solid rgba(201,150,58,.2);padding:4px 12px;border-radius:var(--radius-sm);cursor:pointer;}
+.copy-btn:hover{background:rgba(201,150,58,.2);}
+.output-body{padding:20px 22px;}
+.output-text{font-family:'Courier New',monospace;font-size:.84rem;color:var(--c-text);line-height:1.85;white-space:pre-wrap;}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;justify-content:space-between;gap:12px;}
+.nav-btn{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;font-weight:500;padding:10px 20px;border-radius:var(--radius);text-decoration:none;transition:all .15s;}
+.nav-prev{background:var(--c-surface);color:var(--c-text);border:1px solid var(--c-border);}
+.nav-prev:hover{background:var(--c-border);}
+.nav-next{background:var(--c-a2);color:#fff;}
+.nav-next:hover{background:#b8852e;}
+.nav-label{font-size:.72rem;opacity:.8;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.footer{padding:20px;}.concept-grid{grid-template-columns:1fr;}.step-item{flex-direction:column;gap:12px;}.step-num{width:auto;}}</style>
+</head>
+<body>
+  <nav class="topbar">
+    <a class="logo" href="../index.html">弄一下工作室</a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-sub">辦公室 AI 工具實務應用</span>
+    <div class="spacer"></div>
+    <span class="topbar-tag">Part 4 · 4.1</span>
+  </nav>
+  <div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+  <div class="lesson-hero">
+    <a class="back-link" href="../index.html">← 回到課程總覽</a>
+    <div class="hero-meta">
+      <span class="hero-part">Part 4 打造我的 AI 工作流</span>
+      <div class="hero-divider-v"></div>
+      <span class="hero-num">單元 4.1</span>
+    </div>
+    <h1 class="lesson-title">找出你的<br>三個高價值 AI 場景</h1>
+    <p class="lesson-tagline">不是每件事都值得讓 AI 介入。花 30 分鐘找出你工作中最值得自動化的三個環節，比學一百個工具更有效。</p>
+    <div class="outcomes">
+      <div class="outcomes-label">學完這節，你會</div>
+      <div class="outcome-item"><div class="outcome-dot"></div><span>學會識別「AI 高價值場景」的三個標準</span></div>
+      <div class="outcome-item"><div class="outcome-dot"></div><span>完成個人高價值場景盤點清單</span></div>
+    </div>
+  </div>
+
+  <div class="lesson-body">
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 01</div>
+      <h2 class="section-heading">什麼樣的工作<em>最值得讓 AI 接手？</em></h2>
+      <p class="body-text">AI 不是萬能助手，它在某些任務上效果極好，其他任務上則幫助有限。識別「高價值場景」的關鍵是三個標準：(1) 重複性高——你每週或每月至少做一次；(2) 需要「寫字或整理」——而不是需要人際判斷或創意決策；(3) 目前花費超過 15 分鐘——值得投入學習成本。符合這三個條件的任務，導入 AI 後效果最顯著，習慣也最容易養成。</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="concept-num">01</div>
+          <div class="concept-title">重複性</div>
+          <div class="concept-desc">每週 / 每月固定出現，格式相似</div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-num">02</div>
+          <div class="concept-title">文字工作</div>
+          <div class="concept-desc">寫作、整理、翻譯、摘要類任務</div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-num">03</div>
+          <div class="concept-title">時間成本</div>
+          <div class="concept-desc">目前至少花 15 分鐘，有明顯改善空間</div>
+        </div>
+      </div>
+      <div class="callout key">
+        <div class="callout-icon">🔑</div>
+        <div class="callout-body"><strong>常見的高價值場景：</strong>週報、廠商郵件、會議紀錄整理、簡報大綱、內部公告、客戶提案信。</div>
+      </div>
+    </div>
+
+    <hr class="section-rule">
+
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 02</div>
+      <h2 class="section-heading"><em>三步</em>找出你的場景</h2>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">列出過去一週的文字工作清單</div>
+            <div class="step-desc">不用太精確，把腦袋裡「有在寫或整理東西」的任務列出來。包括：寫的每一封郵件、整理的每一份文件、準備的每一個會議。</div>
+            <div class="step-example">郵件回覆 × 8 / 週報撰寫 × 1 / 客戶說明資料整理 × 2 / 會議紀錄 × 1 / 提案 PPT 大綱 × 1</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">用三個標準篩選</div>
+            <div class="step-desc">對每件工作問自己：(1) 這件事下週還會出現嗎？(2) 主要工作是「文字輸出」嗎？(3) 這件事超過 15 分鐘嗎？三題都「是」的，就是你的高價值場景。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">選出前三名</div>
+            <div class="step-desc">從篩選後的清單中，選出「最重複 + 最花時間」的前三個，這就是你的 AI 導入起點。</div>
+          </div>
+        </div>
+      </div>
+      <div class="callout tip">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">不要想一次導入所有工作——從一件事開始，形成習慣後再擴展。每週節省 30 分鐘是開始，一個月後通常會自然增加到 3-4 個場景。</div>
+      </div>
+    </div>
+
+    <hr class="section-rule">
+
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 03</div>
+      <h2 class="section-heading">帶走這份<em>盤點 Prompt</em></h2>
+      <div class="output-box">
+        <div class="output-header">
+          <span class="output-label">4.1-A · 個人場景盤點</span>
+          <button class="copy-btn" onclick="copyOutput('out1')">複製</button>
+        </div>
+        <div class="output-body">
+          <div class="output-text" id="out1">請幫我分析以下工作清單，找出最適合導入 AI 的場景：
+
+評估標準：(1) 重複性高 (2) 主要是文字工作 (3) 目前超過 15 分鐘
+
+請列出前 3 個推薦場景，說明：
+- 場景名稱
+- 為什麼適合 AI 介入
+- 建議使用哪個工具（Gemini / NotebookLM）
+
+我的工作清單：[貼上你的工作清單]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn nav-prev" href="../part3/CH3-3.html">← <span><div class="nav-label">上一節</div>提案與匯報準備</span></a>
+    <a class="nav-btn nav-next" href="CH4-2.html"><span><div class="nav-label">下一節</div>建立個人 Prompt 庫</span> →</a>
+  </div>
+
+  <footer class="footer">
+    <span class="footer-logo">弄一下工作室</span>
+    <span class="footer-note">辦公室 AI 工具實務應用</span>
+  </footer>
+
+  <div class="toast" id="toast">已複製到剪貼簿</div>
+
+  <script>
+    const prog = document.getElementById('prog');
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement;
+      const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      prog.style.width = pct + '%';
+    });
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg || '已複製到剪貼簿';
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+    function copyOutput(id) {
+      navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => showToast());
+    }
+  </script>
+</body>
+</html>

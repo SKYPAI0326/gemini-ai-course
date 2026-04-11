@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>4.2 建立個人 Prompt 庫｜辦公室 AI 工具實務應用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a1:#b5703a;--c-a2:#c9963a;--c-a3:#5a7a5a;--c-a4:#6b7fa3;--c-a5:#7a9ea3;--radius:6px;--radius-sm:4px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a2);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a2);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a2);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--c-text);}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a2);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a2);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(201,150,58,.07);border:1px solid rgba(201,150,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;color:var(--c-text);}
+.callout-body strong{font-weight:700;}
+.step-list{display:flex;flex-direction:column;gap:16px;margin:28px 0;}
+.step-item{display:flex;gap:18px;align-items:flex-start;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:20px 22px;}
+.step-num{font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:var(--c-a2);line-height:1;flex-shrink:0;min-width:28px;}
+.step-content{flex:1;}
+.step-title{font-size:.92rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.84rem;color:var(--c-muted);line-height:1.75;}
+.step-example{margin-top:10px;padding:10px 14px;background:var(--c-surface);border-radius:var(--radius-sm);font-size:.82rem;color:var(--c-text);line-height:1.7;font-family:'Courier New',monospace;}
+.output-box{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin-top:20px;}
+.output-header{padding:16px 22px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;}
+.output-label{font-size:.72rem;color:var(--c-a2);font-weight:500;letter-spacing:.5px;}
+.copy-btn{font-size:.75rem;color:var(--c-a2);background:rgba(201,150,58,.1);border:1px solid rgba(201,150,58,.2);padding:4px 12px;border-radius:var(--radius-sm);cursor:pointer;}
+.copy-btn:hover{background:rgba(201,150,58,.2);}
+.output-body{padding:20px 22px;}
+.output-pre{font-size:.84rem;color:var(--c-text);line-height:1.9;font-family:'Courier New',monospace;white-space:pre-wrap;}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;justify-content:space-between;gap:12px;}
+.nav-btn{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;font-weight:500;padding:10px 20px;border-radius:var(--radius);text-decoration:none;transition:all .15s;}
+.nav-prev{background:var(--c-surface);color:var(--c-text);border:1px solid var(--c-border);}
+.nav-prev:hover{background:var(--c-border);}
+.nav-next{background:var(--c-a2);color:#fff;}
+.nav-next:hover{background:#b8852e;}
+.nav-label{font-size:.72rem;opacity:.8;display:block;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.footer{padding:20px;}}
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">辦公室 AI 工具實務應用</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">Part 4 · 4.2</div>
+</header>
+
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回到課程總覽</a>
+  <div class="hero-meta">
+    <span class="hero-part">Part 4 打造我的 AI 工作流</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">單元 4.2</span>
+  </div>
+  <h1 class="lesson-title">建立個人 Prompt 庫：<br>把好指令變成數位資產</h1>
+  <p class="lesson-tagline">一個好用的 Prompt 是反覆使用的資產，不是用完就丟的草稿。建立你自己的 Prompt 庫，每次用 AI 的速度都快一倍。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">學習成果</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>學會「改良 Prompt」的三個步驟</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>Prompt 庫模板（20 格，可複製填寫）</div>
+  </div>
+</section>
+
+<div class="lesson-body">
+  <div class="lesson-section">
+    <div class="section-eyebrow">SECTION 01</div>
+    <h2 class="section-heading">為什麼要<em>存 Prompt</em>？</h2>
+    <p class="body-text">大多數人第一次問出好結果後，下次遇到同樣任務又從頭想。Prompt 庫解決的正是這個問題——把有效的指令存起來，下次直接用（或稍微調整），不用每次重新思考。</p>
+    <p class="body-text">好的 Prompt 庫有三個特點：<strong>(1) 有明確分類</strong>（郵件 / 文件 / 會議 / 簡報）<strong>(2) 每個 Prompt 有「使用場景說明」(3) 定期回顧</strong>，把效果不好的換掉。</p>
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">最簡單的 Prompt 庫工具：<strong>Google Keep（隨手記）/ Apple 備忘錄 / Notion（進階可加標籤）</strong>。不需要複雜工具，一個有分類的筆記就夠了。</div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">SECTION 02</div>
+    <h2 class="section-heading">三步建立並<em>改良 Prompt</em></h2>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <div class="step-title">用完後立刻記錄「有效的版本」</div>
+          <div class="step-desc">每次問出滿意結果後，把那個 Prompt 貼入你的庫，加上日期和使用場景備注。「有效」的判斷標準：生成的草稿 80% 以上不需要大改。</div>
+          <div class="step-example">2026-04-11 ｜ 週報生成 ｜ 效果：生成的三段結構完全可用，只需補入實際數字</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <div class="step-title">做版本改良</div>
+          <div class="step-desc">使用幾次後，你會發現哪些地方 AI 常給出不夠好的回答。在原始 Prompt 後面加上修正指令，升級成更精準的版本。</div>
+          <div class="step-example">原版：「整理成週報格式」→ 改良版：「整理成週報格式，語氣簡潔不廢話，每點不超過 20 字，不要加開場白」</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <div class="step-title">定期清理無效 Prompt</div>
+          <div class="step-desc">每個月花 10 分鐘回顧你的 Prompt 庫，把超過 2 個月沒用的刪掉。精簡的庫比大而不當的庫更好用。</div>
+        </div>
+      </div>
+    </div>
+    <div class="callout key">
+      <div class="callout-icon">🔑</div>
+      <div class="callout-body"><strong>進階技巧：</strong>把「角色設定」加在常用 Prompt 前。例如：「你是一個有 10 年行政經驗、擅長公文寫作的專業秘書，接下來...」這個前綴讓 AI 的語氣和用詞更符合辦公室場景。</div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">SECTION 03</div>
+    <h2 class="section-heading">帶走 <em>Prompt 庫模板</em></h2>
+    <div class="output-box">
+      <div class="output-header">
+        <div class="output-label">產出 4.2 · 個人 Prompt 庫模板（20 格）</div>
+        <button class="copy-btn" onclick="copyTemplate()">複製</button>
+      </div>
+      <div class="output-body">
+        <pre class="output-pre" id="prompt-template">【我的辦公室 AI Prompt 庫】
+建立日期：____
+
+═══ 郵件類 ═══
+P01 | 通知郵件 | 場景：___ | Prompt：___
+P02 | 感謝信   | 場景：___ | Prompt：___
+P03 | 跟進信   | 場景：___ | Prompt：___
+P04 | 道歉信   | 場景：___ | Prompt：___
+P05 | 婉拒信   | 場景：___ | Prompt：___
+
+═══ 文件類 ═══
+P06 | 週報     | 場景：每週五 | Prompt：___
+P07 | 公告     | 場景：___ | Prompt：___
+P08 | 摘要     | 場景：___ | Prompt：___
+P09 | 改寫優化 | 場景：___ | Prompt：___
+P10 | 翻譯     | 場景：___ | Prompt：___
+
+═══ 會議類 ═══
+P11 | 會議議程   | 場景：___ | Prompt：___
+P12 | 逐字稿整理 | 場景：___ | Prompt：___
+P13 | 1:1 準備  | 場景：___ | Prompt：___
+P14 | 會議摘要   | 場景：___ | Prompt：___
+P15 | 待辦追蹤   | 場景：___ | Prompt：___
+
+═══ 簡報類 ═══
+P16 | 大綱-主管版 | 場景：___ | Prompt：___
+P17 | 大綱-客戶版 | 場景：___ | Prompt：___
+P18 | 提案框架   | 場景：___ | Prompt：___
+P19 | 主管審查   | 場景：___ | Prompt：___
+P20 | 匯報摘要   | 場景：___ | Prompt：___
+
+【標記說明】效果好 ★ ｜ 需改良 △ ｜ 已淘汰 ✕</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn nav-prev" href="CH4-1.html">
+    <span>←</span>
+    <span><span class="nav-label">上一單元</span>找出高價值場景</span>
+  </a>
+  <a class="nav-btn nav-next" href="CH4-3.html">
+    <span><span class="nav-label">下一單元</span>三種職業全攻略</span>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">辦公室 AI 工具實務應用 · Part 4 · 4.2</div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+window.addEventListener('scroll',function(){var h=document.documentElement;var pct=(h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight)*100;document.getElementById('prog').style.width=pct+'%';});
+function copyTemplate(){
+  var text=document.getElementById('prompt-template').textContent;
+  navigator.clipboard.writeText(text).then(function(){showToast('已複製 Prompt 庫模板');});
+}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+</script>
+</body>
+</html>

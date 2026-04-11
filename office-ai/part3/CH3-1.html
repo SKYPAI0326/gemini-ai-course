@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3.1 NotebookLM 實戰｜辦公室 AI 工具實務應用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a1:#b5703a;--c-a2:#c9963a;--c-a3:#5a7a5a;--c-a4:#6b7fa3;--c-a5:#7a9ea3;--radius:6px;--radius-sm:4px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a2);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a2);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a2);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--c-text);}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a2);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a2);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(201,150,58,.07);border:1px solid rgba(201,150,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;color:var(--c-text);}
+.callout-body strong{font-weight:700;}
+.step-list{display:flex;flex-direction:column;gap:24px;margin:28px 0;}
+.step-item{display:flex;gap:20px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:24px;}
+.step-num{font-family:'Shippori Mincho',serif;font-size:1.4rem;font-weight:700;color:var(--c-a2);flex-shrink:0;width:48px;line-height:1;}
+.step-content{flex:1;}
+.step-title{font-weight:700;font-size:.95rem;color:var(--c-text);margin-bottom:8px;}
+.step-desc{font-size:.88rem;color:var(--c-muted);line-height:1.8;margin-bottom:12px;}
+.step-example{background:var(--c-surface);border-radius:var(--radius-sm);padding:14px 16px;font-family:'Courier New',monospace;font-size:.82rem;color:var(--c-text);line-height:1.8;white-space:pre-wrap;position:relative;}
+.step-example-copy{position:absolute;top:8px;right:10px;font-size:.7rem;color:var(--c-a2);background:rgba(201,150,58,.1);border:1px solid rgba(201,150,58,.2);padding:3px 10px;border-radius:var(--radius-sm);cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.step-example-copy:hover{background:rgba(201,150,58,.2);}
+.step-callout{margin-top:14px;}
+.output-box{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin-top:20px;}
+.output-header{padding:16px 22px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;}
+.output-label{font-size:.72rem;color:var(--c-a2);font-weight:500;letter-spacing:.5px;}
+.copy-btn{font-size:.75rem;color:var(--c-a2);background:rgba(201,150,58,.1);border:1px solid rgba(201,150,58,.2);padding:4px 12px;border-radius:var(--radius-sm);cursor:pointer;}
+.copy-btn:hover{background:rgba(201,150,58,.2);}
+.output-body{padding:20px 22px;}
+.output-text{font-family:'Courier New',monospace;font-size:.84rem;color:var(--c-text);line-height:1.85;white-space:pre-wrap;}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;justify-content:space-between;gap:12px;}
+.nav-btn{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;font-weight:500;padding:10px 20px;border-radius:var(--radius);text-decoration:none;transition:all .15s;}
+.nav-prev{background:var(--c-surface);color:var(--c-text);border:1px solid var(--c-border);}
+.nav-prev:hover{background:var(--c-border);}
+.nav-next{background:var(--c-a2);color:#fff;}
+.nav-next:hover{background:#b8852e;}
+.nav-label{font-size:.72rem;opacity:.8;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.footer{padding:20px;}.step-item{flex-direction:column;gap:12px;}.step-num{width:auto;}}</style>
+</head>
+<body>
+  <nav class="topbar">
+    <a class="logo" href="../index.html">弄一下工作室</a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-sub">辦公室 AI 工具實務應用</span>
+    <div class="spacer"></div>
+    <span class="topbar-tag">Part 3 · 3.1</span>
+  </nav>
+  <div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+  <div class="lesson-hero">
+    <a class="back-link" href="../index.html">← 回到課程總覽</a>
+    <div class="hero-meta">
+      <span class="hero-part">Part 3 會議與協作升級</span>
+      <div class="hero-divider-v"></div>
+      <span class="hero-num">單元 3.1</span>
+    </div>
+    <h1 class="lesson-title">NotebookLM 實戰：<br>從逐字稿到結構化紀錄</h1>
+    <p class="lesson-tagline">一份逐字稿進去，結構化會議紀錄出來。整理時間從一小時縮短到十分鐘。</p>
+    <div class="outcomes">
+      <div class="outcomes-label">學完這節，你會</div>
+      <div class="outcome-item"><div class="outcome-dot"></div><span>掌握 NotebookLM 上傳文件並提問的操作流程</span></div>
+      <div class="outcome-item"><div class="outcome-dot"></div><span>會議紀錄整理 Prompt 模板（逐字稿版／手記版）</span></div>
+    </div>
+  </div>
+
+  <div class="lesson-body">
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 01</div>
+      <h2 class="section-heading">NotebookLM 的<em>核心差異</em></h2>
+      <p class="body-text">Gemini 回答的是「世界上有什麼」，NotebookLM 回答的是「你給我的文件裡有什麼」。這個差異在整理會議紀錄時非常關鍵——你不需要擔心 AI 捏造不存在的內容，因為它只能從你上傳的文件裡提取資訊。這讓 NotebookLM 成為處理重要會議紀錄的理想工具：準確、可溯源、不會加料。</p>
+      <div class="callout tip">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">NotebookLM 可以處理 Google 文件、PDF、貼上的純文字，甚至 YouTube 影片連結。一個 Notebook 可以上傳多份文件，然後跨文件提問。</div>
+      </div>
+    </div>
+
+    <hr class="section-rule">
+
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 02</div>
+      <h2 class="section-heading">五步完成<em>一份會議紀錄</em></h2>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">取得逐字稿</div>
+            <div class="step-desc">手動抄記、Google Meet 自動字幕、或錄音後用 AI 轉文字均可</div>
+            <div class="step-example">Google Meet 會議結束後，可在 Google 雲端硬碟找到字幕檔案，用文字編輯器開啟後複製全文</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">開啟 NotebookLM 並建立 Notebook</div>
+            <div class="step-desc">前往 notebooklm.google.com，點選「新增 Notebook」，命名為「[日期] + [會議名稱]」</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">貼入逐字稿</div>
+            <div class="step-desc">在 Sources 區域點「+」，選擇「貼上文字」，貼入逐字稿內容</div>
+            <div class="step-example">如果逐字稿超過 10,000 字，建議只保留關鍵討論部分，剪掉開頭寒暄和離題內容</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <div class="step-title">用 Prompt 整理</div>
+            <div class="step-desc">在右側對話框輸入整理指令，使用帶走產出的模板</div>
+            <div class="step-example" id="ex-step4">請整理出本次會議的：1. 決議事項 2. 待辦清單（含負責人與截止日，若有提及）3. 下次會議討論重點<button class="step-example-copy" onclick="copyEx('ex-step4',this)">複製</button></div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">05</div>
+          <div class="step-content">
+            <div class="step-title">確認與補充</div>
+            <div class="step-desc">對照原始逐字稿，確認沒有遺漏重要決議</div>
+            <div class="step-callout">
+              <div class="callout tip">
+                <div class="callout-icon">💡</div>
+                <div class="callout-body">重點確認「負責人」與「截止日」——這是 AI 最常無法正確判斷的欄位，因為這些資訊有時只在口語中簡短提及。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-rule">
+
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 03</div>
+      <h2 class="section-heading">帶走<em>兩份模板</em></h2>
+
+      <div class="output-box">
+        <div class="output-header">
+          <span class="output-label">產出 3.1-A · 逐字稿整理</span>
+          <button class="copy-btn" onclick="copyOutput('out1')">複製</button>
+        </div>
+        <div class="output-body">
+          <div class="output-text" id="out1">請根據以上逐字稿整理本次會議：
+
+【決議事項】
+（列出所有已確認的決定，每條一句話）
+
+【待辦清單】
+（格式：事項 ｜ 負責人 ｜ 截止日）
+
+【未解決事項】
+（討論中未有結論、需下次跟進的議題）
+
+【下次會議重點】
+（若有提及，列出建議討論項目）</div>
+        </div>
+      </div>
+
+      <div class="output-box">
+        <div class="output-header">
+          <span class="output-label">產出 3.1-B · 手記整理</span>
+          <button class="copy-btn" onclick="copyOutput('out2')">複製</button>
+        </div>
+        <div class="output-body">
+          <div class="output-text" id="out2">以下是我的會議手記，請整理成正式會議紀錄：
+
+【背景】（一句話說明會議目的與出席者）
+
+【重點討論摘要】（每個主題 2-3 句，含不同意見）
+
+【結論與下一步】（條列決議與行動事項：事項 ｜ 負責人）
+
+手記內容：[貼上手記]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn nav-prev" href="../part2/CH2-3.html">← <span><div class="nav-label">上一節</div>簡報大綱秒出爐</span></a>
+    <a class="nav-btn nav-next" href="CH3-2.html"><span><div class="nav-label">下一節</div>會議前準備術</span> →</a>
+  </div>
+
+  <footer class="footer">
+    <span class="footer-logo">弄一下工作室</span>
+    <span class="footer-note">辦公室 AI 工具實務應用</span>
+  </footer>
+
+  <div class="toast" id="toast">已複製到剪貼簿</div>
+
+  <script>
+    const prog = document.getElementById('prog');
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement;
+      const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      prog.style.width = pct + '%';
+    });
+    function showToast() {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+    function copyOutput(id) {
+      navigator.clipboard.writeText(document.getElementById(id).innerText).then(showToast);
+    }
+    function copyEx(id, btn) {
+      const el = document.getElementById(id);
+      const text = el.innerText.replace(btn.innerText, '').trim();
+      navigator.clipboard.writeText(text).then(showToast);
+    }
+  </script>
+</body>
+</html>

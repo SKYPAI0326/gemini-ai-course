@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>演練 · 會議紀錄一鍵整理器｜辦公室 AI 工具實務應用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a1:#b5703a;--c-a2:#c9963a;--c-a3:#5a7a5a;--c-a4:#6b7fa3;--c-a5:#7a9ea3;--radius:6px;--radius-sm:4px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-eyebrow{font-size:.75rem;color:var(--c-a2);letter-spacing:2px;font-weight:500;margin-bottom:16px;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.tool-wrap{max-width:720px;margin:0 auto;padding:0 48px 80px;}
+.mode-row{display:flex;gap:8px;margin-bottom:24px;}
+.mode-btn{flex:1;padding:12px;border-radius:var(--radius);border:1px solid var(--c-border);background:var(--c-surface);font-size:.85rem;color:var(--c-muted);cursor:pointer;text-align:center;font-weight:500;font-family:'Noto Sans TC',sans-serif;}
+.mode-btn.active{background:var(--c-a2);color:#fff;border-color:var(--c-a2);}
+.tool-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:28px;}
+.tool-panel{display:none;}
+.tool-panel.active{display:block;}
+.field-group{display:flex;flex-direction:column;gap:14px;}
+.field-item{display:flex;flex-direction:column;gap:6px;}
+.field-label{font-size:.78rem;color:var(--c-muted);font-weight:500;}
+.field-input{width:100%;padding:10px 14px;border:1px solid var(--c-border);border-radius:var(--radius-sm);background:var(--c-surface);font-size:.88rem;color:var(--c-text);font-family:'Noto Sans TC',sans-serif;resize:vertical;}
+.field-input:focus{outline:none;border-color:var(--c-a2);}
+.big-area{min-height:160px;}
+.checkbox-group{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.checkbox-item{display:flex;align-items:center;gap:10px;font-size:.85rem;color:var(--c-text);}
+.checkbox-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--c-a2);cursor:pointer;}
+.result-area{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);padding:20px;margin-top:20px;}
+.result-label{font-size:.7rem;color:var(--c-a2);font-weight:500;margin-bottom:10px;letter-spacing:.5px;}
+.result-text{font-size:.84rem;color:var(--c-text);line-height:1.9;font-family:'Courier New',monospace;white-space:pre-wrap;min-height:160px;}
+.hint-text{font-size:.8rem;color:var(--c-muted);margin-top:12px;line-height:1.7;}
+.action-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.btn-primary{background:var(--c-a2);color:#fff;border:none;padding:10px 22px;border-radius:var(--radius-sm);font-size:.85rem;font-weight:500;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.btn-primary:hover{background:#b8852e;}
+.btn-ghost{background:transparent;color:var(--c-muted);border:1px solid var(--c-border);padding:10px 18px;border-radius:var(--radius-sm);font-size:.85rem;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.btn-ghost:hover{border-color:var(--c-a2);color:var(--c-a2);}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.tool-wrap{padding:0 20px 60px;}.mode-row{flex-direction:column;}.footer{padding:20px;}}
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">辦公室 AI 工具實務應用</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">Part 3 · 演練</div>
+</header>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回到課程總覽</a>
+  <div class="hero-eyebrow">PRACTICE · 實例演練</div>
+  <h1 class="lesson-title">會議紀錄一鍵整理器</h1>
+  <p class="lesson-tagline">選擇整理模式，填入內容，即時生成可貼入 NotebookLM 或 Gemini 的整理指令。</p>
+</section>
+
+<div class="tool-wrap">
+  <div class="mode-row">
+    <button class="mode-btn active" onclick="switchMode('transcript', event)">逐字稿模式</button>
+    <button class="mode-btn" onclick="switchMode('notes', event)">手記模式</button>
+  </div>
+
+  <div class="tool-panel active" id="panel-transcript">
+    <div class="tool-card">
+      <div class="field-group">
+        <div class="field-item">
+          <div class="field-label">逐字稿內容（貼入後點「生成指令」）</div>
+          <textarea class="field-input big-area" id="transcript-text" placeholder="貼入逐字稿內容，支援 Google Meet 字幕或手動錄入的逐字稿..."></textarea>
+        </div>
+        <div class="field-item">
+          <div class="field-label">整理項目（勾選需要的區塊）</div>
+          <div class="checkbox-group">
+            <label class="checkbox-item"><input type="checkbox" id="cb-decision" checked>決議事項</label>
+            <label class="checkbox-item"><input type="checkbox" id="cb-todo" checked>待辦清單（含負責人）</label>
+            <label class="checkbox-item"><input type="checkbox" id="cb-unresolved" checked>未解決事項</label>
+            <label class="checkbox-item"><input type="checkbox" id="cb-next">下次會議重點</label>
+          </div>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="btn-primary" onclick="generateTranscript()">生成整理指令</button>
+        <button class="btn-ghost" onclick="clearTranscript()">清除</button>
+      </div>
+    </div>
+    <div class="result-area" id="result-transcript" style="display:none;">
+      <div class="result-label">生成的整理指令</div>
+      <div class="result-text" id="result-transcript-text"></div>
+      <div class="hint-text">提示：將逐字稿貼入 NotebookLM 的 Sources，再將此指令貼入對話框提問。</div>
+      <div class="action-row">
+        <button class="btn-primary" onclick="copyResult('result-transcript-text')">複製指令</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-panel" id="panel-notes">
+    <div class="tool-card">
+      <div class="field-group">
+        <div class="field-item">
+          <div class="field-label">會議目的與出席者</div>
+          <textarea class="field-input" id="notes-bg" placeholder="例如：2026-04-11 行銷週會，出席：王主管、小陳、阿明..." style="min-height:60px;"></textarea>
+        </div>
+        <div class="field-item">
+          <div class="field-label">討論重點（你的手記）</div>
+          <textarea class="field-input" id="notes-discussion" placeholder="把你的會議手記貼在這裡..." style="min-height:120px;"></textarea>
+        </div>
+        <div class="field-item">
+          <div class="field-label">結論與決定</div>
+          <textarea class="field-input" id="notes-conclusion" placeholder="例如：確定 Q2 預算 50 萬、下週五前提案..." style="min-height:80px;"></textarea>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="btn-primary" onclick="generateNotes()">生成整理指令</button>
+        <button class="btn-ghost" onclick="clearNotes()">清除</button>
+      </div>
+    </div>
+    <div class="result-area" id="result-notes" style="display:none;">
+      <div class="result-label">生成的整理指令</div>
+      <div class="result-text" id="result-notes-text"></div>
+      <div class="hint-text">提示：手記模式可直接在 Gemini 使用，不需要上傳文件。</div>
+      <div class="action-row">
+        <button class="btn-primary" onclick="copyResult('result-notes-text')">複製指令</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">辦公室 AI 工具實務應用 · Part 3 演練</div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+function switchMode(mode,e){
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tool-panel').forEach(function(p){p.classList.remove('active');});
+  e.currentTarget.classList.add('active');
+  document.getElementById('panel-'+mode).classList.add('active');
+}
+function generateTranscript(){
+  var blocks=[];
+  if(document.getElementById('cb-decision').checked)blocks.push('【決議事項】\n（列出所有已確認的決定，每條一句話）');
+  if(document.getElementById('cb-todo').checked)blocks.push('【待辦清單】\n（格式：事項 ｜ 負責人 ｜ 截止日）');
+  if(document.getElementById('cb-unresolved').checked)blocks.push('【未解決事項】\n（討論中未有結論、需下次跟進的議題）');
+  if(document.getElementById('cb-next').checked)blocks.push('【下次會議重點】\n（若有提及，列出建議討論項目）');
+  if(blocks.length===0){showToast('請至少勾選一個整理項目');return;}
+  var result='請根據以上逐字稿整理本次會議：\n\n'+blocks.join('\n\n');
+  document.getElementById('result-transcript-text').textContent=result;
+  document.getElementById('result-transcript').style.display='block';
+}
+function clearTranscript(){
+  document.getElementById('transcript-text').value='';
+  document.getElementById('result-transcript').style.display='none';
+}
+function generateNotes(){
+  var bg=document.getElementById('notes-bg').value.trim()||'[未填寫]';
+  var disc=document.getElementById('notes-discussion').value.trim()||'[未填寫]';
+  var conc=document.getElementById('notes-conclusion').value.trim()||'[未填寫]';
+  var result='以下是我的會議手記，請整理成正式紀錄格式：\n\n【背景】\n'+bg+'\n\n【重點討論】\n'+disc+'\n\n【結論】\n'+conc+'\n\n請輸出格式：背景說明 / 討論摘要（每主題 2-3 句）/ 決議清單（事項 ｜ 負責人）';
+  document.getElementById('result-notes-text').textContent=result;
+  document.getElementById('result-notes').style.display='block';
+}
+function clearNotes(){
+  ['notes-bg','notes-discussion','notes-conclusion'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('result-notes').style.display='none';
+}
+function copyResult(id){
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(function(){showToast('已複製');});
+}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+</script>
+</body>
+</html>

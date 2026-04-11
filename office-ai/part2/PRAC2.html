@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>演練 · 文書範本套用器｜辦公室 AI 工具實務應用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a1:#b5703a;--c-a2:#c9963a;--c-a3:#5a7a5a;--c-a4:#6b7fa3;--c-a5:#7a9ea3;--radius:6px;--radius-sm:4px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.prac-hero{max-width:var(--content-w);margin:0 auto;padding:64px 48px 48px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-eyebrow{font-size:.72rem;color:var(--c-a2);letter-spacing:2px;font-weight:500;margin-bottom:14px;}
+.prac-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:16px;}
+.prac-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:560px;}
+.tool-wrap{max-width:720px;margin:0 auto;padding:0 48px 80px;}
+.tab-row{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
+.tab-btn{font-size:.8rem;padding:7px 16px;border-radius:99px;border:1px solid var(--c-border);background:var(--c-surface);color:var(--c-muted);cursor:pointer;}
+.tab-btn.active{background:var(--c-a2);color:#fff;border-color:var(--c-a2);}
+.tool-panel{display:none;}
+.tool-panel.active{display:block;}
+.tool-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:24px;}
+.field-group{display:flex;flex-direction:column;gap:14px;margin-bottom:20px;}
+.field-item{display:flex;flex-direction:column;gap:6px;}
+.field-label{font-size:.78rem;color:var(--c-muted);font-weight:500;}
+.field-input{width:100%;padding:10px 14px;border:1px solid var(--c-border);border-radius:var(--radius-sm);background:var(--c-surface);font-family:'Noto Sans TC',sans-serif;font-size:.88rem;color:var(--c-text);resize:vertical;}
+.field-input:focus{outline:none;border-color:var(--c-a2);}
+.result-area{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);padding:18px;margin-top:16px;}
+.result-label{font-size:.7rem;color:var(--c-a2);font-weight:500;margin-bottom:10px;}
+.result-text{font-size:.84rem;color:var(--c-text);line-height:1.9;font-family:'Courier New',monospace;white-space:pre-wrap;min-height:120px;}
+.action-row{display:flex;gap:10px;margin-top:14px;}
+.btn-primary{background:var(--c-a2);color:#fff;border:none;padding:10px 22px;border-radius:var(--radius-sm);font-size:.85rem;font-weight:500;cursor:pointer;}
+.btn-primary:hover{background:#b8852e;}
+.btn-ghost{background:transparent;color:var(--c-muted);border:1px solid var(--c-border);padding:10px 18px;border-radius:var(--radius-sm);font-size:.85rem;cursor:pointer;}
+.btn-ghost:hover{border-color:var(--c-a2);color:var(--c-a2);}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.prac-hero{padding:40px 20px 40px;}.prac-title{font-size:1.6rem;}.tool-wrap{padding:0 20px 60px;}.tab-row{gap:4px;}.tab-btn{font-size:.75rem;padding:6px 12px;}.footer{padding:20px;}}</style>
+</head>
+<body>
+  <nav class="topbar">
+    <a class="logo" href="../index.html">弄一下工作室</a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-sub">辦公室 AI 工具實務應用</span>
+    <div class="spacer"></div>
+    <span class="topbar-tag">Part 2 · 演練</span>
+  </nav>
+
+  <div class="prac-hero">
+    <a class="back-link" href="../index.html">← 回到課程總覽</a>
+    <div class="hero-eyebrow">PRACTICE · 實例演練</div>
+    <h1 class="prac-title">文書範本套用器</h1>
+    <p class="prac-tagline">選一種文件類型，填入你的資料，即時生成可貼入 Gemini 的完整指令。</p>
+  </div>
+
+  <div class="tool-wrap">
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchTab('weekly',this)">週報</button>
+      <button class="tab-btn" onclick="switchTab('announce',this)">公告</button>
+      <button class="tab-btn" onclick="switchTab('summary',this)">摘要</button>
+      <button class="tab-btn" onclick="switchTab('email',this)">郵件</button>
+      <button class="tab-btn" onclick="switchTab('slide',this)">簡報大綱</button>
+    </div>
+
+    <!-- 週報 -->
+    <div class="tool-panel active" id="panel-weekly">
+      <div class="tool-card">
+        <div class="field-group">
+          <div class="field-item">
+            <label class="field-label">本週完成的工作</label>
+            <textarea class="field-input" id="w-done" rows="3" placeholder="例如：完成 Q3 報告、開完客戶會議、更新網站內容"></textarea>
+          </div>
+          <div class="field-item">
+            <label class="field-label">進行中的事項</label>
+            <textarea class="field-input" id="w-wip" rows="3" placeholder="例如：新版流程文件撰寫中、等待主管簽核"></textarea>
+          </div>
+          <div class="field-item">
+            <label class="field-label">下週計畫</label>
+            <textarea class="field-input" id="w-plan" rows="3" placeholder="例如：準備月底簡報、拜訪客戶 A"></textarea>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-primary" onclick="genWeekly()">生成指令</button>
+          <button class="btn-ghost" onclick="clearPanel('weekly')">清除</button>
+        </div>
+        <div class="result-area" id="result-weekly" style="display:none;">
+          <div class="result-label">生成的指令（複製後貼入 Gemini）</div>
+          <div class="result-text" id="rtext-weekly"></div>
+          <div class="action-row">
+            <button class="btn-primary" onclick="copyResult('rtext-weekly')">複製指令</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 公告 -->
+    <div class="tool-panel" id="panel-announce">
+      <div class="tool-card">
+        <div class="field-group">
+          <div class="field-item">
+            <label class="field-label">主旨</label>
+            <input type="text" class="field-input" id="a-subject" placeholder="例如：2025 年春節假期安排">
+          </div>
+          <div class="field-item">
+            <label class="field-label">對象</label>
+            <input type="text" class="field-input" id="a-audience" value="全體員工" placeholder="全體員工">
+          </div>
+          <div class="field-item">
+            <label class="field-label">補充說明／注意事項（選填）</label>
+            <textarea class="field-input" id="a-notes" rows="3" placeholder="例如：請在期限前完成/禁止..."></textarea>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-primary" onclick="genAnnounce()">生成指令</button>
+          <button class="btn-ghost" onclick="clearPanel('announce')">清除</button>
+        </div>
+        <div class="result-area" id="result-announce" style="display:none;">
+          <div class="result-label">生成的指令（複製後貼入 Gemini）</div>
+          <div class="result-text" id="rtext-announce"></div>
+          <div class="action-row">
+            <button class="btn-primary" onclick="copyResult('rtext-announce')">複製指令</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 摘要 -->
+    <div class="tool-panel" id="panel-summary">
+      <div class="tool-card">
+        <div class="field-group">
+          <div class="field-item">
+            <label class="field-label">原文</label>
+            <textarea class="field-input" id="s-text" rows="6" placeholder="貼上要整理的報告、郵件、會議記錄..."></textarea>
+          </div>
+          <div class="field-item">
+            <label class="field-label">重點方向</label>
+            <input type="text" class="field-input" id="s-focus" placeholder="例如：行動事項、決策結論">
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-primary" onclick="genSummary()">生成指令</button>
+          <button class="btn-ghost" onclick="clearPanel('summary')">清除</button>
+        </div>
+        <div class="result-area" id="result-summary" style="display:none;">
+          <div class="result-label">生成的指令（複製後貼入 Gemini）</div>
+          <div class="result-text" id="rtext-summary"></div>
+          <div class="action-row">
+            <button class="btn-primary" onclick="copyResult('rtext-summary')">複製指令</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 郵件 -->
+    <div class="tool-panel" id="panel-email">
+      <div class="tool-card">
+        <div class="field-group">
+          <div class="field-item">
+            <label class="field-label">郵件類型</label>
+            <select class="field-input" id="e-type">
+              <option value="notify">通知</option>
+              <option value="thanks">感謝</option>
+              <option value="apology">道歉</option>
+              <option value="followup">跟進</option>
+              <option value="decline">婉拒</option>
+            </select>
+          </div>
+          <div class="field-item">
+            <label class="field-label">收件人／對象</label>
+            <input type="text" class="field-input" id="e-to" placeholder="例如：客戶王先生、全體同仁">
+          </div>
+          <div class="field-item">
+            <label class="field-label">核心訊息</label>
+            <textarea class="field-input" id="e-msg" rows="3" placeholder="填入信件的主要內容或說明"></textarea>
+          </div>
+          <div class="field-item">
+            <label class="field-label">語氣</label>
+            <select class="field-input" id="e-tone">
+              <option value="正式">正式</option>
+              <option value="友善">友善</option>
+              <option value="誠懇">誠懇</option>
+            </select>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-primary" onclick="genEmail()">生成指令</button>
+          <button class="btn-ghost" onclick="clearPanel('email')">清除</button>
+        </div>
+        <div class="result-area" id="result-email" style="display:none;">
+          <div class="result-label">生成的指令（複製後貼入 Gemini）</div>
+          <div class="result-text" id="rtext-email"></div>
+          <div class="action-row">
+            <button class="btn-primary" onclick="copyResult('rtext-email')">複製指令</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 簡報大綱 -->
+    <div class="tool-panel" id="panel-slide">
+      <div class="tool-card">
+        <div class="field-group">
+          <div class="field-item">
+            <label class="field-label">主題</label>
+            <input type="text" class="field-input" id="sl-topic" placeholder="例如：本月業績回顧、新系統導入說明">
+          </div>
+          <div class="field-item">
+            <label class="field-label">對象</label>
+            <select class="field-input" id="sl-audience">
+              <option value="manager">主管</option>
+              <option value="client">客戶</option>
+              <option value="all">全員說明</option>
+            </select>
+          </div>
+          <div class="field-item">
+            <label class="field-label">頁數</label>
+            <input type="number" class="field-input" id="sl-pages" min="5" max="20" value="8" style="width:120px;">
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn-primary" onclick="genSlide()">生成指令</button>
+          <button class="btn-ghost" onclick="clearPanel('slide')">清除</button>
+        </div>
+        <div class="result-area" id="result-slide" style="display:none;">
+          <div class="result-label">生成的指令（複製後貼入 Gemini）</div>
+          <div class="result-text" id="rtext-slide"></div>
+          <div class="action-row">
+            <button class="btn-primary" onclick="copyResult('rtext-slide')">複製指令</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span class="footer-logo">弄一下工作室</span>
+    <span class="footer-note">辦公室 AI 工具實務應用 · Part 2 演練</span>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+
+    function switchTab(name,btn){
+      document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+      document.querySelectorAll('.tool-panel').forEach(function(p){p.classList.remove('active');});
+      btn.classList.add('active');
+      document.getElementById('panel-'+name).classList.add('active');
+    }
+
+    function showResult(id,text){
+      var area=document.getElementById('result-'+id);
+      var rtext=document.getElementById('rtext-'+id);
+      rtext.textContent=text;
+      area.style.display='block';
+    }
+
+    function copyResult(id){
+      var el=document.getElementById(id);
+      navigator.clipboard.writeText(el.textContent.trim()).then(function(){showToast('已複製');});
+    }
+
+    function clearPanel(name){
+      var panel=document.getElementById('panel-'+name);
+      panel.querySelectorAll('input[type="text"],input[type="number"],textarea').forEach(function(el){el.value='';});
+      panel.querySelectorAll('select').forEach(function(el){el.selectedIndex=0;});
+      var area=document.getElementById('result-'+name);
+      if(area){area.style.display='none';}
+      var rtext=document.getElementById('rtext-'+name);
+      if(rtext){rtext.textContent='';}
+      // restore defaults
+      if(name==='announce'){document.getElementById('a-audience').value='全體員工';}
+      if(name==='slide'){document.getElementById('sl-pages').value='8';}
+    }
+
+    function genWeekly(){
+      var done=document.getElementById('w-done').value.trim();
+      var wip=document.getElementById('w-wip').value.trim();
+      var plan=document.getElementById('w-plan').value.trim();
+      if(!done&&!wip&&!plan){showToast('請至少填入一個欄位');return;}
+      var t='請根據以下資料整理成週報格式：\n- 格式：本週完成 / 進行中 / 下週計畫（三區塊）\n- 每點一句話，條列式，語氣簡潔\n\n本週完成：'+(done||'（未填）')+'\n進行中：'+(wip||'（未填）')+'\n下週計畫：'+(plan||'（未填）');
+      showResult('weekly',t);
+    }
+
+    function genAnnounce(){
+      var subject=document.getElementById('a-subject').value.trim();
+      var audience=document.getElementById('a-audience').value.trim()||'全體員工';
+      var notes=document.getElementById('a-notes').value.trim();
+      if(!subject){showToast('請填入主旨');return;}
+      var t='請幫我寫一則公司內部公告：\n- 主旨：'+subject+'\n- 對象：'+audience+'\n- 格式：標題 + 說明（2-3 句）+ 注意事項（條列 2-3 點）\n- 語氣：正式，不超過 200 字';
+      if(notes){t+='\n補充說明：'+notes;}
+      showResult('announce',t);
+    }
+
+    function genSummary(){
+      var text=document.getElementById('s-text').value.trim();
+      var focus=document.getElementById('s-focus').value.trim();
+      if(!text){showToast('請貼上原文');return;}
+      var t='請將以下內容整理成摘要：\n- 長度：5 個重點以內，每點一句話\n- 格式：條列式\n- 重點方向：'+(focus||'重要決策與行動事項')+'\n\n原文：\n'+text;
+      showResult('summary',t);
+    }
+
+    function genEmail(){
+      var type=document.getElementById('e-type').value;
+      var to=document.getElementById('e-to').value.trim();
+      var msg=document.getElementById('e-msg').value.trim();
+      var tone=document.getElementById('e-tone').value;
+      if(!to||!msg){showToast('請填入對象與核心訊息');return;}
+      var t='';
+      if(type==='notify'){
+        t='請幫我寫一封通知郵件，收件人是'+to+'，語氣'+tone+'，格式：主旨說明 + 詳細內容 + 注意事項，不超過 200 字。\n核心訊息：'+msg;
+      }else if(type==='thanks'){
+        t='請幫我寫一封感謝信給'+to+'，語氣'+tone+'但不誇張，三段以內，最後附上聯絡方式。\n感謝事項：'+msg;
+      }else if(type==='apology'){
+        t='請幫我寫一封道歉信，收件人是'+to+'，語氣'+tone+'負責，不超過 150 字。\n說明內容：'+msg;
+      }else if(type==='followup'){
+        t='請幫我寫一封跟進郵件，對象是'+to+'，語氣'+tone+'不催促，提醒對方如有問題可聯絡我。\n跟進事項：'+msg;
+      }else if(type==='decline'){
+        t='請幫我寫一封婉拒信，對象是'+to+'，語氣'+tone+'友善，保留未來合作可能性。\n拒絕事項：'+msg;
+      }
+      showResult('email',t);
+    }
+
+    function genSlide(){
+      var topic=document.getElementById('sl-topic').value.trim();
+      var audience=document.getElementById('sl-audience').value;
+      var pages=document.getElementById('sl-pages').value||'8';
+      if(!topic){showToast('請填入主題');return;}
+      var t='';
+      if(audience==='manager'){
+        t='請幫我生成一份簡報大綱：\n- 主題：'+topic+'\n- 對象：直屬主管或高層\n- 頁數：'+pages+' 頁\n- 重點：數據說話、結論優先、問題與對策並列\n每頁格式：標題 + 一句重點 + 建議內容類型';
+      }else if(audience==='client'){
+        t='請幫我生成一份客戶提案簡報大綱：\n- 主題：'+topic+'\n- 對象：潛在客戶或合作夥伴\n- 頁數：'+pages+' 頁\n- 重點：從客戶痛點切入，強調解決方案與效益\n每頁格式：標題 + 一句重點 + 建議內容類型';
+      }else{
+        t='請幫我生成一份全員說明會簡報大綱：\n- 主題：'+topic+'\n- 對象：不同部門的全體員工\n- 頁數：'+pages+' 頁\n- 重點：清楚說明「為什麼」「怎麼做」「何時開始」\n每頁格式：標題 + 一句重點 + 建議內容類型';
+      }
+      showResult('slide',t);
+    }
+  </script>
+</body>
+</html>

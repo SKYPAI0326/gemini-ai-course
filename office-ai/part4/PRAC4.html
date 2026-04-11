@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>演練 · 個人 AI 工作流程卡｜辦公室 AI 工具實務應用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a1:#b5703a;--c-a2:#c9963a;--c-a3:#5a7a5a;--c-a4:#6b7fa3;--c-a5:#7a9ea3;--radius:6px;--radius-sm:4px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-eyebrow{font-size:.75rem;color:var(--c-a2);letter-spacing:2px;font-weight:500;margin-bottom:16px;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.tool-wrap{max-width:720px;margin:0 auto;padding:0 48px 80px;}
+.template-note{font-size:.8rem;color:var(--c-muted);margin-bottom:20px;line-height:1.7;}
+.template-row{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.tmpl-btn{font-size:.8rem;padding:7px 16px;border-radius:99px;border:1px solid var(--c-border);background:var(--c-surface);color:var(--c-muted);cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.tmpl-btn:hover{border-color:var(--c-a2);color:var(--c-a2);}
+.scene-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:24px;margin-bottom:16px;}
+.scene-header{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--c-border);}
+.scene-num{font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:var(--c-a2);}
+.scene-title-text{font-size:.92rem;font-weight:700;color:var(--c-text);}
+.field-grid{display:grid;grid-template-columns:100px 1fr;gap:10px 14px;align-items:center;}
+.field-label{font-size:.78rem;color:var(--c-muted);font-weight:500;}
+.field-input{width:100%;padding:8px 12px;border:1px solid var(--c-border);border-radius:var(--radius-sm);background:var(--c-surface);font-size:.85rem;color:var(--c-text);font-family:'Noto Sans TC',sans-serif;}
+.field-input:focus{outline:none;border-color:var(--c-a2);}
+.result-area{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);padding:20px;margin-top:8px;}
+.result-label{font-size:.7rem;color:var(--c-a2);font-weight:500;margin-bottom:10px;letter-spacing:.5px;}
+.result-text{font-size:.84rem;color:var(--c-text);line-height:2;font-family:'Courier New',monospace;white-space:pre-wrap;min-height:200px;}
+.action-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.btn-primary{background:var(--c-a2);color:#fff;border:none;padding:10px 22px;border-radius:var(--radius-sm);font-size:.85rem;font-weight:500;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.btn-primary:hover{background:#b8852e;}
+.btn-ghost{background:transparent;color:var(--c-muted);border:1px solid var(--c-border);padding:10px 18px;border-radius:var(--radius-sm);font-size:.85rem;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.btn-ghost:hover{border-color:var(--c-a2);color:var(--c-a2);}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.tool-wrap{padding:0 20px 60px;}.field-grid{grid-template-columns:1fr;}.template-row{gap:6px;}.footer{padding:20px;}}
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">辦公室 AI 工具實務應用</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">Part 4 · 演練</div>
+</header>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回到課程總覽</a>
+  <div class="hero-eyebrow">PRACTICE · 實例演練</div>
+  <h1 class="lesson-title">個人 AI 工作流程卡</h1>
+  <p class="lesson-tagline">填寫你的三個 AI 應用場景，生成專屬工作流程卡，存入手機備忘錄，明天開始執行。</p>
+</section>
+
+<div class="tool-wrap">
+  <p class="template-note">選擇職業範本快速填入，或直接在下方填寫你的場景：</p>
+  <div class="template-row">
+    <button class="tmpl-btn" onclick="applyTemplate('admin')">行政職範本</button>
+    <button class="tmpl-btn" onclick="applyTemplate('sales')">業務職範本</button>
+    <button class="tmpl-btn" onclick="applyTemplate('manager')">主管職範本</button>
+  </div>
+
+  <div class="scene-card">
+    <div class="scene-header">
+      <div class="scene-num">01</div>
+      <div class="scene-title-text">場景一</div>
+    </div>
+    <div class="field-grid">
+      <div class="field-label">場景名稱</div>
+      <input class="field-input" id="s1-name" type="text" placeholder="例如：每週公告通知">
+      <div class="field-label">觸發事件</div>
+      <input class="field-input" id="s1-trigger" type="text" placeholder="例如：主管說「發通知給大家」">
+      <div class="field-label">AI 動作</div>
+      <input class="field-input" id="s1-action" type="text" placeholder="例如：Gemini → 公告 Prompt 模板">
+      <div class="field-label">預期省時</div>
+      <input class="field-input" id="s1-time" type="text" placeholder="例如：草稿 30 分 → 5 分">
+    </div>
+  </div>
+
+  <div class="scene-card">
+    <div class="scene-header">
+      <div class="scene-num">02</div>
+      <div class="scene-title-text">場景二</div>
+    </div>
+    <div class="field-grid">
+      <div class="field-label">場景名稱</div>
+      <input class="field-input" id="s2-name" type="text" placeholder="例如：廠商／外部郵件">
+      <div class="field-label">觸發事件</div>
+      <input class="field-input" id="s2-trigger" type="text" placeholder="例如：需要寫給廠商或外部人員的郵件">
+      <div class="field-label">AI 動作</div>
+      <input class="field-input" id="s2-action" type="text" placeholder="例如：Gemini → 郵件 Prompt 模板">
+      <div class="field-label">預期省時</div>
+      <input class="field-input" id="s2-time" type="text" placeholder="例如：每封 15 分 → 3 分">
+    </div>
+  </div>
+
+  <div class="scene-card">
+    <div class="scene-header">
+      <div class="scene-num">03</div>
+      <div class="scene-title-text">場景三</div>
+    </div>
+    <div class="field-grid">
+      <div class="field-label">場景名稱</div>
+      <input class="field-input" id="s3-name" type="text" placeholder="例如：會議紀錄整理">
+      <div class="field-label">觸發事件</div>
+      <input class="field-input" id="s3-trigger" type="text" placeholder="例如：每次會議結束後 10 分鐘內">
+      <div class="field-label">AI 動作</div>
+      <input class="field-input" id="s3-action" type="text" placeholder="例如：NotebookLM → 手記整理 Prompt">
+      <div class="field-label">預期省時</div>
+      <input class="field-input" id="s3-time" type="text" placeholder="例如：整理 1 小時 → 15 分">
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-primary" onclick="generate()">生成工作流程卡</button>
+    <button class="btn-ghost" onclick="clearAll()">清除重填</button>
+  </div>
+
+  <div class="result-area" id="result-area" style="display:none;">
+    <div class="result-label">我的 AI 工作流程卡</div>
+    <div class="result-text" id="result-text"></div>
+    <div class="action-row">
+      <button class="btn-primary" onclick="copyCard()">複製工作流程卡</button>
+      <button class="btn-ghost" onclick="clearAll()">清除重填</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">辦公室 AI 工具實務應用 · Part 4 演練</div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+var templates={
+  admin:[
+    {name:'每週公告通知',trigger:'主管說「發通知給大家」',action:'Gemini → 公告 Prompt 模板',time:'草稿 30 分 → 5 分'},
+    {name:'廠商／外部郵件',trigger:'需要寫給廠商或外部人員的郵件',action:'Gemini → 郵件 Prompt 模板',time:'每封 15 分 → 3 分'},
+    {name:'會議紀錄整理',trigger:'每次會議結束後 10 分鐘內',action:'NotebookLM → 手記整理 Prompt',time:'整理 1 小時 → 15 分'}
+  ],
+  sales:[
+    {name:'客戶拜訪跟進信',trigger:'拜訪或通話後 2 小時內',action:'Gemini → 跟進信 Prompt',time:'每封 20 分 → 5 分'},
+    {name:'客戶提案簡報大綱',trigger:'接到新客戶需求後',action:'Gemini → 客戶大綱 Prompt',time:'大綱 2 小時 → 20 分'},
+    {name:'客戶會議紀錄',trigger:'每次客戶會議結束',action:'NotebookLM → 逐字稿整理 Prompt',time:'整理 45 分 → 10 分'}
+  ],
+  manager:[
+    {name:'週報彙整匯報',trigger:'每週一收到組員週報後',action:'Gemini → 匯報摘要 Prompt',time:'彙整 1 小時 → 20 分'},
+    {name:'一對一會議準備',trigger:'每次 1:1 前一天',action:'NotebookLM → 一對一準備 Prompt',time:'準備 30 分 → 10 分'},
+    {name:'部門報告簡報大綱',trigger:'月底、季度報告前一週',action:'Gemini → 主管大綱 Prompt',time:'大綱 3 小時 → 30 分'}
+  ]
+};
+function applyTemplate(type){
+  var t=templates[type];
+  for(var i=0;i<3;i++){
+    document.getElementById('s'+(i+1)+'-name').value=t[i].name;
+    document.getElementById('s'+(i+1)+'-trigger').value=t[i].trigger;
+    document.getElementById('s'+(i+1)+'-action').value=t[i].action;
+    document.getElementById('s'+(i+1)+'-time').value=t[i].time;
+  }
+  showToast('已套用範本，可繼續修改');
+}
+function generate(){
+  var lines=['【我的 AI 工作流程卡】\n'];
+  for(var i=1;i<=3;i++){
+    var n=document.getElementById('s'+i+'-name').value.trim()||'（未填寫）';
+    var tr=document.getElementById('s'+i+'-trigger').value.trim()||'（未填寫）';
+    var ac=document.getElementById('s'+i+'-action').value.trim()||'（未填寫）';
+    var ti=document.getElementById('s'+i+'-time').value.trim()||'（未填寫）';
+    lines.push('場景 '+i+'：'+n+'\n觸發事件：'+tr+'\nAI 動作：'+ac+'\n預期省時：'+ti);
+  }
+  var today=new Date();
+  lines.push('\n建立日期：'+today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0'));
+  document.getElementById('result-text').textContent=lines.join('\n\n');
+  document.getElementById('result-area').style.display='block';
+}
+function copyCard(){
+  navigator.clipboard.writeText(document.getElementById('result-text').textContent).then(function(){showToast('已複製，存入備忘錄吧！');});
+}
+function clearAll(){
+  for(var i=1;i<=3;i++){
+    ['name','trigger','action','time'].forEach(function(f){document.getElementById('s'+i+'-'+f).value='';});
+  }
+  document.getElementById('result-area').style.display='none';
+}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+</script>
+</body>
+</html>

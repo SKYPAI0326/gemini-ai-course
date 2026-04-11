@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>4.3 三種職業全攻略｜辦公室 AI 工具實務應用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a1:#b5703a;--c-a2:#c9963a;--c-a3:#5a7a5a;--c-a4:#6b7fa3;--c-a5:#7a9ea3;--radius:6px;--radius-sm:4px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a2);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a2);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a2);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--c-text);}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a2);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a2);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(201,150,58,.07);border:1px solid rgba(201,150,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;color:var(--c-text);}
+.callout-body strong{font-weight:700;}
+.concept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0;}
+.concept-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:22px 20px;}
+.concept-num{font-family:'Shippori Mincho',serif;font-size:1.5rem;font-weight:700;color:var(--c-a2);margin-bottom:8px;}
+.concept-title{font-size:.85rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.concept-desc{font-size:.78rem;color:var(--c-muted);line-height:1.7;}
+.output-box{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin-top:20px;margin-bottom:20px;}
+.output-header{padding:16px 22px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;}
+.output-label{font-size:.72rem;color:var(--c-a2);font-weight:500;letter-spacing:.5px;}
+.copy-btn{font-size:.75rem;color:var(--c-a2);background:rgba(201,150,58,.1);border:1px solid rgba(201,150,58,.2);padding:4px 12px;border-radius:var(--radius-sm);cursor:pointer;}
+.copy-btn:hover{background:rgba(201,150,58,.2);}
+.output-body{padding:20px 22px;}
+.output-pre{font-size:.84rem;color:var(--c-text);line-height:1.9;font-family:'Courier New',monospace;white-space:pre-wrap;}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;justify-content:space-between;gap:12px;}
+.nav-btn{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;font-weight:500;padding:10px 20px;border-radius:var(--radius);text-decoration:none;transition:all .15s;}
+.nav-prev{background:var(--c-surface);color:var(--c-text);border:1px solid var(--c-border);}
+.nav-prev:hover{background:var(--c-border);}
+.nav-next{background:var(--c-a2);color:#fff;}
+.nav-next:hover{background:#b8852e;}
+.nav-label{font-size:.72rem;opacity:.8;display:block;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.concept-grid{grid-template-columns:1fr;}.footer{padding:20px;}}
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">辦公室 AI 工具實務應用</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">Part 4 · 4.3</div>
+</header>
+
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<section class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回到課程總覽</a>
+  <div class="hero-meta">
+    <span class="hero-part">Part 4 打造我的 AI 工作流</span>
+    <div class="hero-divider-v"></div>
+    <span class="hero-num">單元 4.3</span>
+  </div>
+  <h1 class="lesson-title">三種職業全攻略：<br>行政 · 業務 · 主管</h1>
+  <p class="lesson-tagline">找到你的職業類型，直接取用對應的 AI 工作流程，明天就能開始用在工作上。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">學習成果</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>三種職業類型的完整 AI 工作流程卡</div>
+    <div class="outcome-item"><div class="outcome-dot"></div>明天就能執行的第一個 AI 任務</div>
+  </div>
+</section>
+
+<div class="lesson-body">
+  <div class="lesson-section">
+    <div class="section-eyebrow">SECTION 01</div>
+    <h2 class="section-heading">工具不難，<em>習慣才難</em></h2>
+    <p class="body-text">課程到這裡，你已知道三款工具的用途、Prompt 的寫法、文書流程、會議整理、提案準備。但大多數人學完後還是沒有改變，原因不是工具不夠好，而是「沒有固定的觸發點讓你想到用 AI」。</p>
+    <p class="body-text">這一節幫你建立「遇到這件事 → 打開 AI → 用這個 Prompt」的習慣迴路。</p>
+    <div class="callout key">
+      <div class="callout-icon">🔑</div>
+      <div class="callout-body">研究顯示習慣的養成需要重複場景觸發，而不是靠意志力。<strong>找到你的「觸發事件」比找到最好的工具更重要。</strong></div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">SECTION 02</div>
+    <h2 class="section-heading">三種<em>職業類型</em></h2>
+    <p class="body-text">以下三種類型不是嚴格分類，而是提供一個起點。選擇最接近你日常工作的，取用對應的工作流程卡。</p>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="concept-num">01</div>
+        <div class="concept-title">行政職</div>
+        <div class="concept-desc">通知、公告、採購、行程安排</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-num">02</div>
+        <div class="concept-title">業務職</div>
+        <div class="concept-desc">客戶郵件、跟進、提案、拜訪紀錄</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-num">03</div>
+        <div class="concept-title">主管職</div>
+        <div class="concept-desc">匯報、一對一、週報彙整、決策提案</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">SECTION 03</div>
+    <h2 class="section-heading">三份<em>工作流程卡</em></h2>
+
+    <div class="output-box">
+      <div class="output-header">
+        <div class="output-label">4.3-A · 行政職工作流程卡</div>
+        <button class="copy-btn" onclick="copyBox('card-admin')">複製</button>
+      </div>
+      <div class="output-body">
+        <pre class="output-pre" id="card-admin">【行政職 AI 工作流程卡】
+
+場景 1：每週公告通知
+觸發事件：主管說「發通知給大家」
+AI 動作：Gemini → 公告 Prompt 模板
+預期省時：草稿 30 分 → 5 分
+
+場景 2：廠商／外部郵件
+觸發事件：需要寫給廠商或外部人員的郵件
+AI 動作：Gemini → 郵件 Prompt 模板
+預期省時：每封 15 分 → 3 分
+
+場景 3：會議紀錄整理
+觸發事件：每次會議結束後 10 分鐘內
+AI 動作：NotebookLM → 貼入筆記 → 手記整理 Prompt
+預期省時：整理 1 小時 → 15 分</pre>
+      </div>
+    </div>
+
+    <div class="output-box">
+      <div class="output-header">
+        <div class="output-label">4.3-B · 業務職工作流程卡</div>
+        <button class="copy-btn" onclick="copyBox('card-sales')">複製</button>
+      </div>
+      <div class="output-body">
+        <pre class="output-pre" id="card-sales">【業務職 AI 工作流程卡】
+
+場景 1：客戶拜訪後跟進信
+觸發事件：拜訪或通話後 2 小時內
+AI 動作：Gemini → 跟進信 Prompt 模板
+預期省時：每封 20 分 → 5 分
+
+場景 2：新客戶提案簡報大綱
+觸發事件：接到新客戶需求後
+AI 動作：Gemini → 客戶簡報大綱 Prompt
+預期省時：大綱 2 小時 → 20 分
+
+場景 3：客戶會議紀錄
+觸發事件：每次客戶會議結束
+AI 動作：NotebookLM → 逐字稿整理 Prompt
+預期省時：整理 45 分 → 10 分</pre>
+      </div>
+    </div>
+
+    <div class="output-box">
+      <div class="output-header">
+        <div class="output-label">4.3-C · 主管職工作流程卡</div>
+        <button class="copy-btn" onclick="copyBox('card-manager')">複製</button>
+      </div>
+      <div class="output-body">
+        <pre class="output-pre" id="card-manager">【主管職 AI 工作流程卡】
+
+場景 1：週報彙整與向上匯報
+觸發事件：每週一收到組員週報後
+AI 動作：Gemini → 匯報摘要 Prompt
+預期省時：彙整 1 小時 → 20 分
+
+場景 2：一對一會議準備
+觸發事件：每次 1:1 前一天
+AI 動作：NotebookLM 上傳上週紀錄 → 一對一準備 Prompt
+預期省時：準備 30 分 → 10 分
+
+場景 3：部門報告簡報大綱
+觸發事件：月底、季度報告前一週
+AI 動作：Gemini → 主管簡報大綱 Prompt
+預期省時：大綱 3 小時 → 30 分</pre>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">✓</div>
+      <div class="callout-body">恭喜完成全部 12 個單元！你已掌握 Gemini、NotebookLM 與 Google Workspace AI 的核心用法，以及一套個人化的 AI 工作流程框架。<strong>建議現在就選一個場景，明天試用一次——第一次動手比完美計畫更重要。</strong></div>
+    </div>
+  </div>
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn nav-prev" href="CH4-2.html">
+    <span>←</span>
+    <span><span class="nav-label">上一單元</span>建立個人 Prompt 庫</span>
+  </a>
+  <a class="nav-btn nav-next" href="../index.html">
+    <span><span class="nav-label">完成</span>回到課程總覽</span>
+    <span>→</span>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">辦公室 AI 工具實務應用 · Part 4 · 4.3</div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+window.addEventListener('scroll',function(){var h=document.documentElement;var pct=(h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight)*100;document.getElementById('prog').style.width=pct+'%';});
+function copyBox(id){
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(function(){showToast('已複製');});
+}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+</script>
+</body>
+</html>

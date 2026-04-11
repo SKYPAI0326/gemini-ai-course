@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.1 AI 工具全景圖｜辦公室 AI 工具實務應用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a1:#b5703a;--c-a2:#c9963a;--c-a3:#5a7a5a;--c-a4:#6b7fa3;--c-a5:#7a9ea3;--radius:6px;--radius-sm:4px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a2);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a2);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a2);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--c-text);}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a2);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a2);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(201,150,58,.07);border:1px solid rgba(201,150,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;color:var(--c-text);}
+.callout-body strong{font-weight:700;}
+.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0;}
+.tool-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:24px 20px;}
+.tool-icon{font-size:1.4rem;margin-bottom:12px;}
+.tool-name{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-text);margin-bottom:8px;}
+.tool-desc{font-size:.82rem;color:var(--c-muted);line-height:1.75;margin-bottom:12px;}
+.tool-badge{display:inline-block;font-size:.68rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:2px 10px;border-radius:99px;font-weight:500;}
+.output-box{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin-top:20px;}
+.output-header{padding:16px 22px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;}
+.output-label{font-size:.72rem;color:var(--c-a2);font-weight:500;letter-spacing:.5px;}
+.copy-btn{font-size:.75rem;color:var(--c-a2);background:rgba(201,150,58,.1);border:1px solid rgba(201,150,58,.2);padding:4px 12px;border-radius:var(--radius-sm);cursor:pointer;}
+.copy-btn:hover{background:rgba(201,150,58,.2);}
+.output-body{padding:20px 22px;}
+.output-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+.output-table th{text-align:left;font-size:.72rem;color:var(--c-muted);font-weight:500;padding:6px 10px;border-bottom:1px solid var(--c-border);}
+.output-table td{padding:10px;border-bottom:1px solid var(--c-surface);vertical-align:top;line-height:1.6;}
+.output-table tr:last-child td{border-bottom:none;}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;justify-content:space-between;gap:12px;}
+.nav-btn{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;font-weight:500;padding:10px 20px;border-radius:var(--radius);text-decoration:none;transition:all .15s;}
+.nav-prev{background:var(--c-surface);color:var(--c-text);border:1px solid var(--c-border);}
+.nav-prev:hover{background:var(--c-border);}
+.nav-next{background:var(--c-a2);color:#fff;}
+.nav-next:hover{background:#b8852e;}
+.nav-label{font-size:.72rem;opacity:.8;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.footer{padding:20px;}.tool-grid{grid-template-columns:1fr;}}</style>
+</head>
+<body>
+  <nav class="topbar">
+    <a class="logo" href="../index.html">弄一下工作室</a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-sub">辦公室 AI 工具實務應用</span>
+    <div class="spacer"></div>
+    <span class="topbar-tag">Part 1 · 1.1</span>
+  </nav>
+  <div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+  <div class="lesson-hero">
+    <a class="back-link" href="../index.html">← 回到課程總覽</a>
+    <div class="hero-meta">
+      <span class="hero-part">PART 1 認識 AI 並開口問 AI</span>
+      <div class="hero-divider-v"></div>
+      <span class="hero-num">單元 1.1</span>
+    </div>
+    <h1 class="lesson-title">AI 工具全景圖：<br>三款免費工具，選哪個用</h1>
+    <p class="lesson-tagline">不用付費、不用下載。用 Google 帳號就能開始，先搞清楚三款工具的差異，再決定今天打開哪個。</p>
+    <div class="outcomes">
+      <div class="outcomes-label">學完這節，你會</div>
+      <div class="outcome-item"><div class="outcome-dot"></div><span>知道 Gemini、NotebookLM、Google Workspace AI 各自的強項</span></div>
+      <div class="outcome-item"><div class="outcome-dot"></div><span>AI 工具速查表（一頁決定選哪個，可複製）</span></div>
+    </div>
+  </div>
+
+  <div class="lesson-body">
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 01</div>
+      <h2 class="section-heading">三款工具，<em>各有用武之地</em></h2>
+      <p class="body-text">很多人第一次接觸 AI 時，被工具名稱搞得頭昏。Gemini 跟 ChatGPT 有什麼不同？NotebookLM 是什麼？Google 文件裡出現的 AI 又是哪一款？這一節的目標是讓你清楚記住三款工具的「最適合場景」，以後遇到任務，秒判斷要打開哪個。</p>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-icon">✦</div>
+          <div class="tool-name">Gemini</div>
+          <div class="tool-desc">用對話方式生成文字、整理資訊、草擬郵件報告。適合日常問答與文件草稿。</div>
+          <span class="tool-badge">最常用</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">◎</div>
+          <div class="tool-name">NotebookLM</div>
+          <div class="tool-desc">上傳文件後，對「你的資料」提問。只會從你給的文件裡回答，不會捏造。</div>
+          <span class="tool-badge">長文件專用</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">▣</div>
+          <div class="tool-name">Google Workspace AI</div>
+          <div class="tool-desc">內嵌在 Google 文件、試算表、Gmail 的 AI。直接在工作檔案裡使用。</div>
+          <span class="tool-badge">內嵌辦公</span>
+        </div>
+      </div>
+      <div class="callout info">
+        <span class="callout-icon">ℹ</span>
+        <div class="callout-body">這三款都用 Google 帳號免費登入。Gemini 與 NotebookLM 有免費額度；Google Workspace AI 需公司 Workspace 帳號（很多公司已配發）。</div>
+      </div>
+    </div>
+
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 02</div>
+      <h2 class="section-heading">帶走這份<em>速查表</em></h2>
+      <p class="body-text">遇到任務不確定用哪個工具時，查這張表。</p>
+      <div class="output-box">
+        <div class="output-header">
+          <span class="output-label">AI 工具速查表</span>
+          <button class="copy-btn" onclick="copyTable()">複製表格</button>
+        </div>
+        <div class="output-body">
+          <table class="output-table">
+            <thead>
+              <tr>
+                <th>工具</th>
+                <th>最適合</th>
+                <th>不適合</th>
+                <th>免費限制</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Gemini</strong></td>
+                <td>草擬郵件、整理想法、翻譯、寫公告</td>
+                <td>需要查詢你自己的文件</td>
+                <td>每日有使用上限，日常足夠</td>
+              </tr>
+              <tr>
+                <td><strong>NotebookLM</strong></td>
+                <td>從會議逐字稿整理重點、分析長報告</td>
+                <td>創意寫作、通用問答</td>
+                <td>免費版可上傳 50 份文件</td>
+              </tr>
+              <tr>
+                <td><strong>Google Workspace AI</strong></td>
+                <td>在 Google 文件內修改語氣、摘要</td>
+                <td>複雜多步驟任務</td>
+                <td>需公司 Workspace 帳號</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <span></span>
+    <a class="nav-btn nav-next" href="CH1-2.html">
+      <span><span class="nav-label">下一節 →</span><br>Prompt 三個關鍵原則</span>
+    </a>
+  </div>
+
+  <footer class="footer">
+    <span class="footer-logo">弄一下工作室</span>
+    <span class="footer-note">辦公室 AI 工具實務應用 · Part 1</span>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    window.addEventListener('scroll',function(){var h=document.documentElement;var pct=(h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight)*100;document.getElementById('prog').style.width=pct+'%';});
+    function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+    function copyTable(){var text='工具\t最適合\t不適合\t免費限制\nGemini\t草擬郵件、整理想法、翻譯、寫公告\t需要查詢你自己的文件\t每日有使用上限，日常足夠\nNotebookLM\t從會議逐字稿整理重點、分析長報告\t創意寫作、通用問答\t免費版可上傳 50 份文件\nGoogle Workspace AI\t在 Google 文件內修改語氣、摘要\t複雜多步驟任務\t需公司 Workspace 帳號';navigator.clipboard.writeText(text).then(function(){showToast('已複製速查表');});}
+  </script>
+</body>
+</html>

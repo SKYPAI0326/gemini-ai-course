@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.2 Prompt 三個關鍵原則｜辦公室 AI 工具實務應用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a1:#b5703a;--c-a2:#c9963a;--c-a3:#5a7a5a;--c-a4:#6b7fa3;--c-a5:#7a9ea3;--radius:6px;--radius-sm:4px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a2);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a2);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a2);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--c-text);}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a2);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a2);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(201,150,58,.07);border:1px solid rgba(201,150,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;color:var(--c-text);}
+.callout-body strong{font-weight:700;}
+.step-list{display:flex;flex-direction:column;gap:16px;margin:28px 0;}
+.step-item{display:flex;gap:18px;align-items:flex-start;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:20px 22px;}
+.step-num{font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:var(--c-a2);line-height:1;flex-shrink:0;min-width:28px;}
+.step-content{flex:1;}
+.step-title{font-size:.92rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.84rem;color:var(--c-muted);line-height:1.75;}
+.step-example{margin-top:10px;padding:10px 14px;background:var(--c-surface);border-radius:var(--radius-sm);font-size:.82rem;color:var(--c-text);line-height:1.7;font-family:'Courier New',monospace;}
+.output-box{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin-top:20px;}
+.output-header{padding:16px 22px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;}
+.output-label{font-size:.72rem;color:var(--c-a2);font-weight:500;letter-spacing:.5px;}
+.copy-btn{font-size:.75rem;color:var(--c-a2);background:rgba(201,150,58,.1);border:1px solid rgba(201,150,58,.2);padding:4px 12px;border-radius:var(--radius-sm);cursor:pointer;}
+.copy-btn:hover{background:rgba(201,150,58,.2);}
+.output-body{padding:20px 22px;}
+.prompt-list{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.prompt-item{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius-sm);padding:12px 16px;position:relative;}
+.prompt-cat{font-size:.68rem;color:var(--c-a2);font-weight:500;margin-bottom:5px;letter-spacing:.5px;}
+.prompt-text{font-size:.82rem;color:var(--c-text);line-height:1.7;font-family:'Courier New',monospace;padding-right:60px;}
+.prompt-copy{position:absolute;top:10px;right:12px;font-size:.7rem;color:var(--c-muted);background:var(--c-card);border:1px solid var(--c-border);padding:2px 8px;border-radius:var(--radius-sm);cursor:pointer;}
+.prompt-copy:hover{color:var(--c-a2);}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;justify-content:space-between;gap:12px;}
+.nav-btn{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;font-weight:500;padding:10px 20px;border-radius:var(--radius);text-decoration:none;transition:all .15s;}
+.nav-prev{background:var(--c-surface);color:var(--c-text);border:1px solid var(--c-border);}
+.nav-prev:hover{background:var(--c-border);}
+.nav-next{background:var(--c-a2);color:#fff;}
+.nav-next:hover{background:#b8852e;}
+.nav-label{font-size:.72rem;opacity:.8;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.footer{padding:20px;}}</style>
+</head>
+<body>
+  <nav class="topbar">
+    <a class="logo" href="../index.html">弄一下工作室</a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-sub">辦公室 AI 工具實務應用</span>
+    <div class="spacer"></div>
+    <span class="topbar-tag">Part 1 · 1.2</span>
+  </nav>
+  <div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+  <div class="lesson-hero">
+    <a class="back-link" href="../index.html">← 回到課程總覽</a>
+    <div class="hero-meta">
+      <span class="hero-part">PART 1 認識 AI 並開口問 AI</span>
+      <div class="hero-divider-v"></div>
+      <span class="hero-num">單元 1.2</span>
+    </div>
+    <h1 class="lesson-title">Prompt 三個關鍵原則：<br>問得好，AI 才回得好</h1>
+    <p class="lesson-tagline">AI 給爛回答，通常不是 AI 的問題，是問法的問題。三個原則，讓你的指令品質直接升級。</p>
+    <div class="outcomes">
+      <div class="outcomes-label">學完這節，你會</div>
+      <div class="outcome-item"><div class="outcome-dot"></div><span>掌握「背景 + 格式 + 情境」三個 Prompt 關鍵原則</span></div>
+      <div class="outcome-item"><div class="outcome-dot"></div><span>辦公室 Prompt 範本 20 句（可直接複製使用）</span></div>
+    </div>
+  </div>
+
+  <div class="lesson-body">
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 01</div>
+      <h2 class="section-heading">為什麼<em>問法這麼重要</em>？</h2>
+      <p class="body-text">同樣一個問題，問法不同，得到的結果天差地遠。例如「幫我寫信」和「幫我寫一封給廠商的道歉信，說明延遲出貨的原因是物流問題，語氣正式，不超過 100 字」，後者的回答直接可用，前者還需要反覆修改。這一節教你在每次問 AI 之前，快速套入三個元素。</p>
+    </div>
+
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 02</div>
+      <h2 class="section-heading">三個<em>關鍵原則</em></h2>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">說清楚你是誰、在做什麼（背景）</div>
+            <div class="step-desc">給 AI 角色背景，它才能調整語氣與深度。你在寫給主管看的報告，和寫給客戶的說明，AI 需要完全不同的語調。</div>
+            <div class="step-example">「我是行政人員，需要寫一封通知全體員工的公告…」</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">說明你要的格式與長度（格式）</div>
+            <div class="step-desc">不指定格式，AI 會自己決定。指定後，產出才能直接使用。</div>
+            <div class="step-example">「請用條列格式，三到五點，每點一句話，不超過 80 字…」</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">給一個具體的情境或範例（情境）</div>
+            <div class="step-desc">比起抽象描述，直接給例子或說明使用場景，AI 的回答更貼近需求。</div>
+            <div class="step-example">「例如上次我這樣寫：[貼上舊版本]，這次希望語氣更正式一點…」</div>
+          </div>
+        </div>
+      </div>
+      <div class="callout key">
+        <span class="callout-icon">★</span>
+        <div class="callout-body"><strong>練習方式：</strong>下次用 Gemini 時，先花 30 秒加入這三個元素再送出，對比回答品質。大多數人第一次嘗試後就不想再用舊方式問了。</div>
+      </div>
+    </div>
+
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 03</div>
+      <h2 class="section-heading">帶走 <em>Prompt 範本 20 句</em></h2>
+      <p class="body-text">以下 20 句涵蓋辦公室最常見的 AI 使用情境，括號內填入你的內容，直接送給 Gemini。</p>
+      <div class="output-box">
+        <div class="output-header">
+          <span class="output-label">辦公室 Prompt 範本</span>
+          <button class="copy-btn" onclick="copyAllPrompts()">複製全部</button>
+        </div>
+        <div class="output-body">
+          <div class="prompt-list" id="promptList">
+            <div class="prompt-item"><div class="prompt-cat">郵件・通知</div><div class="prompt-text" data-text="請幫我寫一封通知全體員工的郵件，主旨是[主題]，語氣正式但友善，不超過 150 字。">請幫我寫一封通知全體員工的郵件，主旨是[主題]，語氣正式但友善，不超過 150 字。</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">郵件・感謝</div><div class="prompt-text" data-text="幫我寫一封感謝信給[對象]，感謝他們[具體事項]，保持真誠但不過於誇張，三段以內。">幫我寫一封感謝信給[對象]，感謝他們[具體事項]，保持真誠但不過於誇張，三段以內。</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">郵件・請假</div><div class="prompt-text" data-text="我要請[天數]天假，原因是[原因]，請幫我寫一封給主管的請假申請信，格式正式。">我要請[天數]天假，原因是[原因]，請幫我寫一封給主管的請假申請信，格式正式。</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">郵件・跟進</div><div class="prompt-text" data-text="請幫我寫一封跟進郵件，提醒對方[事項]還未收到回覆，語氣禮貌不催促。">請幫我寫一封跟進郵件，提醒對方[事項]還未收到回覆，語氣禮貌不催促。</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">文件・摘要</div><div class="prompt-text" data-text="請將以下內容整理成三到五個重點，每點一句話，用條列格式：[貼上文字]">請將以下內容整理成三到五個重點，每點一句話，用條列格式：[貼上文字]</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">文件・週報</div><div class="prompt-text" data-text="根據以下工作項目，整理成週報格式，分「本週完成」「進行中」「下週計畫」三區塊：[清單]">根據以下工作項目，整理成週報格式，分「本週完成」「進行中」「下週計畫」三區塊：[清單]</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">文件・公告</div><div class="prompt-text" data-text="請幫我寫一則公司內部公告，主旨是[主題]，格式：標題 + 說明段落 + 注意事項，語氣正式。">請幫我寫一則公司內部公告，主旨是[主題]，格式：標題 + 說明段落 + 注意事項，語氣正式。</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">文件・改寫</div><div class="prompt-text" data-text="請幫我改寫以下段落，讓語氣更[正式/口語/簡潔]，保留原意：[貼上文字]">請幫我改寫以下段落，讓語氣更[正式/口語/簡潔]，保留原意：[貼上文字]</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">會議・整理</div><div class="prompt-text" data-text="以下是會議紀錄草稿，請整理成「決議事項」「待辦清單（含負責人）」「下次會議重點」：[紀錄]">以下是會議紀錄草稿，請整理成「決議事項」「待辦清單（含負責人）」「下次會議重點」：[紀錄]</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">會議・議程</div><div class="prompt-text" data-text="請幫我規劃一個[時長]的會議議程，主題是[主題]，出席人員有[列表]，列出環節與時間。">請幫我規劃一個[時長]的會議議程，主題是[主題]，出席人員有[列表]，列出環節與時間。</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">簡報・大綱</div><div class="prompt-text" data-text="請幫我生成一份[頁數]頁的簡報大綱，主題是[主題]，對象是[對象]，風格要[說服力強/清楚易懂]。">請幫我生成一份[頁數]頁的簡報大綱，主題是[主題]，對象是[對象]，風格要[說服力強/清楚易懂]。</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">簡報・標題</div><div class="prompt-text" data-text="以下是我的簡報重點，請幫我為每一頁想一個吸引人的標題（10 字以內）：[各頁重點]">以下是我的簡報重點，請幫我為每一頁想一個吸引人的標題（10 字以內）：[各頁重點]</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">分析・比較</div><div class="prompt-text" data-text="請比較以下兩個方案的優缺點，用表格呈現，維度包含：成本、時間、風險、效果：[方案說明]">請比較以下兩個方案的優缺點，用表格呈現，維度包含：成本、時間、風險、效果：[方案說明]</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">分析・排查</div><div class="prompt-text" data-text="我遇到一個問題：[描述問題]。可能的原因有哪些？請列出三到五個，以及對應的解決方向。">我遇到一個問題：[描述問題]。可能的原因有哪些？請列出三到五個，以及對應的解決方向。</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">翻譯・專業</div><div class="prompt-text" data-text="請將以下中文翻譯成英文，語氣保持正式專業，適合用在商業郵件中：[貼上文字]">請將以下中文翻譯成英文，語氣保持正式專業，適合用在商業郵件中：[貼上文字]</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">翻譯・潤飾</div><div class="prompt-text" data-text="請幫我潤飾以下英文段落，讓語法更自然流暢，保留原意：[貼上英文]">請幫我潤飾以下英文段落，讓語法更自然流暢，保留原意：[貼上英文]</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">創意・命名</div><div class="prompt-text" data-text="請幫我為[專案/活動]想五個名稱，風格要[正式/活潑/簡短]，並說明每個名稱的含義。">請幫我為[專案/活動]想五個名稱，風格要[正式/活潑/簡短]，並說明每個名稱的含義。</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">計畫・拆解</div><div class="prompt-text" data-text="我需要完成[任務]，截止日是[日期]。請幫我拆解成具體執行步驟，每步驟估算所需時間。">我需要完成[任務]，截止日是[日期]。請幫我拆解成具體執行步驟，每步驟估算所需時間。</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">學習・解釋</div><div class="prompt-text" data-text="請用簡單語言解釋[概念]，假設我完全不懂，舉一個辦公室場景的實際例子說明。">請用簡單語言解釋[概念]，假設我完全不懂，舉一個辦公室場景的實際例子說明。</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+            <div class="prompt-item"><div class="prompt-cat">回饋・建議</div><div class="prompt-text" data-text="請檢查以下內容，給我三個可以改善的建議，重點放在邏輯清晰度與說服力：[貼上文字]">請檢查以下內容，給我三個可以改善的建議，重點放在邏輯清晰度與說服力：[貼上文字]</div><button class="prompt-copy" onclick="copyPrompt(this)">複製</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn nav-prev" href="CH1-1.html">
+      <span><span class="nav-label">← 上一節</span><br>AI 工具全景圖</span>
+    </a>
+    <a class="nav-btn nav-next" href="CH1-3.html">
+      <span><span class="nav-label">下一節 →</span><br>現場實作：寫第一封通知信</span>
+    </a>
+  </div>
+
+  <footer class="footer">
+    <span class="footer-logo">弄一下工作室</span>
+    <span class="footer-note">辦公室 AI 工具實務應用 · Part 1</span>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    window.addEventListener('scroll',function(){var h=document.documentElement;var pct=(h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight)*100;document.getElementById('prog').style.width=pct+'%';});
+    function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+    function copyPrompt(btn){var text=btn.previousElementSibling.getAttribute('data-text');navigator.clipboard.writeText(text).then(function(){showToast('已複製');});}
+    function copyAllPrompts(){var items=document.querySelectorAll('.prompt-item');var lines=[];items.forEach(function(item,i){var cat=item.querySelector('.prompt-cat').textContent;var text=item.querySelector('.prompt-text').getAttribute('data-text');lines.push((i+1)+'. ['+cat+'] '+text);});navigator.clipboard.writeText(lines.join('\n')).then(function(){showToast('已複製全部 20 句');});}
+  </script>
+</body>
+</html>

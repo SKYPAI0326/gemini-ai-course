@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.3 現場實作｜辦公室 AI 工具實務應用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a1:#b5703a;--c-a2:#c9963a;--c-a3:#5a7a5a;--c-a4:#6b7fa3;--c-a5:#7a9ea3;--radius:6px;--radius-sm:4px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a2);border:1px solid rgba(201,150,58,.3);background:rgba(201,150,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a2);width:0%;transition:width .1s;}
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a2);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a2);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a2);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--c-text);}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a2);margin-top:8px;flex-shrink:0;}
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.section-heading em{font-style:normal;color:var(--c-a2);}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.body-text strong{font-weight:700;}
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(201,150,58,.07);border:1px solid rgba(201,150,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;color:var(--c-text);}
+.callout-body strong{font-weight:700;}
+.step-list{display:flex;flex-direction:column;gap:16px;margin:28px 0;}
+.step-item{display:flex;gap:18px;align-items:flex-start;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:20px 22px;}
+.step-num{font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:var(--c-a2);line-height:1;flex-shrink:0;min-width:28px;}
+.step-content{flex:1;}
+.step-title{font-size:.92rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.84rem;color:var(--c-muted);line-height:1.75;margin-bottom:8px;}
+.step-example{margin-top:10px;padding:10px 14px;background:var(--c-surface);border-radius:var(--radius-sm);font-size:.82rem;color:var(--c-text);line-height:1.7;font-family:'Courier New',monospace;position:relative;}
+.step-example-copy{display:inline-block;margin-top:8px;font-size:.7rem;color:var(--c-a2);background:rgba(201,150,58,.1);border:1px solid rgba(201,150,58,.2);padding:2px 10px;border-radius:var(--radius-sm);cursor:pointer;}
+.step-example-copy:hover{background:rgba(201,150,58,.2);}
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;justify-content:space-between;gap:12px;}
+.nav-btn{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;font-weight:500;padding:10px 20px;border-radius:var(--radius);text-decoration:none;transition:all .15s;}
+.nav-prev{background:var(--c-surface);color:var(--c-text);border:1px solid var(--c-border);}
+.nav-prev:hover{background:var(--c-border);}
+.nav-next{background:var(--c-a2);color:#fff;}
+.nav-next:hover{background:#b8852e;}
+.nav-label{font-size:.72rem;opacity:.8;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.footer{padding:20px;}}</style>
+</head>
+<body>
+  <nav class="topbar">
+    <a class="logo" href="../index.html">弄一下工作室</a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-sub">辦公室 AI 工具實務應用</span>
+    <div class="spacer"></div>
+    <span class="topbar-tag">Part 1 · 1.3</span>
+  </nav>
+  <div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+  <div class="lesson-hero">
+    <a class="back-link" href="../index.html">← 回到課程總覽</a>
+    <div class="hero-meta">
+      <span class="hero-part">PART 1 認識 AI 並開口問 AI</span>
+      <div class="hero-divider-v"></div>
+      <span class="hero-num">單元 1.3</span>
+    </div>
+    <h1 class="lesson-title">現場實作：<br>寫你的第一封辦公室通知信</h1>
+    <p class="lesson-tagline">打開 Gemini，跟著四個步驟，30 分鐘從零完成一封可以直接寄出的通知信。</p>
+    <div class="outcomes">
+      <div class="outcomes-label">學完這節，你會</div>
+      <div class="outcome-item"><div class="outcome-dot"></div><span>完成你的第一次 AI 輔助文件寫作</span></div>
+      <div class="outcome-item"><div class="outcome-dot"></div><span>學會「草稿 → 修改指令 → 最終版」的 AI 工作循環</span></div>
+    </div>
+  </div>
+
+  <div class="lesson-body">
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 01</div>
+      <h2 class="section-heading">今天的<em>任務</em></h2>
+      <div class="callout key">
+        <span class="callout-icon">★</span>
+        <div class="callout-body"><strong>任務說明：</strong>用 Gemini 寫一封「辦公室空調節能措施通知」，寄給全體員工。完成後你會掌握「AI 給草稿 → 你修改 → 再問 AI 優化」的完整工作循環。</div>
+      </div>
+    </div>
+
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 02</div>
+      <h2 class="section-heading">四個<em>步驟</em></h2>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">打開 Gemini 並輸入第一版 Prompt</div>
+            <div class="step-desc">前往 gemini.google.com，登入 Google 帳號。在對話框輸入以下 Prompt（直接複製貼上）：</div>
+            <div class="step-example" id="prompt1">請幫我寫一封辦公室節能通知，說明夏季期間空調溫度統一設定為 26 度，請員工自備薄外套。對象是全體員工，語氣正式友善，格式：主旨 + 正文（2 段）+ 結尾感謝，不超過 200 字。</div>
+            <button class="step-example-copy" onclick="copyText('prompt1')">複製這段 Prompt</button>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">評估第一版草稿</div>
+            <div class="step-desc">AI 給出草稿後，先確認三件事：(1) 主旨是否清楚？(2) 語氣是否符合你公司的風格？(3) 有沒有遺漏重要資訊（如生效日期）？</div>
+            <div class="step-desc">不完美沒關係，這是草稿，接下來你要告訴 AI 要怎麼調整。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">用修改指令優化</div>
+            <div class="step-desc">不滿意的地方，直接在 Gemini 對話框繼續說，不需要重新開始。</div>
+            <div class="step-example" id="prompt2">語氣再正式一點，第二段加上「本措施自 [日期] 起實施」，並在結尾加上聯絡窗口資訊（[部門名稱] 分機 [號碼]）。</div>
+            <button class="step-example-copy" onclick="copyText('prompt2')">複製這段 Prompt</button>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <div class="step-title">複製貼入 Gmail 發送</div>
+            <div class="step-desc">滿意後，複製全文，貼入 Gmail 的新郵件，補上收件人與主旨，即可發送。</div>
+            <div class="callout tip" style="margin-top:12px;">
+              <span class="callout-icon">✓</span>
+              <div class="callout-body"><strong>下次不用從零開始——</strong>把這封信的 Prompt 存起來（可以用 Google Keep 或備忘錄），下次改個主題就能直接再用。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 03</div>
+      <h2 class="section-heading">進階<em>挑戰</em></h2>
+      <p class="body-text">完成基礎任務後，試試這個進階挑戰：</p>
+      <div class="callout info">
+        <span class="callout-icon">ℹ</span>
+        <div class="callout-body">用同樣的流程，寫一封「公司年度健康檢查通知」。提示：告訴 AI 健檢日期、地點、報名截止日、聯絡窗口，讓 AI 生成包含這些資訊的完整通知。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a class="nav-btn nav-prev" href="CH1-2.html">
+      <span><span class="nav-label">← 上一節</span><br>Prompt 三個關鍵原則</span>
+    </a>
+    <a class="nav-btn nav-next" href="../part2/CH2-1.html">
+      <span><span class="nav-label">Part 2 開始 →</span><br>週報、公告、摘要一次搞定</span>
+    </a>
+  </div>
+
+  <footer class="footer">
+    <span class="footer-logo">弄一下工作室</span>
+    <span class="footer-note">辦公室 AI 工具實務應用 · Part 1</span>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    window.addEventListener('scroll',function(){var h=document.documentElement;var pct=(h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight)*100;document.getElementById('prog').style.width=pct+'%';});
+    function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+    function copyText(id){var text=document.getElementById(id).textContent.trim();navigator.clipboard.writeText(text).then(function(){showToast('已複製');});}
+  </script>
+</body>
+</html>
