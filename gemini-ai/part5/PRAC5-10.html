@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文字敏感詞過濾器 · 自由演練 10｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a1);border:1px solid rgba(181,112,58,.3);background:rgba(181,112,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a1);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a1);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a1);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a1);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a1);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a1);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+
+.tool-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:32px 0;}
+.tool-topbar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.tool-dot{width:10px;height:10px;border-radius:50%;}
+.tool-dot-r{background:#ff6058;} .tool-dot-y{background:#ffbd2e;} .tool-dot-g{background:#28c840;}
+.tool-label{flex:1;font-size:.72rem;color:var(--c-muted);font-family:'Courier New',monospace;}
+.tool-body{padding:36px 40px;}
+
+.compose-btn{width:100%;padding:13px;background:var(--c-a1);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;transition:opacity .2s;letter-spacing:.05em;}
+.compose-btn:hover{opacity:.88;}
+.result-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.85;padding:22px 24px;border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;border:1px solid rgba(181,112,58,.2);}
+.copy-btn{font-size:.72rem;color:var(--c-a1);background:none;border:1px solid rgba(181,112,58,.3);padding:3px 12px;border-radius:99px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:background .2s;}
+.copy-btn:hover{background:rgba(181,112,58,.08);}
+
+.steps-list{display:flex;flex-direction:column;gap:0;margin:32px 0;}
+.step-item{display:flex;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:20px;top:44px;bottom:0;width:1px;background:var(--c-border);}
+.step-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px;padding-top:4px;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--c-card);border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-text);flex-shrink:0;}
+.step-body{flex:1;padding:4px 0 32px 24px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+.step-desc strong{color:var(--c-text);font-weight:700;}
+
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(181,112,58,.07);border:1px solid rgba(181,112,58,.25);}
+.callout.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+.challenge-box{padding:28px 32px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);margin:28px 0;}
+.challenge-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.challenge-list{display:flex;flex-direction:column;gap:12px;}
+.challenge-item{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;line-height:1.7;}
+.ci-num{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-a2);flex-shrink:0;width:20px;}
+
+.difficulty-badge{display:inline-flex;align-items:center;padding:3px 12px;border-radius:99px;font-size:.72rem;font-weight:500;letter-spacing:.5px;}
+.diff-easy{background:rgba(90,122,90,.1);color:var(--c-a3);border:1px solid rgba(90,122,90,.25);}
+.diff-medium{background:rgba(201,150,58,.1);color:var(--c-a2);border:1px solid rgba(201,150,58,.3);}
+.diff-hard{background:rgba(181,112,58,.1);color:var(--c-a1);border:1px solid rgba(181,112,58,.3);}
+
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a1);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+
+/* ── 文字敏感詞過濾器 ── */
+.filter-layout{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start;}
+.keyword-area{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:16px;}
+.keyword-title{font-size:.72rem;color:var(--c-a1);letter-spacing:1px;font-weight:500;margin-bottom:8px;}
+.kw-input{width:100%;min-height:160px;padding:10px 12px;border:1px solid var(--c-border);border-radius:4px;font-family:inherit;font-size:.82rem;background:var(--c-bg);resize:vertical;line-height:1.7;}
+.kw-input:focus{outline:none;border-color:var(--c-a1);}
+.content-area{display:flex;flex-direction:column;gap:12px;}
+.content-textarea{width:100%;min-height:200px;padding:12px 14px;border:1px solid var(--c-border);border-radius:4px;font-family:inherit;font-size:.88rem;background:var(--c-bg);resize:vertical;line-height:1.8;}
+.content-textarea:focus{outline:none;border-color:var(--c-a1);}
+.highlight-result{min-height:120px;padding:16px 18px;background:var(--c-card);border:1px solid var(--c-border);border-radius:4px;font-size:.88rem;line-height:1.85;white-space:pre-wrap;word-break:break-word;}
+.match-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.match-tag{padding:3px 12px;background:rgba(181,112,58,.1);border:1px solid rgba(181,112,58,.25);border-radius:99px;font-size:.75rem;color:var(--c-a1);}
+mark.kw-highlight{background:rgba(201,150,58,.3);color:var(--c-text);border-radius:2px;padding:0 2px;}
+
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 36px;}.lesson-title{font-size:1.55rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.nav-btn{flex:none;}.footer{padding:20px;}.filter-layout{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">自由演練</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回課程目錄</a>
+  <div class="hero-meta">
+    <div class="hero-part">PART 5 · 自由演練庫</div>
+    <div class="hero-divider-v"></div>
+    <div class="hero-num">自由演練 10</div>
+    <div class="hero-divider-v"></div>
+    <span class="difficulty-badge diff-easy">簡單</span>
+  </div>
+  <h1 class="lesson-title">文字敏感詞過濾器</h1>
+  <p class="lesson-tagline">貼文發出前的最後防線。設定你的敏感詞清單，把文章貼進來，工具自動標出所有問題詞彙並統計次數。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">PRACTICE GOALS</div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>練習字串搜尋與 HTML 高亮標記的實作</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>理解如何用正則表達式做全域取代</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>產出一個公關或社群管理人員可用的文字審核工具</span></div>
+  </div>
+</div>
+
+<div class="lesson-body">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">TOOL · 互動工具</div>
+    <h2 class="section-heading">輸入敏感詞清單，貼入文章，一鍵掃描高亮</h2>
+    <p class="body-text">在左側輸入要偵測的關鍵字（每行一個），右側貼入需要審查的文字內容，按下「開始掃描」後，所有符合的詞彙會以半透明暖黃色高亮標示，並在下方統計每個關鍵字出現的次數。</p>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">keyword-filter.html</div>
+      </div>
+      <div class="tool-body">
+        <div class="filter-layout">
+          <div class="keyword-area">
+            <div class="keyword-title">敏感詞清單（每行一個）</div>
+            <textarea class="kw-input" id="kw-list" placeholder="免費&#10;限時&#10;保證&#10;最低價&#10;點擊&#10;轉發"></textarea>
+            <div style="font-size:.72rem;color:var(--c-muted);margin-top:6px;">共 <span id="kw-count">0</span> 個關鍵字</div>
+          </div>
+          <div class="content-area">
+            <div>
+              <div style="font-size:.72rem;color:var(--c-a1);letter-spacing:1px;font-weight:500;margin-bottom:6px;">待審查文字</div>
+              <textarea class="content-textarea" id="content-text" placeholder="將需要審查的文章或貼文內容貼入此處…"></textarea>
+            </div>
+            <button class="compose-btn" onclick="filterContent()">開始掃描 →</button>
+            <div id="filter-result" style="display:none;">
+              <div style="font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;margin-bottom:8px;">掃描結果 · 共找到 <span id="total-matches">0</span> 處</div>
+              <div class="highlight-result" id="highlight-output"></div>
+              <div class="match-stats" id="match-stats"></div>
+            </div>
+            <div id="filter-clean" style="display:none;padding:16px;background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);border-radius:4px;font-size:.88rem;color:#5a7a5a;">✓ 文字中未發現任何敏感詞</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>掃描不區分大小寫。</strong>建議先用常見的廣告違規用語測試，例如「保證」「最低價」「免費領取」，確認工具正常運作後，再換成你自己工作場景的關鍵字清單。
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">HOW TO REPLICATE · 如何自己做出這個工具</div>
+    <h2 class="section-heading">用這段 Prompt，讓 Gemini 幫你做一模一樣的工具</h2>
+
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">打開 Gemini，切換到「Canvas」模式</div>
+          <div class="step-desc">進入 <strong>gemini.google.com</strong>，點右上角切換到 Canvas 模式，這樣 AI 生成的 HTML 會直接可以預覽。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">貼入以下指令</div>
+          <div class="step-desc">把下方指令完整複製，貼入 Gemini 的輸入框，直接送出。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">等待生成，預覽並存檔</div>
+          <div class="step-desc">Gemini 會生成一個完整的 HTML 工具。點「預覽」確認功能正常後，點「下載」或「複製」儲存到你的電腦。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">→ 複製這段 Prompt 貼入 Gemini</div>
+        <button class="copy-btn" style="margin-left:auto;" onclick="copyInstructions()">複製指令</button>
+      </div>
+      <div class="tool-body" style="padding:24px 28px;">
+        <div class="result-box" id="instruction-box" style="font-size:.82rem;">你是一位擅長製作文字工具的前端工程師。
+
+請製作一個「文字敏感詞過濾器」的單頁 HTML 工具，功能如下：
+
+【功能需求】
+- 左側：敏感詞清單輸入框（每行一個關鍵字），顯示總關鍵字數
+- 右側：待審查文字輸入框 + 「開始掃描」按鈕
+- 掃描後在下方顯示原文，所有符合的關鍵字以螢光標記色 highlight
+- 統計每個關鍵字出現的次數，以標籤形式顯示在結果下方
+- 若無符合項目，顯示綠色通過提示
+
+【設計要求】
+- 背景 #f5f3ee，強調色 #b5703a，highlight 用半透明暖黃（rgba(201,150,58,.3)）
+- 字體 Google Fonts（Shippori Mincho + Noto Sans TC）
+- 左右分欄佈局，圓角 6px，無陰影
+
+請生成完整的單一 HTML 檔案。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">CHALLENGE · 進階挑戰</div>
+    <h2 class="section-heading">完成基本練習後，試試這些變化</h2>
+    <div class="challenge-box">
+      <div class="challenge-label">PRACTICE VARIATIONS</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="ci-num">01</div>
+          <div>加入「嚴重程度分級」：讓使用者為每個關鍵字標記「高風險（紅）/ 中等（黃）/ 低風險（綠）」，highlight 顏色對應不同層級。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">02</div>
+          <div>加入「一鍵替換」功能：點擊某個關鍵字標籤後，提示輸入替代詞，自動把文章中的敏感詞換掉。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">03</div>
+          <div>用 Gemini 幫這個工具加上「產業關鍵字包」——讓使用者可以一鍵載入「金融業禁用詞」「醫療廣告法規詞」等預設清單。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn" href="PRAC5-9.html">
+    <div>
+      <div class="nav-btn-label">← 演練 9</div>
+      <div class="nav-btn-title">活動倒數與進度壓力牆</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="PRAC5-11.html">
+    <div>
+      <div class="nav-btn-label">演練 11 →</div>
+      <div class="nav-btn-title">團隊排班熱點圖</div>
+    </div>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Gemini 零代碼 AI 實戰課 · Part 5 自由演練庫 · 10 of 12</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('prog').style.width = (window.scrollY / total * 100) + '%';
+});
+
+document.getElementById('kw-list').addEventListener('input', () => {
+  const keywords = document.getElementById('kw-list').value
+    .split('\n').map(k => k.trim()).filter(k => k.length > 0);
+  document.getElementById('kw-count').textContent = keywords.length;
+});
+
+function filterContent() {
+  const rawKws = document.getElementById('kw-list').value
+    .split('\n').map(k => k.trim()).filter(k => k.length > 0);
+  const content = document.getElementById('content-text').value;
+  const resultDiv = document.getElementById('filter-result');
+  const cleanDiv = document.getElementById('filter-clean');
+  if (!content.trim() || rawKws.length === 0) { alert('請輸入關鍵字清單與待審查文字'); return; }
+  const counts = {};
+  let totalMatches = 0;
+  let highlighted = content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  rawKws.forEach(kw => {
+    const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(escaped, 'g');
+    const matches = (content.match(re) || []).length;
+    if (matches > 0) {
+      counts[kw] = matches;
+      totalMatches += matches;
+      const escapedForHtml = kw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const reHtml = new RegExp(escapedForHtml, 'g');
+      highlighted = highlighted.replace(reHtml, `<mark class="kw-highlight">${escapedForHtml}</mark>`);
+    }
+  });
+  if (totalMatches === 0) {
+    resultDiv.style.display = 'none';
+    cleanDiv.style.display = 'block';
+    return;
+  }
+  cleanDiv.style.display = 'none';
+  resultDiv.style.display = 'block';
+  document.getElementById('total-matches').textContent = totalMatches;
+  document.getElementById('highlight-output').innerHTML = highlighted;
+  document.getElementById('match-stats').innerHTML = Object.entries(counts)
+    .map(([k,v]) => `<span class="match-tag">${k} × ${v}</span>`).join('');
+}
+
+function copyInstructions() {
+  const text = document.getElementById('instruction-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製指令', 1800);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UTM 廣告連結管理員 · 自由演練 3｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a1);border:1px solid rgba(181,112,58,.3);background:rgba(181,112,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a1);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a1);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a1);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a1);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a1);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a1);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+
+/* ── 工具展示框 ── */
+.tool-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:32px 0;}
+.tool-topbar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.tool-dot{width:10px;height:10px;border-radius:50%;}
+.tool-dot-r{background:#ff6058;} .tool-dot-y{background:#ffbd2e;} .tool-dot-g{background:#28c840;}
+.tool-label{flex:1;font-size:.72rem;color:var(--c-muted);font-family:'Courier New',monospace;}
+.tool-body{padding:36px 40px;}
+
+/* ── Prompt 組合台樣式 ── */
+.formula-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.formula-field{display:flex;flex-direction:column;gap:8px;}
+.field-label{font-size:.72rem;color:var(--c-a1);letter-spacing:1.5px;font-weight:500;}
+.field-sub{font-size:.72rem;color:var(--c-muted);margin-top:-4px;}
+.field-textarea{width:100%;padding:12px 14px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.85rem;color:var(--c-text);background:var(--c-bg);resize:vertical;min-height:88px;line-height:1.7;transition:border-color .2s;}
+.field-textarea:focus{outline:none;border-color:var(--c-a1);}
+.field-textarea::placeholder{color:var(--c-muted);}
+.compose-btn{width:100%;padding:13px;background:var(--c-a1);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;transition:opacity .2s;letter-spacing:.05em;}
+.compose-btn:hover{opacity:.88;}
+.result-wrap{margin-top:20px;display:none;}
+.result-label{font-size:.7rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.copy-btn{font-size:.72rem;color:var(--c-a1);background:none;border:1px solid rgba(181,112,58,.3);padding:3px 12px;border-radius:99px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:background .2s;}
+.copy-btn:hover{background:rgba(181,112,58,.08);}
+.result-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.85;padding:22px 24px;border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;border:1px solid rgba(181,112,58,.2);}
+.char-tip{font-size:.72rem;color:var(--c-muted);margin-top:8px;text-align:right;}
+
+/* ── 步驟 ── */
+.steps-list{display:flex;flex-direction:column;gap:0;margin:32px 0;}
+.step-item{display:flex;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:20px;top:44px;bottom:0;width:1px;background:var(--c-border);}
+.step-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px;padding-top:4px;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--c-card);border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-text);flex-shrink:0;}
+.step-body{flex:1;padding:4px 0 32px 24px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+.step-desc strong{color:var(--c-text);font-weight:700;}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(181,112,58,.07);border:1px solid rgba(181,112,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 挑戰框 ── */
+.challenge-box{padding:28px 32px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);margin:28px 0;}
+.challenge-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.challenge-list{display:flex;flex-direction:column;gap:12px;}
+.challenge-item{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;line-height:1.7;}
+.ci-num{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-a2);flex-shrink:0;width:20px;}
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a1);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* ── 頁尾 ── */
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 36px;}.lesson-title{font-size:1.55rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.nav-btn{flex:none;}.footer{padding:20px;}}
+
+/* ── UTM 工具專用 ── */
+.utm-field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.utm-label{font-size:.72rem;color:var(--c-a1);letter-spacing:1px;font-weight:500;}
+.utm-optional{font-size:.68rem;color:var(--c-muted);}
+.utm-input{padding:9px 12px;border:1px solid var(--c-border);border-radius:4px;font-family:'Noto Sans TC',sans-serif;font-size:.85rem;background:var(--c-bg);color:var(--c-text);width:100%;}
+.utm-input:focus{outline:none;border-color:var(--c-a1);}
+.utm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.history-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:8px;}
+.history-table th{background:rgba(107,127,163,.05);color:var(--c-a4);font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid var(--c-border);}
+.history-table td{padding:8px 12px;border-bottom:1px solid var(--c-border);font-family:'Courier New',monospace;word-break:break-all;color:var(--c-text);}
+.history-table tr:last-child td{border-bottom:none;}
+.del-btn{background:none;border:none;color:var(--c-muted);cursor:pointer;font-size:.75rem;padding:2px 6px;}
+.del-btn:hover{color:#b5703a;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">自由演練</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回課程目錄</a>
+  <div class="hero-meta">
+    <div class="hero-part">PART 5 · 自由演練庫</div>
+    <div class="hero-divider-v"></div>
+    <div class="hero-num">自由演練 3</div>
+  </div>
+  <h1 class="lesson-title">UTM 廣告連結管理員</h1>
+  <p class="lesson-tagline">幫每一個行銷活動的連結加上追蹤參數，一鍵生成規範化的 UTM 網址，歷史記錄自動存入瀏覽器，不再用 Excel 管理。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">PRACTICE GOALS</div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>理解 UTM 參數的結構與用途</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>學會用 localStorage 讓工具在關閉後仍保留記錄</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>產出一個行銷人員可實際使用的連結管理工具</span></div>
+  </div>
+</div>
+
+<div class="lesson-body">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">TOOL · 互動工具</div>
+    <h2 class="section-heading">填入活動參數，一鍵生成 UTM 連結</h2>
+    <p class="body-text">填入基礎網址與各 UTM 參數，點擊產生按鈕即可取得完整的追蹤連結。每次產生的記錄會自動儲存在瀏覽器中，關閉後重新開啟仍保留。</p>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">utm-link-manager.html</div>
+      </div>
+      <div class="tool-body">
+        <div class="utm-grid">
+          <div class="utm-field" style="grid-column:1/-1;">
+            <div class="utm-label">基礎網址 (Base URL)</div>
+            <input class="utm-input" id="u-base" placeholder="https://example.com/landing-page">
+          </div>
+          <div class="utm-field">
+            <div class="utm-label">來源 utm_source</div>
+            <div class="utm-optional">例：google, facebook, email</div>
+            <input class="utm-input" id="u-source" placeholder="facebook">
+          </div>
+          <div class="utm-field">
+            <div class="utm-label">媒介 utm_medium</div>
+            <div class="utm-optional">例：cpc, social, newsletter</div>
+            <input class="utm-input" id="u-medium" placeholder="social">
+          </div>
+          <div class="utm-field" style="grid-column:1/-1;">
+            <div class="utm-label">活動名稱 utm_campaign</div>
+            <div class="utm-optional">例：summer_sale_2025</div>
+            <input class="utm-input" id="u-campaign" placeholder="summer_sale_2025">
+          </div>
+          <div class="utm-field" style="grid-column:1/-1;">
+            <div class="utm-label">內容識別 utm_content <span style="color:var(--c-muted);font-weight:400;">（選填）</span></div>
+            <input class="utm-input" id="u-content" placeholder="banner_top">
+          </div>
+        </div>
+        <button class="compose-btn" onclick="generateUTM()" style="margin:16px 0 0;">產生 UTM 連結 →</button>
+        <div id="utm-result" style="display:none;margin-top:16px;">
+          <div style="font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;"><span>產生的連結</span><button class="copy-btn" onclick="copyUTM()">複製連結</button></div>
+          <div id="utm-url" style="background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.8rem;padding:14px 16px;border-radius:4px;word-break:break-all;line-height:1.6;"></div>
+        </div>
+        <div id="history-section" style="margin-top:28px;display:none;">
+          <div style="font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;"><span>歷史記錄 · <span id="hist-count">0</span> 筆</span><button class="copy-btn" onclick="clearHistory()">清除全部</button></div>
+          <div style="background:var(--c-card);border:1px solid var(--c-border);border-radius:4px;overflow:hidden;overflow-x:auto;"><table class="history-table"><thead><tr><th>活動</th><th>來源</th><th>連結</th><th></th></tr></thead><tbody id="hist-body"></tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">HOW TO REPLICATE · 如何自己做出這個工具</div>
+    <h2 class="section-heading">用這段 Prompt，讓 Gemini 幫你做一模一樣的工具</h2>
+
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">打開 Gemini，切換到「Canvas」模式</div>
+          <div class="step-desc">進入 <strong>gemini.google.com</strong>，點右上角切換到 Canvas 模式，這樣 AI 生成的 HTML 會直接可以預覽。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">貼入以下指令</div>
+          <div class="step-desc">把下方指令完整複製，貼入 Gemini 的輸入框，直接送出。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">等待生成，預覽並存檔</div>
+          <div class="step-desc">Gemini 會生成一個完整的 HTML 工具。點「預覽」確認功能正常後，點「下載」或「複製」儲存到你的電腦。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">→ 複製這段 Prompt 貼入 Gemini</div>
+        <button class="copy-btn" style="margin-left:auto;" onclick="copyInstructions()">複製指令</button>
+      </div>
+      <div class="tool-body" style="padding:24px 28px;">
+        <div class="result-box" id="instruction-box" style="font-size:.82rem;">你是一位擅長製作行銷工具的前端工程師。
+
+請製作一個「UTM 廣告連結管理員」的單頁 HTML 工具，功能如下：
+
+【功能需求】
+- 輸入欄位：基礎網址、utm_source、utm_medium、utm_campaign、utm_content（選填）
+- 「產生 UTM 連結」按鈕，點擊後組合出完整帶參數的 URL，顯示在深色背景的結果框內
+- 結果框旁有「複製連結」按鈕
+- 每次產生後，自動將記錄存入 localStorage（活動名稱、來源、完整 URL、日期）
+- 頁面下方顯示歷史記錄表格，重新整理後仍保留，並提供「刪除」與「清除全部」功能
+
+【設計要求】
+- 背景 #f5f3ee，卡片白色，邊框 #d8d4cb，強調色 #b5703a
+- 表格使用灰藍色（#6b7fa3）為表頭顏色
+- 字體 Google Fonts：標題 Shippori Mincho，內文 Noto Sans TC
+- 圓角 6px，無陰影，無漸層，輸入框聚焦時邊框變為強調色
+
+請生成完整的單一 HTML 檔案。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">CHALLENGE · 進階挑戰</div>
+    <h2 class="section-heading">完成基本練習後，試試這些變化</h2>
+    <div class="challenge-box">
+      <div class="challenge-label">PRACTICE VARIATIONS</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="ci-num">01</div>
+          <div>試著加入 utm_term 欄位（用於關鍵字廣告），並在說明文字旁加入一個連結到 GA4 說明文件的小提示。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">02</div>
+          <div>讓歷史表格中的每一筆連結可以「點擊複製」，同時在 campaign 欄位加上日期標籤。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">03</div>
+          <div>用 Gemini 把這個工具改成「CSV 批次匯出」版本，一次產生多個活動的 UTM 連結並下載成 CSV。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn" href="PRAC5-2.html">
+    <div>
+      <div class="nav-btn-label">← 演練 2</div>
+      <div class="nav-btn-title">會議記錄行動項目提取牆</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="PRAC5-4.html">
+    <div>
+      <div class="nav-btn-label">演練 4 →</div>
+      <div class="nav-btn-title">社群貼文多平台預覽器</div>
+    </div>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Gemini 零代碼 AI 實戰課 · Part 5 自由演練庫 · 3 of 12</div>
+</footer>
+
+<script>
+// 閱讀進度
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('prog').style.width = (window.scrollY / total * 100) + '%';
+});
+
+function generateUTM() {
+  const base = document.getElementById('u-base').value.trim();
+  const source = document.getElementById('u-source').value.trim();
+  const medium = document.getElementById('u-medium').value.trim();
+  const campaign = document.getElementById('u-campaign').value.trim();
+  const content = document.getElementById('u-content').value.trim();
+  if (!base || !source || !campaign) { alert('請填寫基礎網址、來源與活動名稱'); return; }
+  let url = base + (base.includes('?') ? '&' : '?');
+  url += `utm_source=${encodeURIComponent(source)}`;
+  if (medium) url += `&utm_medium=${encodeURIComponent(medium)}`;
+  url += `&utm_campaign=${encodeURIComponent(campaign)}`;
+  if (content) url += `&utm_content=${encodeURIComponent(content)}`;
+  document.getElementById('utm-url').textContent = url;
+  document.getElementById('utm-result').style.display = 'block';
+  // save to localStorage
+  const history = JSON.parse(localStorage.getItem('utm_history') || '[]');
+  history.unshift({ campaign, source, url, time: new Date().toLocaleDateString('zh-TW') });
+  if (history.length > 20) history.pop();
+  localStorage.setItem('utm_history', JSON.stringify(history));
+  renderHistory();
+}
+function copyUTM() {
+  const url = document.getElementById('utm-url').textContent;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = event.target; btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製連結', 1800);
+  });
+}
+function renderHistory() {
+  const history = JSON.parse(localStorage.getItem('utm_history') || '[]');
+  const section = document.getElementById('history-section');
+  if (history.length === 0) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  document.getElementById('hist-count').textContent = history.length;
+  document.getElementById('hist-body').innerHTML = history.map((h, i) =>
+    `<tr><td>${h.campaign}</td><td>${h.source}</td><td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${h.url}</td><td><button class="del-btn" onclick="deleteHist(${i})">✕</button></td></tr>`
+  ).join('');
+}
+function deleteHist(i) {
+  const history = JSON.parse(localStorage.getItem('utm_history') || '[]');
+  history.splice(i, 1);
+  localStorage.setItem('utm_history', JSON.stringify(history));
+  renderHistory();
+}
+function clearHistory() {
+  localStorage.removeItem('utm_history');
+  renderHistory();
+}
+function copyInstructions() {
+  const text = document.getElementById('instruction-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製指令', 1800);
+  });
+}
+renderHistory();
+</script>
+</body>
+</html>

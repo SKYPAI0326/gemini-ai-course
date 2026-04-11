@@ -78,6 +78,16 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
 .lesson-status{font-size:.68rem;padding:2px 10px;border-radius:99px;font-weight:500;white-space:nowrap;}
 .status-available{background:rgba(181,112,58,.1);border:1px solid rgba(181,112,58,.25);color:var(--c-a1);}
 .status-lock{background:var(--c-surface);border:1px solid var(--c-border);color:var(--c-muted);}
+.prac-card-5{background:rgba(122,158,163,.04);border:1px solid rgba(122,158,163,.18);}
+.prac-card-5:hover{transform:translateX(4px);border-color:rgba(122,158,163,.4);}
+.prac-band-5{width:3px;align-self:stretch;flex-shrink:0;background:var(--c-a5);opacity:.5;}
+.prac-num-5{font-size:.68rem;color:var(--c-a5);white-space:nowrap;letter-spacing:.5px;}
+.prac-badge-5{font-size:.65rem;padding:2px 9px;border-radius:99px;background:rgba(122,158,163,.1);border:1px solid rgba(122,158,163,.2);color:var(--c-a5);white-space:nowrap;}
+.prac-arrow-5{font-size:.78rem;color:var(--c-a5);padding:0 18px;opacity:0;transition:opacity .15s,transform .15s;}
+.prac-card-5:hover .prac-arrow-5{opacity:1;transform:translateX(3px);}
+.diff-easy{background:rgba(90,122,90,.08);border-color:rgba(90,122,90,.2);color:var(--c-a3);}
+.diff-mid{background:rgba(201,150,58,.08);border-color:rgba(201,150,58,.2);color:var(--c-a2);}
+.diff-adv{background:rgba(181,112,58,.08);border-color:rgba(181,112,58,.25);color:var(--c-a1);}
 .lesson-arrow{font-size:.8rem;color:var(--c-a1);font-weight:500;padding:0 20px;opacity:0;transition:opacity .15s,transform .15s;}
 .lesson-card:hover .lesson-arrow{opacity:1;transform:translateX(3px);}
 
@@ -125,7 +135,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
   <div class="hero-divider"></div>
   <div class="hero-stats">
     <div class="stat">
-      <div class="stat-num">4</div>
+      <div class="stat-num">5</div>
       <div class="stat-lbl">學習部分</div>
     </div>
     <div class="stat">
@@ -380,6 +390,82 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
       <div class="prac-band"></div>
       <div class="prac-body"><div class="prac-num">演練 12</div><div class="prac-title">20 分鐘黑客松挑戰台</div><div class="prac-badge">最終挑戰</div></div>
       <div class="prac-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- Part 5 -->
+  <div class="part-head" style="margin-top:16px;">
+    <div class="part-label" style="color:var(--c-a5);">Part 5</div>
+    <div class="part-title">自由演練庫</div>
+    <div class="part-line"></div>
+    <div class="part-count">12 個工具</div>
+  </div>
+  <p style="font-size:.85rem;color:var(--c-muted);line-height:1.8;margin-bottom:20px;">課程之外的額外練習場。12 個職場實用小工具，每個都附有可直接貼入 Gemini 的完整指令與進階挑戰題，隨時取用。</p>
+
+  <div class="prac-head">
+    <div class="prac-label" style="color:var(--c-a5);">FREE PRACTICE · 自由演練</div>
+    <div class="prac-line" style="border-color:rgba(122,158,163,.2);"></div>
+  </div>
+  <div class="prac-list">
+    <a class="prac-card prac-card-5" href="part5/PRAC5-1.html">
+      <div class="prac-band-5"></div>
+      <div class="prac-body"><div class="prac-num-5">演練 01</div><div class="prac-title">智能電子郵件範本產生器</div><div class="prac-badge-5 diff-easy">簡單</div></div>
+      <div class="prac-arrow-5">→</div>
+    </a>
+    <a class="prac-card prac-card-5" href="part5/PRAC5-2.html">
+      <div class="prac-band-5"></div>
+      <div class="prac-body"><div class="prac-num-5">演練 02</div><div class="prac-title">會議記錄行動項目提取牆</div><div class="prac-badge-5 diff-easy">簡單</div></div>
+      <div class="prac-arrow-5">→</div>
+    </a>
+    <a class="prac-card prac-card-5" href="part5/PRAC5-3.html">
+      <div class="prac-band-5"></div>
+      <div class="prac-body"><div class="prac-num-5">演練 03</div><div class="prac-title">UTM 廣告連結管理員</div><div class="prac-badge-5 diff-mid">中等</div></div>
+      <div class="prac-arrow-5">→</div>
+    </a>
+    <a class="prac-card prac-card-5" href="part5/PRAC5-4.html">
+      <div class="prac-band-5"></div>
+      <div class="prac-body"><div class="prac-num-5">演練 04</div><div class="prac-title">社群貼文多平台預覽器</div><div class="prac-badge-5 diff-mid">中等</div></div>
+      <div class="prac-arrow-5">→</div>
+    </a>
+    <a class="prac-card prac-card-5" href="part5/PRAC5-5.html">
+      <div class="prac-band-5"></div>
+      <div class="prac-body"><div class="prac-num-5">演練 05</div><div class="prac-title">專案進度「紅綠燈」看板</div><div class="prac-badge-5 diff-easy">簡單</div></div>
+      <div class="prac-arrow-5">→</div>
+    </a>
+    <a class="prac-card prac-card-5" href="part5/PRAC5-6.html">
+      <div class="prac-band-5"></div>
+      <div class="prac-body"><div class="prac-num-5">演練 06</div><div class="prac-title">面試評價橫向對比表</div><div class="prac-badge-5 diff-mid">中等</div></div>
+      <div class="prac-arrow-5">→</div>
+    </a>
+    <a class="prac-card prac-card-5" href="part5/PRAC5-7.html">
+      <div class="prac-band-5"></div>
+      <div class="prac-body"><div class="prac-num-5">演練 07</div><div class="prac-title">站立會議發言抽籤器</div><div class="prac-badge-5 diff-easy">簡單</div></div>
+      <div class="prac-arrow-5">→</div>
+    </a>
+    <a class="prac-card prac-card-5" href="part5/PRAC5-8.html">
+      <div class="prac-band-5"></div>
+      <div class="prac-body"><div class="prac-num-5">演練 08</div><div class="prac-title">Markdown 轉專業報表樣式</div><div class="prac-badge-5 diff-mid">中等</div></div>
+      <div class="prac-arrow-5">→</div>
+    </a>
+    <a class="prac-card prac-card-5" href="part5/PRAC5-9.html">
+      <div class="prac-band-5"></div>
+      <div class="prac-body"><div class="prac-num-5">演練 09</div><div class="prac-title">活動倒數與進度壓力牆</div><div class="prac-badge-5 diff-easy">簡單</div></div>
+      <div class="prac-arrow-5">→</div>
+    </a>
+    <a class="prac-card prac-card-5" href="part5/PRAC5-10.html">
+      <div class="prac-band-5"></div>
+      <div class="prac-body"><div class="prac-num-5">演練 10</div><div class="prac-title">文字敏感詞過濾器</div><div class="prac-badge-5 diff-easy">簡單</div></div>
+      <div class="prac-arrow-5">→</div>
+    </a>
+    <a class="prac-card prac-card-5" href="part5/PRAC5-11.html">
+      <div class="prac-band-5"></div>
+      <div class="prac-body"><div class="prac-num-5">演練 11</div><div class="prac-title">團隊排班 / 空檔熱點圖</div><div class="prac-badge-5 diff-adv">進階</div></div>
+      <div class="prac-arrow-5">→</div>
+    </a>
+    <a class="prac-card prac-card-5" href="part5/PRAC5-12.html">
+      <div class="prac-band-5"></div>
+      <div class="prac-body"><div class="prac-num-5">演練 12</div><div class="prac-title">個人化 Kanban 任務板</div><div class="prac-badge-5 diff-mid">中等</div></div>
+      <div class="prac-arrow-5">→</div>
     </a>
   </div>
 

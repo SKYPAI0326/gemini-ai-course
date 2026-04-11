@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>社群貼文多平台預覽器 · 自由演練 4｜Gemini 零代碼 AI 實戰課</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f5f3ee; --c-surface:#edeae3; --c-card:#ffffff;
+  --c-border:#d8d4cb; --c-text:#2c2b28; --c-muted:#8c8880;
+  --c-a1:#b5703a; --c-a2:#c9963a; --c-a3:#5a7a5a; --c-a4:#6b7fa3;
+  --radius:6px; --radius-sm:4px; --content-w:780px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a1);border:1px solid rgba(181,112,58,.3);background:rgba(181,112,58,.07);padding:3px 12px;border-radius:99px;font-weight:500;}
+
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a1);width:0%;transition:width .1s;}
+
+.lesson-hero{max-width:var(--content-w);margin:0 auto;padding:72px 48px 56px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:32px;}
+.back-link:hover{color:var(--c-a1);}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.hero-part{font-size:.72rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-divider-v{width:1px;height:14px;background:var(--c-border);}
+.hero-num{font-size:.72rem;color:var(--c-a1);letter-spacing:1px;font-weight:500;}
+.lesson-title{font-family:'Shippori Mincho',serif;font-size:2.2rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:20px;}
+.lesson-tagline{font-size:.97rem;color:var(--c-muted);line-height:1.9;max-width:580px;margin-bottom:36px;}
+.outcomes{display:flex;flex-direction:column;gap:10px;padding:24px 28px;background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a1);border-radius:var(--radius);}
+.outcomes-label{font-size:.7rem;color:var(--c-a1);letter-spacing:1.5px;font-weight:500;margin-bottom:4px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;}
+.outcome-dot{width:5px;height:5px;border-radius:50%;background:var(--c-a1);margin-top:8px;flex-shrink:0;}
+
+.lesson-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;}
+.lesson-section{margin-bottom:72px;}
+.section-eyebrow{font-size:.7rem;color:var(--c-muted);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.section-heading{font-family:'Shippori Mincho',serif;font-size:1.55rem;font-weight:700;color:var(--c-text);margin-bottom:20px;line-height:1.35;}
+.body-text{font-size:.95rem;color:var(--c-text);line-height:1.95;margin-bottom:20px;}
+.section-rule{border:none;border-top:1px solid var(--c-border);margin:72px 0;}
+
+/* ── 工具展示框 ── */
+.tool-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;margin:32px 0;}
+.tool-topbar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.tool-dot{width:10px;height:10px;border-radius:50%;}
+.tool-dot-r{background:#ff6058;} .tool-dot-y{background:#ffbd2e;} .tool-dot-g{background:#28c840;}
+.tool-label{flex:1;font-size:.72rem;color:var(--c-muted);font-family:'Courier New',monospace;}
+.tool-body{padding:36px 40px;}
+
+/* ── Prompt 組合台樣式 ── */
+.formula-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.formula-field{display:flex;flex-direction:column;gap:8px;}
+.field-label{font-size:.72rem;color:var(--c-a1);letter-spacing:1.5px;font-weight:500;}
+.field-sub{font-size:.72rem;color:var(--c-muted);margin-top:-4px;}
+.field-textarea{width:100%;padding:12px 14px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.85rem;color:var(--c-text);background:var(--c-bg);resize:vertical;min-height:88px;line-height:1.7;transition:border-color .2s;}
+.field-textarea:focus{outline:none;border-color:var(--c-a1);}
+.field-textarea::placeholder{color:var(--c-muted);}
+.compose-btn{width:100%;padding:13px;background:var(--c-a1);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Noto Sans TC',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;transition:opacity .2s;letter-spacing:.05em;}
+.compose-btn:hover{opacity:.88;}
+.result-wrap{margin-top:20px;display:none;}
+.result-label{font-size:.7rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.copy-btn{font-size:.72rem;color:var(--c-a1);background:none;border:1px solid rgba(181,112,58,.3);padding:3px 12px;border-radius:99px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:background .2s;}
+.copy-btn:hover{background:rgba(181,112,58,.08);}
+.result-box{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.85;padding:22px 24px;border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;border:1px solid rgba(181,112,58,.2);}
+.char-tip{font-size:.72rem;color:var(--c-muted);margin-top:8px;text-align:right;}
+
+/* ── 步驟 ── */
+.steps-list{display:flex;flex-direction:column;gap:0;margin:32px 0;}
+.step-item{display:flex;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:20px;top:44px;bottom:0;width:1px;background:var(--c-border);}
+.step-num-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px;padding-top:4px;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--c-card);border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-text);flex-shrink:0;}
+.step-body{flex:1;padding:4px 0 32px 24px;}
+.step-title{font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.step-desc{font-size:.85rem;color:var(--c-muted);line-height:1.75;}
+.step-desc strong{color:var(--c-text);font-weight:700;}
+
+/* ── Callout ── */
+.callout{display:flex;gap:16px;padding:20px 24px;border-radius:var(--radius);margin:24px 0;}
+.callout.tip{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.callout.key{background:rgba(181,112,58,.07);border:1px solid rgba(181,112,58,.25);}
+.callout-icon{font-size:1.05rem;flex-shrink:0;margin-top:2px;}
+.callout-body{font-size:.88rem;line-height:1.8;}
+.callout-body strong{font-weight:700;}
+
+/* ── 挑戰框 ── */
+.challenge-box{padding:28px 32px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);margin:28px 0;}
+.challenge-label{font-size:.7rem;color:var(--c-a2);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.challenge-list{display:flex;flex-direction:column;gap:12px;}
+.challenge-item{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;line-height:1.7;}
+.ci-num{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-a2);flex-shrink:0;width:20px;}
+
+/* ── 底部導航 ── */
+.lesson-nav{max-width:var(--content-w);margin:0 auto;padding:0 48px 80px;display:flex;gap:16px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);text-decoration:none;color:var(--c-text);font-size:.85rem;transition:border-color .2s;flex:1;}
+.nav-btn:hover{border-color:var(--c-a1);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn-label{font-size:.7rem;color:var(--c-muted);margin-bottom:2px;}
+.nav-btn-title{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* ── 頁尾 ── */
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+@media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 36px;}.lesson-title{font-size:1.55rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.nav-btn{flex:none;}.footer{padding:20px;}}
+
+/* ── 工具特定樣式 ── */
+.preview-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+.char-counter{font-size:.72rem;margin-top:6px;text-align:right;transition:color .2s;}
+.char-ok{color:var(--c-muted);}
+.char-warn{color:#c9963a;font-weight:600;}
+.char-over{color:#b5703a;font-weight:700;}
+.phone-frame{background:#1a1a1a;border-radius:24px;padding:10px;width:100%;max-width:220px;margin:0 auto;box-shadow:0 4px 20px rgba(0,0,0,.15);}
+.phone-screen{background:#fff;border-radius:16px;overflow:hidden;min-height:300px;}
+.phone-header{background:#f0f0f0;padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #e0e0e0;}
+.phone-avatar{width:28px;height:28px;border-radius:50%;background:var(--c-a1);}
+.phone-name{font-size:.72rem;font-weight:600;color:#333;}
+.phone-content{padding:12px 14px;font-size:.78rem;line-height:1.65;color:#222;white-space:pre-wrap;word-break:break-word;min-height:120px;}
+.platform-tabs{display:flex;gap:8px;margin-bottom:12px;}
+.ptab{padding:5px 14px;border:1px solid var(--c-border);border-radius:99px;font-size:.75rem;cursor:pointer;background:var(--c-card);color:var(--c-muted);transition:all .15s;}
+.ptab.active{background:var(--c-a1);color:#fff;border-color:var(--c-a1);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="../../index.html">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <div class="topbar-sub">Gemini 零代碼 AI 實戰課</div>
+  <div class="spacer"></div>
+  <div class="topbar-tag">自由演練</div>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="lesson-hero">
+  <a class="back-link" href="../index.html">← 回課程目錄</a>
+  <div class="hero-meta">
+    <div class="hero-part">PART 5 · 自由演練庫</div>
+    <div class="hero-divider-v"></div>
+    <div class="hero-num">自由演練 4</div>
+  </div>
+  <h1 class="lesson-title">社群貼文多平台預覽器</h1>
+  <p class="lesson-tagline">發文前先看效果。在左側撰寫文案，右側即時模擬手機顯示畫面，字數超標時立即警示，讓每篇貼文都發得精準。</p>
+  <div class="outcomes">
+    <div class="outcomes-label">PRACTICE GOALS</div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>理解如何用 CSS 模擬手機介面佈局</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>練習 input event 觸發的即時預覽邏輯</span></div>
+    <div class="outcome-item"><div class="outcome-dot"></div><span>產出一個社群小編可日常使用的排版預覽工具</span></div>
+  </div>
+</div>
+
+<div class="lesson-body">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">TOOL · 互動工具</div>
+    <h2 class="section-heading">選擇平台，即時預覽貼文效果</h2>
+    <p class="body-text">選擇目標平台後在左側輸入貼文內容，右側手機畫面會即時更新。字數計數器會根據各平台上限給出警示——Facebook 上限 63,206 字、Instagram 2,200 字、X/Twitter 280 字。</p>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">social-post-previewer.html</div>
+      </div>
+      <div class="tool-body">
+        <div class="platform-tabs">
+          <button class="ptab active" onclick="setPlatform('fb',this)">Facebook</button>
+          <button class="ptab" onclick="setPlatform('ig',this)">Instagram</button>
+          <button class="ptab" onclick="setPlatform('x',this)">X / Twitter</button>
+        </div>
+        <div class="preview-layout">
+          <div>
+            <div style="font-size:.72rem;color:var(--c-a1);letter-spacing:1px;font-weight:500;margin-bottom:8px;">撰寫貼文內容</div>
+            <textarea id="post-text" oninput="updatePreview()" placeholder="在此輸入你的貼文內容……" style="width:100%;min-height:180px;padding:12px 14px;border:1px solid var(--c-border);border-radius:4px;font-family:inherit;font-size:.88rem;background:var(--c-bg);resize:vertical;line-height:1.7;"></textarea>
+            <div class="char-counter char-ok" id="char-count">0 / <span id="char-limit">63,206</span> 字元</div>
+            <div id="char-status" style="font-size:.78rem;margin-top:4px;color:var(--c-a3);">✓ 字數正常</div>
+          </div>
+          <div>
+            <div style="font-size:.72rem;color:var(--c-a1);letter-spacing:1px;font-weight:500;margin-bottom:8px;">預覽效果</div>
+            <div class="phone-frame">
+              <div class="phone-screen">
+                <div class="phone-header">
+                  <div class="phone-avatar"></div>
+                  <div><div class="phone-name" id="preview-name">弄一下工作室</div><div style="font-size:.6rem;color:#999;">剛剛</div></div>
+                </div>
+                <div class="phone-content" id="preview-content">在此輸入文字後即時預覽…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">HOW TO REPLICATE · 如何自己做出這個工具</div>
+    <h2 class="section-heading">用這段 Prompt，讓 Gemini 幫你做一模一樣的工具</h2>
+
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">打開 Gemini，切換到「Canvas」模式</div>
+          <div class="step-desc">進入 <strong>gemini.google.com</strong>，點右上角切換到 Canvas 模式，這樣 AI 生成的 HTML 會直接可以預覽。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">貼入以下指令</div>
+          <div class="step-desc">把下方指令完整複製，貼入 Gemini 的輸入框，直接送出。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">等待生成，預覽並存檔</div>
+          <div class="step-desc">Gemini 會生成一個完整的 HTML 工具。點「預覽」確認功能正常後，點「下載」或「複製」儲存到你的電腦。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-wrap">
+      <div class="tool-topbar">
+        <div class="tool-dot tool-dot-r"></div>
+        <div class="tool-dot tool-dot-y"></div>
+        <div class="tool-dot tool-dot-g"></div>
+        <div class="tool-label">→ 複製這段 Prompt 貼入 Gemini</div>
+        <button class="copy-btn" style="margin-left:auto;" onclick="copyInstructions()">複製指令</button>
+      </div>
+      <div class="tool-body" style="padding:24px 28px;">
+        <div class="result-box" id="instruction-box" style="font-size:.82rem;">你是一位擅長製作行銷工具的前端工程師。
+
+請製作一個「社群貼文多平台預覽器」的單頁 HTML 工具，功能如下：
+
+【功能需求】
+- 頁面頂部有三個平台切換按鈕：Facebook、Instagram、X/Twitter，對應不同的字數上限
+- 左側是文字輸入框，右側是手機外框模擬的即時預覽
+- 字數計數器即時更新：正常顯示灰色，超過 90% 顯示黃色警告，超過上限顯示紅色錯誤
+- 手機外框使用圓角黑色邊框設計，內部模擬 Facebook/IG 貼文排版（含頭像、暱稱）
+
+【設計要求】
+- 背景 #f5f3ee，強調色 #b5703a，字體 Google Fonts（Shippori Mincho + Noto Sans TC）
+- 手機模擬框：深色邊框（#1a1a1a），內部白色，圓角 24px
+- 圓角 6px，無陰影，無漸層
+
+請生成完整的單一 HTML 檔案。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">CHALLENGE · 進階挑戰</div>
+    <h2 class="section-heading">完成基本練習後，試試這些變化</h2>
+    <div class="challenge-box">
+      <div class="challenge-label">PRACTICE VARIATIONS</div>
+      <div class="challenge-list">
+        <div class="challenge-item">
+          <div class="ci-num">01</div>
+          <div>加入「Emoji 快速插入」列——在輸入框上方放 10 個常用 Emoji 按鈕，點擊後自動插入游標位置。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">02</div>
+          <div>讓手機預覽支援連結偵測：自動把文字中的 http 開頭網址變成藍色連結樣式。</div>
+        </div>
+        <div class="challenge-item">
+          <div class="ci-num">03</div>
+          <div>加入「文字節奏分析」：計算貼文中換行的頻率，提示是否「段落過長」或「節奏太碎」。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="lesson-nav">
+  <a class="nav-btn" href="PRAC5-3.html">
+    <div>
+      <div class="nav-btn-label">← 演練 3</div>
+      <div class="nav-btn-title">UTM 廣告連結管理員</div>
+    </div>
+  </a>
+  <a class="nav-btn next" href="PRAC5-5.html">
+    <div>
+      <div class="nav-btn-label">演練 5 →</div>
+      <div class="nav-btn-title">專案進度紅綠燈看板</div>
+    </div>
+  </a>
+</nav>
+
+<footer class="footer">
+  <div class="footer-logo">弄一下工作室</div>
+  <div class="footer-note">Gemini 零代碼 AI 實戰課 · Part 5 自由演練庫 · 4 of 12</div>
+</footer>
+
+<script>
+// 閱讀進度
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('prog').style.width = (window.scrollY / total * 100) + '%';
+});
+
+function copyInstructions() {
+  const text = document.getElementById('instruction-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製指令', 1800);
+  });
+}
+
+// 工具 JS
+const limits = { fb: 63206, ig: 2200, x: 280 };
+let platform = 'fb';
+function setPlatform(p, btn) {
+  platform = p;
+  document.querySelectorAll('.ptab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('char-limit').textContent = limits[p].toLocaleString();
+  updatePreview();
+}
+function updatePreview() {
+  const text = document.getElementById('post-text').value;
+  const len = text.length;
+  const limit = limits[platform];
+  document.getElementById('preview-content').textContent = text || '在此輸入文字後即時預覽…';
+  const counterEl = document.getElementById('char-count');
+  const statusEl = document.getElementById('char-status');
+  counterEl.textContent = `${len.toLocaleString()} / ${limit.toLocaleString()} 字元`;
+  if (len > limit) {
+    counterEl.className = 'char-counter char-over';
+    statusEl.style.color = '#b5703a';
+    statusEl.textContent = `✗ 超過字數限制 ${len - limit} 字`;
+  } else if (len > limit * 0.9) {
+    counterEl.className = 'char-counter char-warn';
+    statusEl.style.color = '#c9963a';
+    statusEl.textContent = '⚠ 接近字數上限';
+  } else {
+    counterEl.className = 'char-counter char-ok';
+    statusEl.style.color = 'var(--c-a3)';
+    statusEl.textContent = '✓ 字數正常';
+  }
+}
+</script>
+</body>
+</html>
