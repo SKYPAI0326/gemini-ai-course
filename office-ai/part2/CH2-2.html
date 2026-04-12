@@ -74,6 +74,14 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
 .footer-note{font-size:.75rem;color:var(--c-muted);}
 .toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
 .toast.show{transform:none;opacity:1;}
+.error-grid{display:flex;flex-direction:column;gap:14px;margin:24px 0;}
+.error-item{border-radius:var(--radius);overflow:hidden;border:1px solid var(--c-border);}
+.error-bad{background:rgba(181,112,58,.06);border-bottom:1px solid var(--c-border);padding:14px 18px;}
+.error-good{background:rgba(90,122,90,.06);padding:14px 18px;}
+.error-tag{font-size:.65rem;font-weight:700;letter-spacing:1px;margin-bottom:6px;}
+.tag-bad{color:#b5703a;}
+.tag-good{color:#5a7a5a;}
+.error-text{font-size:.83rem;color:var(--c-text);line-height:1.75;font-family:'Courier New',monospace;}
 @media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.footer{padding:20px;}.step-item{flex-direction:column;gap:12px;}.step-num{width:auto;}}</style>
 </head>
 <body>
@@ -209,6 +217,25 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
         </div>
         <div class="output-body">
           <div class="output-text" id="out5">請幫我寫一封婉拒信，對象是[對方]，我需要拒絕[什麼邀請/請求]，原因是[原因，若不方便說明可留空]，語氣真誠友善，保留未來合作可能性。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 04</div>
+      <h2 class="section-heading"><em>常見錯誤</em>對照</h2>
+      <div class="error-grid">
+        <div class="error-item">
+          <div class="error-bad"><div class="error-tag tag-bad">X 錯誤版</div><div class="error-text">幫我寫一封給客戶的信（不說語氣、不說關係）</div></div>
+          <div class="error-good"><div class="error-tag tag-good">OK 改良版</div><div class="error-text">幫我寫一封給長期合作客戶陳經理的感謝信，感謝他這季持續支持，語氣真誠不誇張，三段以內，最後附上我的聯絡方式</div></div>
+        </div>
+        <div class="error-item">
+          <div class="error-bad"><div class="error-tag tag-bad">X 錯誤版</div><div class="error-text">幫我寫道歉信（沒說發生了什麼事）</div></div>
+          <div class="error-good"><div class="error-tag tag-good">OK 改良版</div><div class="error-text">幫我寫一封道歉信，說明這次報告提交延誤（原因是資料確認需要更多時間），並承諾明天中午前完成提交，語氣誠懇負責，不超過 150 字</div></div>
+        </div>
+        <div class="error-item">
+          <div class="error-bad"><div class="error-tag tag-bad">X 常見情況</div><div class="error-text">AI 寫完後直接複製貼入 Gmail 送出</div></div>
+          <div class="error-good"><div class="error-tag tag-good">OK 正確做法</div><div class="error-text">送出前確認：(1) 姓名/職稱是否正確（AI 會用佔位符）(2) 日期、金額等數字 (3) 語氣是否符合雙方關係——熟人不需要過度正式，陌生廠商不能太隨便</div></div>
         </div>
       </div>
     </div>

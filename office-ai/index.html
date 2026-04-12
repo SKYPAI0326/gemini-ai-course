@@ -82,6 +82,18 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
 .footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
 .footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
 .footer-note{font-size:.75rem;color:var(--c-muted);}
+.open-section{max-width:960px;margin:0 auto;padding:0 48px 56px;}
+.open-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:32px 36px;}
+.open-heading{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:var(--c-text);margin-bottom:20px;}
+.assess-grid{display:flex;flex-direction:column;gap:12px;margin-bottom:28px;}
+.assess-item{display:flex;align-items:center;gap:14px;font-size:.88rem;color:var(--c-text);}
+.assess-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--c-a2);cursor:pointer;flex-shrink:0;}
+.commitment-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.commitment-item{display:flex;gap:12px;align-items:flex-start;font-size:.88rem;color:var(--c-text);line-height:1.7;}
+.commitment-dot{width:20px;height:20px;border-radius:50%;background:rgba(201,150,58,.12);border:1px solid rgba(201,150,58,.25);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--c-a2);margin-top:2px;}
+.challenge-box{background:rgba(90,122,90,.05);border:1px solid rgba(90,122,90,.2);border-radius:var(--radius);padding:18px 20px;}
+.challenge-label{font-size:.7rem;font-weight:700;color:var(--c-a3);letter-spacing:1px;margin-bottom:8px;}
+.challenge-text{font-size:.88rem;color:var(--c-text);line-height:1.8;}
 @media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.hero{padding:40px 20px 32px;}.hero-title{font-size:1.6rem;}.section{padding:0 20px 48px;}.tools-banner{padding:0 20px 24px;}.output-section{padding:0 20px 48px;}.footer{padding:20px;}.hero-stats{gap:20px;}}
 </style>
 </head>
@@ -120,6 +132,28 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
     </div>
   </div>
 </section>
+
+<div class="open-section">
+  <div class="open-card">
+    <div class="open-heading">課前自評：你的 AI 使用現況</div>
+    <div class="assess-grid">
+      <label class="assess-item"><input type="checkbox"> 我曾用過 Gemini / ChatGPT 等 AI 工具</label>
+      <label class="assess-item"><input type="checkbox"> 我有在工作中寫過 Prompt 問 AI 問題</label>
+      <label class="assess-item"><input type="checkbox"> 我知道如何讓 AI 的回答更符合我的需求</label>
+      <label class="assess-item"><input type="checkbox"> 我已經有固定用 AI 的工作場景</label>
+    </div>
+    <div class="open-heading" style="font-size:1rem;margin-bottom:14px;">今天的三個承諾</div>
+    <div class="commitment-list">
+      <div class="commitment-item"><div class="commitment-dot">1</div><span>每個 Part 結束後，我會把帶走的 Prompt 模板真的存到手機或電腦裡，不是只是看過。</span></div>
+      <div class="commitment-item"><div class="commitment-dot">2</div><span>課程結束後七天內，我會找一件真實的工作任務來試用。</span></div>
+      <div class="commitment-item"><div class="commitment-dot">3</div><span>如果 AI 第一次的結果不夠好，我不會放棄，我會修改 Prompt 至少再試一次。</span></div>
+    </div>
+    <div class="challenge-box">
+      <div class="challenge-label">30 天挑戰</div>
+      <div class="challenge-text">課程結束後，找一個每週至少出現一次的工作任務，連續 30 天都用 AI 輔助完成——不需要完美，只需要持續。30 天後你會發現習慣已經形成。</div>
+    </div>
+  </div>
+</div>
 
 <div class="tools-banner">
   <div class="tools-row">

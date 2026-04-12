@@ -50,6 +50,13 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
 .footer-note{font-size:.75rem;color:var(--c-muted);}
 .toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
 .toast.show{transform:none;opacity:1;}
+.discuss-section{max-width:720px;margin:0 auto;padding:0 48px 64px;}
+.discuss-heading{font-family:'Shippori Mincho',serif;font-size:1.25rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.discuss-sub{font-size:.82rem;color:var(--c-muted);margin-bottom:24px;}
+.discuss-list{display:flex;flex-direction:column;gap:14px;}
+.discuss-item{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:20px 22px;}
+.discuss-q{font-size:.75rem;font-weight:700;color:var(--c-a2);letter-spacing:1px;margin-bottom:6px;}
+.discuss-text{font-size:.9rem;color:var(--c-text);line-height:1.85;}
 @media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.tool-wrap{padding:0 20px 60px;}.field-grid{grid-template-columns:1fr;}.template-row{gap:6px;}.footer{padding:20px;}}
   </style>
 </head>
@@ -140,6 +147,26 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
     <div class="action-row">
       <button class="btn-primary" onclick="copyCard()">複製工作流程卡</button>
       <button class="btn-ghost" onclick="clearAll()">清除重填</button>
+    </div>
+  </div>
+</div>
+
+<div class="discuss-section">
+  <hr style="border:none;border-top:1px solid var(--c-border);margin:0 0 48px;">
+  <div class="discuss-heading">DISCUSSION · 討論引導</div>
+  <div class="discuss-sub">演練結束後，分組討論以下問題（每題 3–5 分鐘）</div>
+  <div class="discuss-list">
+    <div class="discuss-item">
+      <div class="discuss-q">Q1</div>
+      <div class="discuss-text">你選的三個場景，哪一個你最確定「下週一定會遇到」？為什麼選它？</div>
+    </div>
+    <div class="discuss-item">
+      <div class="discuss-q">Q2</div>
+      <div class="discuss-text">你覺得自己最大的阻力是什麼——「記不得打開 AI」、「不知道怎麼寫 Prompt」，還是「覺得結果還不夠好」？分享你的解法。</div>
+    </div>
+    <div class="discuss-item">
+      <div class="discuss-q">Q3</div>
+      <div class="discuss-text">課程結束後，你會做的「第一件事」是什麼？說出一個具體到明天就能執行的行動。</div>
     </div>
   </div>
 </div>

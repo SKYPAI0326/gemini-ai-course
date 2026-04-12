@@ -72,6 +72,20 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
 .footer-note{font-size:.75rem;color:var(--c-muted);}
 .toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
 .toast.show{transform:none;opacity:1;}
+.error-grid{display:flex;flex-direction:column;gap:14px;margin:24px 0;}
+.error-item{border-radius:var(--radius);overflow:hidden;border:1px solid var(--c-border);}
+.error-bad{background:rgba(181,112,58,.06);border-bottom:1px solid var(--c-border);padding:14px 18px;}
+.error-good{background:rgba(90,122,90,.06);padding:14px 18px;}
+.error-tag{font-size:.65rem;font-weight:700;letter-spacing:1px;margin-bottom:6px;}
+.tag-bad{color:#b5703a;}
+.tag-good{color:#5a7a5a;}
+.error-text{font-size:.83rem;color:var(--c-text);line-height:1.75;font-family:'Courier New',monospace;}
+.plan-grid{display:flex;flex-direction:column;gap:14px;margin:24px 0;}
+.plan-item{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:20px 22px;display:flex;gap:18px;align-items:flex-start;}
+.plan-week{font-family:'Shippori Mincho',serif;font-size:1.1rem;font-weight:700;color:var(--c-a2);flex-shrink:0;min-width:52px;}
+.plan-content{flex:1;}
+.plan-goal{font-size:.88rem;font-weight:700;color:var(--c-text);margin-bottom:6px;}
+.plan-tasks{font-size:.83rem;color:var(--c-muted);line-height:1.75;}
 @media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.concept-grid{grid-template-columns:1fr;}.footer{padding:20px;}}
   </style>
 </head>
@@ -224,6 +238,80 @@ AI 動作：Gemini → 主管簡報大綱 Prompt
     <div class="callout tip">
       <div class="callout-icon">✓</div>
       <div class="callout-body">恭喜完成全部 12 個單元！你已掌握 Gemini、NotebookLM 與 Google Workspace AI 的核心用法，以及一套個人化的 AI 工作流程框架。<strong>建議現在就選一個場景，明天試用一次——第一次動手比完美計畫更重要。</strong></div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">SECTION 04</div>
+    <h2 class="section-heading">常見<em>錯誤對照</em></h2>
+    <div class="error-grid">
+      <div class="error-item">
+        <div class="error-bad">
+          <div class="error-tag tag-bad">NG</div>
+          <div class="error-text">「我決定從明天開始，把所有的工作都用 AI 來做。」（沒有具體觸發點、沒有第一個場景）</div>
+        </div>
+        <div class="error-good">
+          <div class="error-tag tag-good">OK</div>
+          <div class="error-text">選出你這週「最確定會出現一次」的文字工作，設定當那件事發生時就打開 Gemini。一個場景形成習慣後再加下一個。</div>
+        </div>
+      </div>
+      <div class="error-item">
+        <div class="error-bad">
+          <div class="error-tag tag-bad">NG</div>
+          <div class="error-text">課程結束後把工作流程卡收起來，等到「有空的時候」再來研究怎麼用。</div>
+        </div>
+        <div class="error-good">
+          <div class="error-tag tag-good">OK</div>
+          <div class="error-text">現在就複製對應的工作流程卡，貼到你最常看到的地方（備忘錄 / Slack 自我頻道 / 桌面便利貼），讓它出現在你視線裡。</div>
+        </div>
+      </div>
+      <div class="error-item">
+        <div class="error-bad">
+          <div class="error-tag tag-bad">NG</div>
+          <div class="error-text">用了兩次效果不理想就放棄，認為「AI 不適合我的工作」。</div>
+        </div>
+        <div class="error-good">
+          <div class="error-tag tag-good">OK</div>
+          <div class="error-text">第一次通常結果不完美，這是正常的。回到 Prompt 改良流程：加更多背景、指定格式、限制字數。大多數人在第三到五次調整後就能穩定產出可用結果。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule">
+
+  <div class="lesson-section">
+    <div class="section-eyebrow">SECTION 05</div>
+    <h2 class="section-heading">前三週<em>行動計畫</em></h2>
+    <p class="body-text">課程結束後最容易失去動力的是前三週。以下是一份簡單的行動計畫，讓你在最容易放棄的時期有明確的任務可以執行。</p>
+    <div class="plan-grid">
+      <div class="plan-item">
+        <div class="plan-week">Week 1</div>
+        <div class="plan-content">
+          <div class="plan-goal">選一個場景，每天用一次</div>
+          <div class="plan-tasks">從你的高價值場景清單中選出最重複的那一個，這週每次遇到就打開 Gemini 試試看。不求完美，只求動手。</div>
+        </div>
+      </div>
+      <div class="plan-item">
+        <div class="plan-week">Week 2</div>
+        <div class="plan-content">
+          <div class="plan-goal">記錄有效的 Prompt，建起 Prompt 庫前五格</div>
+          <div class="plan-tasks">每次問出滿意結果就貼入你的 Prompt 庫模板，本週目標：完成庫的前五格，讓下週可以直接複用。</div>
+        </div>
+      </div>
+      <div class="plan-item">
+        <div class="plan-week">Week 3</div>
+        <div class="plan-content">
+          <div class="plan-goal">加入第二個場景，與同事分享一個 Prompt</div>
+          <div class="plan-tasks">加入第二個高價值場景，同時把你最有效的一個 Prompt 分享給一位同事——教別人是鞏固自己習慣最好的方法。</div>
+        </div>
+      </div>
+    </div>
+    <div class="callout info">
+      <div class="callout-icon">ℹ️</div>
+      <div class="callout-body">三週後你應該有 2 個穩定場景、至少 5 個可用 Prompt，以及一位一起在用 AI 的同事。這是一個可持續自我強化的起點。</div>
     </div>
   </div>
 </div>

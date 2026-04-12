@@ -75,6 +75,20 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
 .footer-note{font-size:.75rem;color:var(--c-muted);}
 .toast{position:fixed;bottom:28px;right:28px;background:var(--c-text);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;transform:translateY(60px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;}
 .toast.show{transform:none;opacity:1;}
+.error-grid{display:flex;flex-direction:column;gap:14px;margin:24px 0;}
+.error-item{border-radius:var(--radius);overflow:hidden;border:1px solid var(--c-border);}
+.error-bad{background:rgba(181,112,58,.06);border-bottom:1px solid var(--c-border);padding:14px 18px;}
+.error-good{background:rgba(90,122,90,.06);padding:14px 18px;}
+.error-tag{font-size:.65rem;font-weight:700;letter-spacing:1px;margin-bottom:6px;}
+.tag-bad{color:#b5703a;}
+.tag-good{color:#5a7a5a;}
+.error-text{font-size:.83rem;color:var(--c-text);line-height:1.75;font-family:'Courier New',monospace;}
+.ng-grid{display:flex;flex-direction:column;gap:12px;margin:20px 0;}
+.ng-item{display:flex;gap:14px;background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:16px 18px;align-items:flex-start;}
+.ng-label{font-size:.68rem;font-weight:700;color:#b5703a;flex-shrink:0;min-width:56px;margin-top:2px;}
+.ng-content{flex:1;}
+.ng-problem{font-size:.84rem;color:var(--c-text);font-weight:700;margin-bottom:5px;}
+.ng-fix{font-size:.82rem;color:var(--c-muted);line-height:1.7;}
 @media(max-width:768px){.topbar{padding:0 16px;gap:8px;}.topbar-sub,.topbar-divider{display:none;}.lesson-hero{padding:40px 20px 40px;}.lesson-title{font-size:1.6rem;}.lesson-body{padding:0 20px 60px;}.lesson-nav{padding:0 20px 60px;flex-direction:column;}.footer{padding:20px;}.step-item{flex-direction:column;gap:12px;}.step-num{width:auto;}}</style>
 </head>
 <body>
@@ -210,6 +224,54 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-
 【結論與下一步】（條列決議與行動事項：事項 ｜ 負責人）
 
 手記內容：[貼上手記]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 04</div>
+      <h2 class="section-heading"><em>常見錯誤</em>對照</h2>
+      <div class="error-grid">
+        <div class="error-item">
+          <div class="error-bad"><div class="error-tag tag-bad">X 常見情況</div><div class="error-text">把完整兩小時的逐字稿全部上傳，期望 AI 自動整理好一切</div></div>
+          <div class="error-good"><div class="error-tag tag-good">OK 正確做法</div><div class="error-text">先剪掉開頭寒暄、離題閒聊、重複確認的部分，保留有討論內容的段落。逐字稿越精煉，AI 整理的結果越準確，也越省配額。</div></div>
+        </div>
+        <div class="error-item">
+          <div class="error-bad"><div class="error-tag tag-bad">X 常見情況</div><div class="error-text">貼入逐字稿後只說「整理一下」，沒有指定輸出格式</div></div>
+          <div class="error-good"><div class="error-tag tag-good">OK 改良版</div><div class="error-text">請整理本次會議的：1. 決議事項（每條一句話）2. 待辦清單（事項｜負責人｜截止日）3. 下次會議討論重點</div></div>
+        </div>
+        <div class="error-item">
+          <div class="error-bad"><div class="error-tag tag-bad">X 常見情況</div><div class="error-text">直接把 AI 整理的待辦清單分發出去，沒有確認負責人</div></div>
+          <div class="error-good"><div class="error-tag tag-good">OK 正確做法</div><div class="error-text">負責人和截止日是 AI 最容易判斷錯誤的欄位——口頭說的「你來負責」在逐字稿裡可能是「好啊、我看看」，含義模糊。一定要回到原始逐字稿確認。</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-section">
+      <div class="section-eyebrow">SECTION 05</div>
+      <h2 class="section-heading">上傳 NG 時<em>怎麼處理</em></h2>
+      <div class="ng-grid">
+        <div class="ng-item">
+          <div class="ng-label">NG 狀況 1</div>
+          <div class="ng-content">
+            <div class="ng-problem">檔案上傳失敗或格式不支援</div>
+            <div class="ng-fix">解法：將文件內容複製後，在 Sources 選「貼上文字」而非上傳檔案。NotebookLM 支援 Google 文件、PDF、純文字；不支援 .docx 直接上傳，需先轉成 PDF 或複製文字。</div>
+          </div>
+        </div>
+        <div class="ng-item">
+          <div class="ng-label">NG 狀況 2</div>
+          <div class="ng-content">
+            <div class="ng-problem">AI 回答內容偏離會議主題，加入不相關資訊</div>
+            <div class="ng-fix">解法：這通常是因為 Notebook 裡還有其他文件的干擾。確認 Sources 清單，移除與本次會議無關的文件，或建立新的 Notebook 只放這次的逐字稿。</div>
+          </div>
+        </div>
+        <div class="ng-item">
+          <div class="ng-label">NG 狀況 3</div>
+          <div class="ng-content">
+            <div class="ng-problem">整理結果空白或說「找不到相關資訊」</div>
+            <div class="ng-fix">解法：確認逐字稿有正確上傳到 Sources（左側欄位應出現文件名稱）。如果確認有上傳，可能是逐字稿過短（少於 500 字）或內容不夠具體，嘗試換個問法，例如「這份文件裡有哪些待辦事項？」</div>
+          </div>
         </div>
       </div>
     </div>
