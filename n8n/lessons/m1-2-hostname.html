@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.2 多 Hostname 設定｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:580px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.section-head{font-family:'Shippori Mincho',serif;font-size:1.15rem;font-weight:700;color:var(--c-text);margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--c-border);}
+.body-text{font-size:.92rem;color:var(--c-text);line-height:1.9;margin-bottom:14px;}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:14px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.warning{background:rgba(201,150,58,.06);border:1px solid rgba(201,150,58,.25);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.code-block{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.83rem;padding:20px 22px;border-radius:var(--radius);margin:14px 0;line-height:1.8;overflow-x:auto;white-space:pre;}
+.code-block .cm{color:#6b9b8a;}
+.code-block .ky{color:#9bb4d4;}
+.code-block .st{color:#b8d4a0;}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 28px;}
+.use-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:18px 20px;}
+.use-title{font-weight:700;font-size:.88rem;color:var(--c-text);margin-bottom:6px;}
+.use-url{font-family:'Courier New',monospace;font-size:.78rem;color:var(--c-a4);margin-bottom:8px;}
+.use-desc{font-size:.82rem;color:var(--c-muted);line-height:1.65;}
+.ref-table{width:100%;border-collapse:collapse;margin:16px 0 28px;font-size:.87rem;}
+.ref-table th{background:var(--c-surface);padding:10px 14px;text-align:left;font-weight:700;font-size:.78rem;letter-spacing:.5px;color:var(--c-muted);border:1px solid var(--c-border);}
+.ref-table td{padding:10px 14px;border:1px solid var(--c-border);vertical-align:top;line-height:1.7;}
+.ref-table tr:nth-child(even) td{background:rgba(245,243,238,.5);}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">1.2 多 Hostname</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module1.html" class="back-link">← 返回 Module 1</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 01</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 1.2 · 延伸參考</span>
+  </div>
+  <h1 class="step-title">多 Workflow 多 Public Hostname</h1>
+  <p class="step-subtitle">為不同的 Workflow 設定獨立的 Public Hostname，有效區隔測試與正式環境，或讓多個專案各自擁有穩定的 Webhook 入口。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>📖</span><span>進階參考，工作坊後延伸學習</span></div>
+    <div class="meta-item"><span>⏱</span><span>閱讀約 8 分鐘</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="section-head">為什麼需要多個 Hostname？</div>
+  <p class="body-text">一個 Cloudflare Tunnel 預設提供一個 Public URL，所有 Webhook 都指向同一個入口（<span class="ic">localhost:5678</span>）。n8n 本身會根據 Webhook 路徑區分不同的 Workflow，大多數情況下一個 URL 就夠了。</p>
+  <p class="body-text">但在以下情境，你可能需要多個不同的 Hostname：</p>
+
+  <div class="use-grid">
+    <div class="use-card">
+      <div class="use-title">測試 vs 正式環境</div>
+      <div class="use-url">test.你的名稱.com</div>
+      <div class="use-desc">讓 Make 的測試場景打測試 URL，正式場景打正式 URL，避免測試資料干擾正式流程。</div>
+    </div>
+    <div class="use-card">
+      <div class="use-title">多專案獨立管理</div>
+      <div class="use-url">project-a.你的名稱.com</div>
+      <div class="use-desc">不同客戶或專案各自有一個 Hostname，便於管理與除錯，也方便日後停用特定專案。</div>
+    </div>
+  </div>
+
+  <div class="section-head">設定方法</div>
+  <p class="body-text">在 Cloudflare Zero Trust 後台，一個 Tunnel 可以設定多個 Public Hostname，每個 Hostname 可以指向不同的本機服務（甚至不同的 Port）。</p>
+
+  <table class="ref-table">
+    <tr><th>設定位置</th><th>操作步驟</th></tr>
+    <tr>
+      <td>Cloudflare Zero Trust → Networks → Tunnels</td>
+      <td>點擊你的 Tunnel → 「Configure」→ 「Public Hostname」→「Add a public hostname」</td>
+    </tr>
+    <tr>
+      <td>新增第二個 Hostname</td>
+      <td>Subdomain 填新名稱（如 <span class="ic">test</span>）、Domain 選你的域名、Service 填 <span class="ic">http://localhost:5678</span>，儲存</td>
+    </tr>
+    <tr>
+      <td>驗證</td>
+      <td>用瀏覽器訪問新的 URL，能看到 n8n 回應即成功</td>
+    </tr>
+  </table>
+
+  <div class="step-tip info">
+    <span class="tip-icon">💡</span>
+    <span class="tip-text"><strong>路徑比 Hostname 更簡單：</strong>大多數情況，不需要多個 Hostname。只要在 n8n Webhook 節點設定不同的 Path（如 <span class="ic">/webhook/test-flow</span> 和 <span class="ic">/webhook/prod-flow</span>），就能用同一個 URL 區分不同 Workflow。</span>
+  </div>
+
+  <div class="section-head">命名建議</div>
+  <table class="ref-table">
+    <tr><th>用途</th><th>Hostname 範例</th><th>說明</th></tr>
+    <tr><td>主要 / 正式</td><td><span class="ic">n8n.你的名稱.com</span></td><td>給 Make 正式場景使用</td></tr>
+    <tr><td>測試</td><td><span class="ic">n8n-test.你的名稱.com</span></td><td>給 Make 測試場景使用，流程出錯不影響正式</td></tr>
+    <tr><td>特定專案</td><td><span class="ic">project-abc.你的名稱.com</span></td><td>長期合作的特定客戶或專案</td></tr>
+  </table>
+
+  <div class="step-tip warning">
+    <span class="tip-icon">⚠️</span>
+    <span class="tip-text"><strong>免費版限制：</strong>Cloudflare 免費版的 Tunnel 功能完整，但需要有一個已在 Cloudflare 管理的域名（可用自己購買的便宜域名，不用 .com，.xyz 每年約 $1 美金）。若沒有域名，只能用 1.2 主頁面介紹的預設隨機 URL。</span>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m1-2-autostart.html" class="nav-btn">← Tunnel 自動重啟</a>
+  <a href="m1-3-json.html" class="nav-btn primary">1.3 JSON 基礎 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

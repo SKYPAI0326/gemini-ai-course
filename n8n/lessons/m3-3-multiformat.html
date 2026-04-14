@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.3 多格式日報擴展｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:720px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:560px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.step-block{display:flex;gap:24px;margin-bottom:44px;position:relative;}
+.step-block:not(:last-child)::after{content:'';position:absolute;left:19px;top:48px;width:2px;height:calc(100% - 16px);background:var(--c-border);}
+.step-num-col{flex-shrink:0;}
+.step-circle{width:40px;height:40px;border-radius:50%;background:rgba(107,127,163,.1);border:2px solid var(--c-a4);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-a4);flex-shrink:0;}
+.step-content{flex:1;padding-top:6px;}
+.step-label{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--c-text);margin-bottom:8px;line-height:1.3;}
+.step-desc{font-size:.9rem;color:var(--c-text);line-height:1.9;margin-bottom:12px;}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.code-block{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.83rem;padding:20px 22px;border-radius:var(--radius);margin:14px 0;line-height:1.8;overflow-x:auto;white-space:pre;}
+.code-block .cm{color:#6b9b8a;}
+.code-block .ky{color:#9bb4d4;}
+.code-block .str{color:#98c48c;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:12px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.warning{background:rgba(201,150,58,.06);border:1px solid rgba(201,150,58,.25);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.verify-box{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.25);border-left:4px solid #5a7a5a;border-radius:var(--radius);padding:22px 26px;margin:8px 0 32px;}
+.verify-label{font-size:.68rem;color:#5a7a5a;letter-spacing:1.5px;font-weight:500;margin-bottom:10px;}
+.verify-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-text);margin-bottom:8px;}
+.verify-desc{font-size:.88rem;color:var(--c-text);line-height:1.8;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">3.3 多格式日報</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module3.html" class="back-link">← 返回 Module 3</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 03</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 3.3 · 延伸實作</span>
+  </div>
+  <h1 class="step-title">擴展日報：處理 PDF 與 Excel 格式</h1>
+  <p class="step-subtitle">3.3 的基礎日報只讀取 .txt/.md 純文字檔。這頁說明如何擴展掃描範圍，讓 AI 也能理解 PDF 和 Excel 的內容並納入彙整。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>⏱</span><span>預估時間：30 分鐘</span></div>
+    <div class="meta-item"><span>📋</span><span>3 個步驟</span></div>
+    <div class="meta-item"><span>💡</span><span>需要完成 3.3 基礎日報</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">1</div></div>
+    <div class="step-content">
+      <div class="step-label">讀取不同格式的檔案</div>
+      <p class="step-desc">純文字（.txt/.md）直接用 <span class="ic">fs.readFileSync</span> 讀取即可。PDF 和 Excel 需要額外轉換：PDF 要讀成 base64 傳給 Gemini Vision；Excel（.xlsx）要先轉換成表格文字。</p>
+      <div class="code-block"><span class="cm">// 修改後的 Code 節點：支援多格式</span>
+const fs = require('fs');
+const path = require('path');
+
+const folderPath = <span class="str">'/Users/你的名稱/Documents/每日文件'</span>;
+const today = new Date().toISOString().slice(0, 10);
+
+const files = fs.readdirSync(folderPath)
+  .filter(f => /\.(txt|md|pdf|xlsx|xls|csv)$/i.test(f))
+  .filter(f => !f.startsWith('.'));
+
+const fileData = files.map(fileName => {
+  const filePath = path.join(folderPath, fileName);
+  const ext = path.extname(fileName).toLowerCase();
+
+  if (['.txt', '.md'].includes(ext)) {
+    <span class="cm">// 純文字：直接讀取</span>
+    const content = fs.readFileSync(filePath, 'utf-8');
+    return { fileName, type: 'text', content, filePath };
+  } else if (ext === '.pdf') {
+    <span class="cm">// PDF：讀成 base64，給 Gemini Vision 辨識</span>
+    const base64 = fs.readFileSync(filePath).toString('base64');
+    return { fileName, type: 'pdf', base64, filePath };
+  } else if (['.xlsx', '.xls', '.csv'].includes(ext)) {
+    <span class="cm">// CSV 可直接讀取；xlsx 需要另外處理（見 Step 2）</span>
+    if (ext === '.csv') {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      return { fileName, type: 'csv', content, filePath };
+    }
+    return { fileName, type: 'xlsx', filePath };
+  }
+});
+
+return fileData.map(f => ({ json: { ...f, today } }));</div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">2</div></div>
+    <div class="step-content">
+      <div class="step-label">用 Switch 節點分流不同格式</div>
+      <p class="step-desc">讀取節點後接 Loop Over Items，每個檔案進入 Loop 後用 Switch 節點根據 <span class="ic">$json.type</span> 分流：text/csv 直接送 Gemini；PDF 先轉 base64 再送 Gemini Vision（支援多模態）；xlsx 用 Read Binary Files + 轉換節點先提取文字。</p>
+      <div class="code-block"><span class="cm">// Switch 節點設定：</span>
+<span class="cm">// 判斷欄位：$json.type</span>
+<span class="cm">// Output 0 條件：Equal to "text" 或 "csv"</span>
+<span class="cm">// Output 1 條件：Equal to "pdf"</span>
+<span class="cm">// Output 2 條件：Equal to "xlsx"</span>
+<span class="cm">// Fallback → 跳過</span>
+
+<span class="cm">// PDF 分支：Gemini Vision 的 HTTP Request Body</span>
+{
+  <span class="ky">"contents"</span>: [{
+    <span class="ky">"parts"</span>: [
+      { <span class="ky">"text"</span>: <span class="str">"請閱讀以下 PDF 文件並提取主要內容摘要（200字以內）："</span> },
+      {
+        <span class="ky">"inline_data"</span>: {
+          <span class="ky">"mime_type"</span>: <span class="str">"application/pdf"</span>,
+          <span class="ky">"data"</span>: <span class="str">"{{ $json.base64 }}"</span>
+        }
+      }
+    ]
+  }]
+}</div>
+      <div class="step-tip warning">
+        <span class="tip-icon">⚠️</span>
+        <span class="tip-text"><strong>PDF 大小限制：</strong>Gemini API 的 inline_data 方式上限約 20MB。超過的 PDF 需要先分割，或改用 Gemini Files API（先上傳再引用）。工作坊場景下建議測試 PDF 在 5MB 以內。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">3</div></div>
+    <div class="step-content">
+      <div class="step-label">各分支彙整後合併生成日報</div>
+      <p class="step-desc">所有格式的 AI 摘要完成後，匯入同一個 Code 節點合併：</p>
+      <div class="code-block"><span class="cm">// Loop 結束後的 Done 輸出：彙整所有摘要</span>
+const allItems = $input.all();
+const today = allItems[0]?.json?.today || new Date().toISOString().slice(0,10);
+
+const sections = allItems.map(item => {
+  const name = item.json.fileName;
+  const summary = item.json.aiSummary || item.json.content?.slice(0, 200);
+  const type = item.json.fileType || '文字';
+  return `### ${name} (${type})\n${summary}`;
+});
+
+const report = [
+  `# 每日工作日報｜${today}`,
+  ``,
+  `> 共彙整 ${allItems.length} 份文件（.txt、.md、.pdf、.xlsx、.csv 混合格式）`,
+  ``,
+  sections.join('\n\n')
+].join('\n');
+
+return [{ json: { report, fileName: `${today.replace(/-/g,'')}_日報.md` } }];</div>
+      <div class="step-tip success">
+        <span class="tip-icon">✅</span>
+        <span class="tip-text"><strong>簡化版建議：</strong>工作坊時間有限，建議先用純文字（.txt/.md）版本跑通完整流程，再把這頁作為「進階延伸」在課後自行擴展。核心概念（Schedule + AI 摘要 + Write File）完全相同，只是 Step 1 的讀取方式不同。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verify-box">
+    <div class="verify-label">完成驗證 CHECKPOINT</div>
+    <div class="verify-title">混合格式日報成功生成</div>
+    <p class="verify-desc">在測試資料夾放入至少 2 種不同格式的文件（如 1 個 .txt + 1 個 .pdf），執行流程。生成的日報 Markdown 檔案應包含兩份文件的摘要，且各自標示了格式類型。</p>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m3-3-schedule.html" class="nav-btn">← Cron 語法指南</a>
+  <a href="module4.html" class="nav-btn primary">前往 Module 4 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

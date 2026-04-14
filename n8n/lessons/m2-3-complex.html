@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.3 AND/OR 複合條件｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:580px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.section-head{font-family:'Shippori Mincho',serif;font-size:1.15rem;font-weight:700;color:var(--c-text);margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--c-border);}
+.body-text{font-size:.92rem;color:var(--c-text);line-height:1.9;margin-bottom:14px;}
+.ref-table{width:100%;border-collapse:collapse;margin:16px 0 28px;font-size:.87rem;}
+.ref-table th{background:var(--c-surface);padding:10px 14px;text-align:left;font-weight:700;font-size:.78rem;letter-spacing:.5px;color:var(--c-muted);border:1px solid var(--c-border);}
+.ref-table td{padding:10px 14px;border:1px solid var(--c-border);vertical-align:top;line-height:1.7;}
+.ref-table tr:nth-child(even) td{background:rgba(245,243,238,.5);}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.code-block{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.83rem;padding:20px 22px;border-radius:var(--radius);margin:14px 0;line-height:1.8;overflow-x:auto;white-space:pre;}
+.code-block .cm{color:#6b9b8a;}
+.code-block .ky{color:#9bb4d4;}
+.code-block .expr{color:#d4a0c8;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:14px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.logic-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:20px 24px;margin:12px 0;}
+.logic-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-text);margin-bottom:8px;}
+.logic-rule{font-size:.88rem;color:var(--c-muted);margin-bottom:8px;padding-left:12px;border-left:3px solid var(--c-a4);}
+.logic-example{font-size:.85rem;color:var(--c-text);line-height:1.7;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">2.3 AND/OR 複合條件</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module2.html" class="back-link">← 返回 Module 2</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 02</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 2.3 · 補充參考</span>
+  </div>
+  <h1 class="step-title">AND / OR 複合條件設計</h1>
+  <p class="step-subtitle">在 If / Switch 節點中設定多個條件的組合邏輯——AND 要求全部成立，OR 只需一個成立。學會這個，就能處理現實業務中的複雜規則。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>📖</span><span>參考頁面</span></div>
+    <div class="meta-item"><span>⏱</span><span>閱讀約 8 分鐘</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="section-head">AND 與 OR 的邏輯</div>
+
+  <div class="logic-card">
+    <div class="logic-title">AND（且）— 所有條件都要成立</div>
+    <div class="logic-rule">「金額 > 10000」AND「客戶等級 = VIP」AND「已付款 = true」</div>
+    <div class="logic-example">三個條件同時成立才走 True 分支。只要有一個不符，就走 False。<br>適用：高風險操作需要多重條件確認（大額 + 特定客戶 + 已確認付款）。</div>
+  </div>
+
+  <div class="logic-card">
+    <div class="logic-title">OR（或）— 任一條件成立即可</div>
+    <div class="logic-rule">「類型 = 發票」OR「類型 = 收據」OR「類型 = 合約」</div>
+    <div class="logic-example">任何一個條件成立就走 True。三種類型的文件都要進入 AI 處理流程。<br>適用：多個觸發條件對應同一個處理邏輯。</div>
+  </div>
+
+  <div class="section-head">在 If 節點設定 AND/OR</div>
+  <p class="body-text">打開 If 節點設定，每個條件右邊有「Add condition」新增更多條件。條件群組右上方有一個 <strong>AND / OR 切換按鈕</strong>——選 AND 代表組內所有條件都要成立，選 OR 代表任一成立即可。</p>
+
+  <table class="ref-table">
+    <tr><th>設定方式</th><th>效果</th><th>適合場景</th></tr>
+    <tr><td>同一群組 + AND</td><td>所有條件必須同時成立</td><td>需要多重確認的嚴格篩選</td></tr>
+    <tr><td>同一群組 + OR</td><td>任一條件成立即過</td><td>多種觸發條件共用同一流程</td></tr>
+    <tr><td>多個群組（AND 串 OR）</td><td>（A AND B）OR（C AND D）</td><td>複雜業務規則的組合</td></tr>
+  </table>
+
+  <div class="section-head">常見複合條件範例</div>
+
+  <div class="code-block"><span class="cm">// 範例一：篩選需要人工審查的訂單</span>
+<span class="cm">// 條件（AND）：</span>
+<span class="cm">//   1. 金額 > 50000</span>
+<span class="cm">//   2. 是新客戶（首次下單）</span>
+<span class="cm">// 同時滿足才需要人工審查</span>
+
+<span class="cm">// 範例二：觸發緊急通知（OR）</span>
+<span class="cm">// 條件：</span>
+<span class="cm">//   1. 錯誤率 > 10%  OR</span>
+<span class="cm">//   2. 回應時間 > 30秒  OR</span>
+<span class="cm">//   3. 成功數 = 0</span>
+<span class="cm">// 任何一個觸發就發警報</span>
+
+<span class="cm">// 範例三：複雜業務規則（AND + OR）</span>
+<span class="cm">// （VIP客戶 AND 金額>10000）OR（企業帳戶 AND 任意金額）</span>
+<span class="cm">// 用兩個 If 節點串聯實現：</span>
+<span class="cm">// 第一個 If：VIP AND 金額>10000 → True 進入快速通道</span>
+<span class="cm">// False 出口接第二個 If：企業帳戶 → True 進入快速通道</span></div>
+
+  <div class="section-head">當 If 節點不夠用時：用 Code 節點寫邏輯</div>
+  <p class="body-text">如果業務規則非常複雜（超過 3-4 個條件、有巢狀邏輯、需要計算），建議改用 Code 節點直接寫 JavaScript 判斷，可讀性更好，也更容易維護：</p>
+
+  <div class="code-block"><span class="cm">// Code 節點中的複雜條件判斷</span>
+const data = $input.item.json;
+
+const isVIP = data.客戶等級 === 'VIP';
+const isEnterprise = data.帳戶類型 === '企業';
+const isLargeAmount = data.金額 > 10000;
+const isNewCustomer = data.訂單數量 === 1;
+const hasDiscount = data.折扣碼?.length > 0;
+
+<span class="cm">// 組合複雜條件</span>
+const needsReview = (isLargeAmount && isNewCustomer) ||
+                    (isVIP && isLargeAmount && !hasDiscount) ||
+                    (isEnterprise && data.金額 > 50000);
+
+return [{
+  json: {
+    ...data,
+    needsReview,
+    reviewReason: needsReview ? '符合人工審查條件' : null
+  }
+}];</div>
+
+  <div class="step-tip info">
+    <span class="tip-icon">💡</span>
+    <span class="tip-text"><strong>If 節點 vs Code 節點選擇原則：</strong>1-3 個條件用 If 節點（視覺清楚）；4 個以上、有計算、有巢狀 → 改 Code 節點（程式可讀性更好，也更容易 debug）。</span>
+  </div>
+
+  <div class="step-tip success">
+    <span class="tip-icon">✅</span>
+    <span class="tip-text"><strong>記錄判斷理由：</strong>在 Code 節點輸出一個 <span class="ic">reason</span> 欄位說明為什麼做了這個判斷。日後 debug 時，你能在執行記錄裡直接看到「為什麼這筆資料走了這條路」，省去大量排查時間。</span>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m2-3-switch.html" class="nav-btn">← Switch 節點</a>
+  <a href="module3.html" class="nav-btn primary">前往 Module 3 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

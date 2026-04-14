@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1 節點操作速查｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:720px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:560px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.section-head{font-family:'Shippori Mincho',serif;font-size:1.15rem;font-weight:700;color:var(--c-text);margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--c-border);}
+.body-text{font-size:.92rem;color:var(--c-text);line-height:1.9;margin-bottom:14px;}
+.ref-table{width:100%;border-collapse:collapse;margin:16px 0 28px;font-size:.87rem;}
+.ref-table th{background:var(--c-surface);padding:10px 14px;text-align:left;font-weight:700;font-size:.78rem;letter-spacing:.5px;color:var(--c-muted);border:1px solid var(--c-border);}
+.ref-table td{padding:10px 14px;border:1px solid var(--c-border);vertical-align:top;line-height:1.65;}
+.ref-table tr:nth-child(even) td{background:rgba(245,243,238,.5);}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:14px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.op-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 28px;}
+.op-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:18px 20px;}
+.op-icon{font-size:1.3rem;margin-bottom:8px;}
+.op-title{font-weight:700;font-size:.88rem;color:var(--c-text);margin-bottom:6px;}
+.op-desc{font-size:.82rem;color:var(--c-muted);line-height:1.65;}
+.shortcut-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--c-border);font-size:.87rem;}
+.shortcut-row:last-child{border-bottom:none;}
+.shortcut-wrap{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);margin:16px 0 28px;overflow:hidden;}
+kbd{font-family:'Courier New',monospace;font-size:.78rem;background:var(--c-surface);border:1px solid var(--c-border);padding:2px 7px;border-radius:4px;color:var(--c-text);}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;background:var(--c-a4);}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">1.1 節點操作</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module1.html" class="back-link">← 返回 Module 1</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 01</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 1.1 · 補充參考</span>
+  </div>
+  <h1 class="step-title">n8n 節點操作速查</h1>
+  <p class="step-subtitle">新增、連線、命名、啟用與停用節點的完整操作說明，以及與 Make 模組對應的操作邏輯對照。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>📖</span><span>參考頁面，可隨時查閱</span></div>
+    <div class="meta-item"><span>⏱</span><span>閱讀約 5 分鐘</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="section-head">四種基本操作</div>
+  <div class="op-grid">
+    <div class="op-card">
+      <div class="op-icon">➕</div>
+      <div class="op-title">新增節點</div>
+      <div class="op-desc">在畫布空白處按 <kbd>Tab</kbd> 或點擊右上角「+」按鈕，輸入節點名稱搜尋，點擊即加入畫布。也可拖曳現有節點的輸出點（右側圓點）到空白處，直接進入搜尋。</div>
+    </div>
+    <div class="op-card">
+      <div class="op-icon">🔗</div>
+      <div class="op-title">連接節點</div>
+      <div class="op-desc">從節點右側的輸出點（灰色圓點）拖曳到下一個節點左側的輸入點，出現綠色線條表示連接成功。一個輸出點可連接多個下游節點（分支）。</div>
+    </div>
+    <div class="op-card">
+      <div class="op-icon">✏️</div>
+      <div class="op-title">命名節點</div>
+      <div class="op-desc">雙擊節點標題，或點開節點設定後點選頂部名稱欄位即可修改。建議使用有意義的名稱，如「讀取 PDF」而非預設的「HTTP Request」，方便後續節點用 <kbd>$('節點名稱')</kbd> 引用。</div>
+    </div>
+    <div class="op-card">
+      <div class="op-icon">⏸️</div>
+      <div class="op-title">停用節點</div>
+      <div class="op-desc">右鍵點擊節點 → 選擇「Disable」，節點變灰並被跳過，資料直接穿透到下一個節點。適合臨時關閉某個步驟而不刪除它。再次右鍵 → Enable 重新啟用。</div>
+    </div>
+  </div>
+
+  <div class="section-head">執行方式</div>
+  <table class="ref-table">
+    <tr><th>操作</th><th>說明</th><th>適用時機</th></tr>
+    <tr><td><strong>Execute Node</strong>（節點內按鈕）</td><td>只執行該節點，使用前一節點的輸出作為輸入</td><td>測試單一節點的設定是否正確</td></tr>
+    <tr><td><strong>Test Workflow</strong>（頂部按鈕）</td><td>從 Trigger 開始執行整條流程（測試模式）</td><td>測試完整流程邏輯</td></tr>
+    <tr><td><strong>Save + Activate</strong></td><td>儲存並啟動 Workflow，讓 Trigger 開始監聽</td><td>確認流程正確後正式啟動</td></tr>
+  </table>
+
+  <div class="step-tip info">
+    <span class="tip-icon">💡</span>
+    <span class="tip-text"><strong>測試 vs 啟動的差別：</strong>Test Workflow 只跑一次、不持續監聽；Activate 後 Trigger 節點才會真正開始等待觸發（如 Webhook 收到請求、Schedule 到時間）。</span>
+  </div>
+
+  <div class="section-head">常用快捷鍵</div>
+  <div class="shortcut-wrap">
+    <div class="shortcut-row"><span>新增節點</span><span><kbd>Tab</kbd></span></div>
+    <div class="shortcut-row"><span>全選節點</span><span><kbd>⌘ A</kbd></span></div>
+    <div class="shortcut-row"><span>複製選取的節點</span><span><kbd>⌘ C</kbd> → <kbd>⌘ V</kbd></span></div>
+    <div class="shortcut-row"><span>刪除節點</span><span><kbd>Delete</kbd> 或 <kbd>Backspace</kbd></span></div>
+    <div class="shortcut-row"><span>縮放至全覽</span><span><kbd>⌘ Shift F</kbd></span></div>
+    <div class="shortcut-row"><span>儲存 Workflow</span><span><kbd>⌘ S</kbd></span></div>
+    <div class="shortcut-row"><span>執行 Workflow</span><span><kbd>⌘ Enter</kbd></span></div>
+    <div class="shortcut-row"><span>撤銷</span><span><kbd>⌘ Z</kbd></span></div>
+  </div>
+
+  <div class="section-head">與 Make 操作對照</div>
+  <table class="ref-table">
+    <tr><th>Make 操作</th><th>n8n 對應操作</th><th>差異說明</th></tr>
+    <tr><td>新增模組（點 +）</td><td>新增節點（Tab 或拖曳）</td><td>n8n 支援畫布任意位置新增</td></tr>
+    <tr><td>模組設定（點進去填欄位）</td><td>節點設定（點開節點配置）</td><td>概念相同</td></tr>
+    <tr><td>模組連接（自動串接）</td><td>連接節點（手動拖曳連線）</td><td>n8n 需手動拉線，更靈活</td></tr>
+    <tr><td>停用模組（右鍵停用）</td><td>Disable 節點（右鍵 Disable）</td><td>概念相同</td></tr>
+    <tr><td>Route（分支）</td><td>從一個輸出點連多條線</td><td>n8n 無需 Router 節點，直接連多個下游</td></tr>
+    <tr><td>執行 Scenario</td><td>Test Workflow / Execute Node</td><td>n8n 可單獨執行任一節點</td></tr>
+  </table>
+
+  <div class="step-tip success">
+    <span class="tip-icon">✅</span>
+    <span class="tip-text"><strong>善用節點命名：</strong>當流程複雜時，有意義的節點名稱讓你能用 <span class="ic">${'讀取 PDF'}.item.json.text</span> 精確引用，而不是靠節點順序猜資料來源。</span>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m1-1-setup.html" class="nav-btn">← 1.1 n8n 安裝</a>
+  <a href="m1-1-glossary.html" class="nav-btn primary">術語速查 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

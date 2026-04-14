@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.3 Cron 語法完全指南｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:580px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.section-head{font-family:'Shippori Mincho',serif;font-size:1.15rem;font-weight:700;color:var(--c-text);margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--c-border);}
+.body-text{font-size:.92rem;color:var(--c-text);line-height:1.9;margin-bottom:14px;}
+.cron-visual{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:20px 24px;margin:16px 0 24px;font-family:'Courier New',monospace;}
+.cron-row{display:flex;gap:16px;align-items:center;margin-bottom:12px;flex-wrap:wrap;}
+.cron-part{text-align:center;}
+.cron-value{font-size:1.4rem;color:var(--c-a4);font-weight:700;display:block;}
+.cron-label{font-size:.7rem;color:var(--c-muted);letter-spacing:.5px;}
+.cron-sep{font-size:1.4rem;color:var(--c-muted);margin-top:-4px;}
+.ref-table{width:100%;border-collapse:collapse;margin:16px 0 28px;font-size:.87rem;}
+.ref-table th{background:var(--c-surface);padding:10px 14px;text-align:left;font-weight:700;font-size:.78rem;letter-spacing:.5px;color:var(--c-muted);border:1px solid var(--c-border);}
+.ref-table td{padding:10px 14px;border:1px solid var(--c-border);vertical-align:top;line-height:1.7;}
+.ref-table tr:nth-child(even) td{background:rgba(245,243,238,.5);}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:14px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">3.3 Cron 語法指南</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module3.html" class="back-link">← 返回 Module 3</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 03</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 3.3 · 補充參考</span>
+  </div>
+  <h1 class="step-title">Cron 語法完全指南</h1>
+  <p class="step-subtitle">每日、每週、每月、工作日——各種定時排程的 Cron 語法速查，加上 n8n Schedule Trigger 的設定對應說明。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>📖</span><span>速查參考</span></div>
+    <div class="meta-item"><span>⏱</span><span>閱讀約 8 分鐘</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="section-head">Cron 語法結構</div>
+  <p class="body-text">Cron 表達式由 5 個欄位組成，從左到右依序是：</p>
+  <div class="cron-visual">
+    <div class="cron-row">
+      <div class="cron-part"><span class="cron-value">*</span><span class="cron-label">分鐘 (0-59)</span></div>
+      <span class="cron-sep">·</span>
+      <div class="cron-part"><span class="cron-value">*</span><span class="cron-label">小時 (0-23)</span></div>
+      <span class="cron-sep">·</span>
+      <div class="cron-part"><span class="cron-value">*</span><span class="cron-label">日 (1-31)</span></div>
+      <span class="cron-sep">·</span>
+      <div class="cron-part"><span class="cron-value">*</span><span class="cron-label">月 (1-12)</span></div>
+      <span class="cron-sep">·</span>
+      <div class="cron-part"><span class="cron-value">*</span><span class="cron-label">星期 (0-7, 0=週日)</span></div>
+    </div>
+    <div style="font-size:.82rem;color:var(--c-muted);">* = 每個、數字 = 指定值、*/N = 每 N 個、N,M = 第 N 和 M、N-M = N 到 M 範圍</div>
+  </div>
+
+  <div class="section-head">常用排程速查</div>
+  <table class="ref-table">
+    <tr><th>需求</th><th>Cron 表達式</th><th>說明</th></tr>
+    <tr><td>每天早上 8:00</td><td><span class="ic">0 8 * * *</span></td><td>分=0、時=8、日/月/週=任意</td></tr>
+    <tr><td>每天下班前 17:30</td><td><span class="ic">30 17 * * *</span></td><td>分=30、時=17</td></tr>
+    <tr><td>每週一早上 9:00</td><td><span class="ic">0 9 * * 1</span></td><td>星期=1（週一）</td></tr>
+    <tr><td>每週五下午 5:00</td><td><span class="ic">0 17 * * 5</span></td><td>星期=5（週五）</td></tr>
+    <tr><td>每月第 1 天 8:00</td><td><span class="ic">0 8 1 * *</span></td><td>日=1（每月初）</td></tr>
+    <tr><td>每月最後一天（近似）</td><td><span class="ic">0 23 28-31 * *</span></td><td>月底幾天都觸發，在流程內判斷實際月份</td></tr>
+    <tr><td>每工作日（週一到五）</td><td><span class="ic">0 8 * * 1-5</span></td><td>星期=1-5（週一到週五）</td></tr>
+    <tr><td>每 30 分鐘執行</td><td><span class="ic">*/30 * * * *</span></td><td>分=每30分鐘一次</td></tr>
+    <tr><td>每 2 小時執行</td><td><span class="ic">0 */2 * * *</span></td><td>每2小時整點觸發</td></tr>
+    <tr><td>每天 8:00 和 18:00</td><td><span class="ic">0 8,18 * * *</span></td><td>時=8和18（逗號分隔多個值）</td></tr>
+    <tr><td>每季度第一天</td><td><span class="ic">0 8 1 1,4,7,10 *</span></td><td>月=1,4,7,10（1月、4月、7月、10月）</td></tr>
+  </table>
+
+  <div class="section-head">n8n Schedule Trigger 設定方式</div>
+  <p class="body-text">n8n 的 Schedule Trigger 有兩種設定模式：</p>
+  <table class="ref-table">
+    <tr><th>模式</th><th>適合場景</th><th>設定方法</th></tr>
+    <tr>
+      <td><strong>Interval 模式</strong></td>
+      <td>每 N 分鐘/小時/天執行</td>
+      <td>直接在下拉選單選擇單位，填入數字。最直覺，適合初學者。</td>
+    </tr>
+    <tr>
+      <td><strong>Cron 模式</strong></td>
+      <td>指定特定時間（每週一、每月一日等）</td>
+      <td>切換到「Cron Expression」模式，填入 Cron 表達式。更靈活。</td>
+    </tr>
+  </table>
+
+  <div class="step-tip info">
+    <span class="tip-icon">💡</span>
+    <span class="tip-text"><strong>時區：</strong>n8n Desktop 的 Schedule Trigger 使用電腦的本地時區。台灣使用者不需要特別轉換，<span class="ic">0 8 * * *</span> 就是台灣時間早上 8:00 觸發。</span>
+  </div>
+
+  <div class="step-tip success">
+    <span class="tip-icon">✅</span>
+    <span class="tip-text"><strong>測試排程：</strong>不要等真實時間點。在 n8n 畫布點「Test Workflow」可以立即觸發一次 Schedule Trigger（不需等到排程時間），方便驗證後面的流程邏輯是否正確。</span>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m3-3-generate.html" class="nav-btn">← 3.3 定時彙整日報</a>
+  <a href="m3-3-multiformat.html" class="nav-btn primary">多格式日報擴展 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.1 動態資料引用技巧｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:580px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.section-head{font-family:'Shippori Mincho',serif;font-size:1.15rem;font-weight:700;color:var(--c-text);margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--c-border);}
+.body-text{font-size:.92rem;color:var(--c-text);line-height:1.9;margin-bottom:14px;}
+.ref-table{width:100%;border-collapse:collapse;margin:16px 0 28px;font-size:.87rem;}
+.ref-table th{background:var(--c-surface);padding:10px 14px;text-align:left;font-weight:700;font-size:.78rem;letter-spacing:.5px;color:var(--c-muted);border:1px solid var(--c-border);}
+.ref-table td{padding:10px 14px;border:1px solid var(--c-border);vertical-align:top;line-height:1.7;}
+.ref-table tr:nth-child(even) td{background:rgba(245,243,238,.5);}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.code-block{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.83rem;padding:20px 22px;border-radius:var(--radius);margin:14px 0;line-height:1.8;overflow-x:auto;white-space:pre;}
+.code-block .cm{color:#6b9b8a;}
+.code-block .ky{color:#9bb4d4;}
+.code-block .expr{color:#d4a0c8;}
+.code-block .str{color:#98c48c;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:14px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">2.1 動態引用技巧</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module2.html" class="back-link">← 返回 Module 2</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 02</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 2.1 · 補充參考</span>
+  </div>
+  <h1 class="step-title">動態資料引用與 Expression 進階</h1>
+  <p class="step-subtitle">掌握資料轉換、動態欄位名稱、多筆資料聚合等進階 Expression 技巧，讓流程處理更靈活。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>📖</span><span>參考頁面</span></div>
+    <div class="meta-item"><span>⏱</span><span>閱讀約 10 分鐘</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="section-head">動態欄位名稱（欄位名稱本身是變數）</div>
+  <p class="body-text">有時欄位名稱不是固定的，而是由另一個欄位的值決定。例如，你的 JSON 裡有一個 <span class="ic">category</span> 欄位，值可能是 "A" 或 "B"，而你要根據這個值去讀對應的欄位 <span class="ic">price_A</span> 或 <span class="ic">price_B</span>。這時需要在 Code 節點用方括號語法動態存取：</p>
+  <div class="code-block"><span class="cm">// 在 Code 節點中（不是 Expression）</span>
+const category = $input.item.json.category;        <span class="cm">// "A" 或 "B"</span>
+const fieldName = `price_${category}`;             <span class="cm">// "price_A" 或 "price_B"</span>
+const price = $input.item.json[fieldName];         <span class="cm">// 動態讀取欄位</span>
+
+return [{ json: { price, category } }];</div>
+
+  <div class="section-head">資料聚合：把多筆 Items 合併成一筆</div>
+  <p class="body-text">Loop Over Items 處理完後，每筆 PDF 的結果是獨立的 Item。若要把所有結果合併成一個陣列，可以在 Loop 後接一個 Code 節點：</p>
+  <div class="code-block"><span class="cm">// 把所有輸入 Items 的 json 合併成一個陣列</span>
+const allItems = $input.all();
+const results = allItems.map(item => item.json);
+
+<span class="cm">// 也可以只取特定欄位</span>
+const summaries = allItems.map(item => ({
+  fileName: item.json.fileName,
+  summary: item.json.ai_summary,
+  processedAt: item.json.timestamp
+}));
+
+return [{ json: { results: summaries, total: summaries.length } }];</div>
+
+  <div class="section-head">常用動態引用模式速查</div>
+  <table class="ref-table">
+    <tr><th>情境</th><th>解法</th></tr>
+    <tr><td>根據條件決定讀哪個欄位</td><td>Code 節點中用 <span class="ic">json[動態欄位名]</span></td></tr>
+    <tr><td>Loop 後把結果收集成陣列</td><td>Code 節點用 <span class="ic">$input.all().map(i =&gt; i.json)</span></td></tr>
+    <tr><td>計算所有 Items 的某欄位總和</td><td><span class="ic">$input.all().reduce((sum, i) =&gt; sum + i.json.金額, 0)</span></td></tr>
+    <tr><td>篩選出特定條件的 Items</td><td><span class="ic">$input.all().filter(i =&gt; i.json.狀態 === '完成')</span></td></tr>
+    <tr><td>找出某欄位最大值的 Item</td><td><span class="ic">$input.all().sort((a,b) =&gt; b.json.金額 - a.json.金額)[0]</span></td></tr>
+  </table>
+
+  <div class="step-tip info">
+    <span class="tip-icon">💡</span>
+    <span class="tip-text"><strong>Expression vs Code 節點的選擇：</strong>單一欄位的讀取、拼接、格式化 → 用 Expression；需要迴圈、陣列操作、複雜邏輯 → 用 Code 節點寫 JavaScript。不要在 Expression 裡硬塞複雜邏輯。</span>
+  </div>
+
+  <div class="section-head">資料轉換速查</div>
+  <table class="ref-table">
+    <tr><th>目的</th><th>Code 節點寫法</th></tr>
+    <tr><td>物件陣列轉 CSV 字串</td><td><span class="ic">items.map(i =&gt; `${i.name},${i.price}`).join('\n')</span></td></tr>
+    <tr><td>陣列去重複</td><td><span class="ic">[...new Set(array)]</span></td></tr>
+    <tr><td>物件 key 重新命名</td><td><span class="ic">const {oldKey: newKey, ...rest} = obj</span></td></tr>
+    <tr><td>字串轉陣列（以逗號分隔）</td><td><span class="ic">str.split(',').map(s =&gt; s.trim())</span></td></tr>
+    <tr><td>陣列轉物件（用某欄位當 key）</td><td><span class="ic">Object.fromEntries(arr.map(i =&gt; [i.id, i]))</span></td></tr>
+  </table>
+
+  <div class="step-tip success">
+    <span class="tip-icon">✅</span>
+    <span class="tip-text"><strong>善用 $input.all() vs $input.item：</strong><span class="ic">$input.item</span> 只取當前 Item（單筆），<span class="ic">$input.all()</span> 取所有輸入 Items（多筆）。在 Loop 內用 <span class="ic">$input.item</span>；在 Loop 後收集用 <span class="ic">$input.all()</span>。</span>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m2-1-absolute.html" class="nav-btn">← 絕對路徑引用</a>
+  <a href="m2-2-chaining.html" class="nav-btn primary">2.2 Optional Chaining →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

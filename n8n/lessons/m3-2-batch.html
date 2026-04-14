@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3.2 Loop 批次重命名｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:720px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:560px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.step-block{display:flex;gap:24px;margin-bottom:44px;position:relative;}
+.step-block:not(:last-child)::after{content:'';position:absolute;left:19px;top:48px;width:2px;height:calc(100% - 16px);background:var(--c-border);}
+.step-num-col{flex-shrink:0;}
+.step-circle{width:40px;height:40px;border-radius:50%;background:rgba(107,127,163,.1);border:2px solid var(--c-a4);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-a4);flex-shrink:0;}
+.step-content{flex:1;padding-top:6px;}
+.step-label{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--c-text);margin-bottom:8px;line-height:1.3;}
+.step-desc{font-size:.9rem;color:var(--c-text);line-height:1.9;margin-bottom:12px;}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.code-block{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.83rem;padding:20px 22px;border-radius:var(--radius);margin:14px 0;line-height:1.8;overflow-x:auto;white-space:pre;}
+.code-block .cm{color:#6b9b8a;}
+.code-block .ky{color:#9bb4d4;}
+.code-block .str{color:#98c48c;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:12px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.warning{background:rgba(201,150,58,.06);border:1px solid rgba(201,150,58,.25);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.verify-box{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.25);border-left:4px solid #5a7a5a;border-radius:var(--radius);padding:22px 26px;margin:8px 0 32px;}
+.verify-label{font-size:.68rem;color:#5a7a5a;letter-spacing:1.5px;font-weight:500;margin-bottom:10px;}
+.verify-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-text);margin-bottom:8px;}
+.verify-desc{font-size:.88rem;color:var(--c-text);line-height:1.8;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">3.2 Loop 批次重命名</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module3.html" class="back-link">← 返回 Module 3</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 03</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 3.2 · 延伸實作</span>
+  </div>
+  <h1 class="step-title">Loop + 批次重命名：一次處理整個資料夾</h1>
+  <p class="step-subtitle">用 Code 節點讀取資料夾清單，再用 Loop Over Items 讓每個 PDF 依序經過 AI 辨識 → 重命名的完整流程。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>⏱</span><span>預估時間：25 分鐘</span></div>
+    <div class="meta-item"><span>📋</span><span>4 個步驟</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">1</div></div>
+    <div class="step-content">
+      <div class="step-label">用 Code 節點讀取資料夾所有 PDF</div>
+      <p class="step-desc">與 3.2 主流程（Watch Folder 監控單一檔案）不同，批次模式需要手動觸發，一次讀取整個資料夾的所有 PDF 並生成 Items 清單。</p>
+      <div class="code-block"><span class="cm">// 手動觸發 + Code 節點：讀取整個資料夾</span>
+const fs = require('fs');
+const path = require('path');
+
+const folderPath = <span class="str">'/Users/你的名稱/Documents/待改名'</span>;
+
+const files = fs.readdirSync(folderPath)
+  .filter(f => /\.(pdf|PDF)$/.test(f))            <span class="cm">// 只要 PDF</span>
+  .filter(f => !f.startsWith('.'))                  <span class="cm">// 排除隱藏檔</span>
+  .map(fileName => ({
+    fileName,
+    filePath: path.join(folderPath, fileName),
+    folder: folderPath
+  }));
+
+<span class="cm">// 每個檔案成為一個 Item</span>
+return files.map(f => ({ json: f }));</div>
+      <div class="step-tip info">
+        <span class="tip-icon">💡</span>
+        <span class="tip-text">這個 Code 節點的輸出是一個 Items 陣列，每筆 Item 代表一個 PDF 檔案。後面接 Loop Over Items，就能讓每個 PDF 依序被處理。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">2</div></div>
+    <div class="step-content">
+      <div class="step-label">Loop Over Items 設定</div>
+      <p class="step-desc">搜尋「Loop Over Items」節點加入，將 Code 節點的輸出連接到 Loop 的輸入。Loop 節點會自動把每個 Item 依序送入後續的處理流程。Loop 節點有兩個輸出：<strong>Loop</strong>（每次迭代的 Item）和 <strong>Done</strong>（全部完成後觸發）。</p>
+      <div class="step-tip warning">
+        <span class="tip-icon">⚠️</span>
+        <span class="tip-text"><strong>Gemini API 速率限制：</strong>免費方案 15 RPM（每分鐘 15 次）。批次處理 15 個以上 PDF 時，在 Loop 內加入 <strong>Wait 節點</strong>（設定 5 秒），讓每次 AI 呼叫間隔 5 秒，避免觸發限制。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">3</div></div>
+    <div class="step-content">
+      <div class="step-label">Loop 內：讀取 → AI 辨識 → 重命名</div>
+      <p class="step-desc">在 Loop 節點的 Loop 輸出接以下流程（與 3.2 主流程相同，只是現在每個 PDF 都會經過）：</p>
+      <div class="code-block"><span class="cm">// Loop 內的 Code 節點：讀取 PDF 轉 base64</span>
+const fs = require('fs');
+const data = $input.item.json;
+const fileContent = fs.readFileSync(data.filePath);
+const base64 = fileContent.toString('base64');
+return [{ json: { ...data, base64 } }];
+
+<span class="cm">// → HTTP Request → Gemini API（AI 辨識）</span>
+<span class="cm">// → Code 節點：解析回應，生成新檔名</span>
+
+<span class="cm">// → 最後一個 Code 節點：執行重命名</span>
+const fs = require('fs');
+const path = require('path');
+const data = $input.item.json;
+
+const newPath = path.join(data.folder, data.newFileName);
+fs.renameSync(data.filePath, newPath);
+
+return [{ json: {
+  success: true,
+  original: data.fileName,
+  renamed: data.newFileName
+}}];</div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">4</div></div>
+    <div class="step-content">
+      <div class="step-label">Done 輸出：彙整結果</div>
+      <p class="step-desc">Loop 的 Done 輸出會在所有 PDF 都處理完後觸發。可以在這裡加一個 Code 節點統計結果，或直接接通知節點發送「批次完成」的摘要。</p>
+      <div class="code-block"><span class="cm">// Done 輸出的 Code 節點：生成批次摘要</span>
+const allResults = $input.all();
+const succeeded = allResults.filter(i => i.json.success).length;
+const failed = allResults.length - succeeded;
+
+const summary = [
+  `✅ 批次重命名完成`,
+  `總計：${allResults.length} 個檔案`,
+  `成功：${succeeded} 個`,
+  `失敗：${failed} 個`,
+  ``,
+  ...allResults.filter(i => i.json.success)
+    .map(i => `${i.json.original} → ${i.json.renamed}`)
+].join('\n');
+
+return [{ json: { summary, succeeded, failed } }];</div>
+      <div class="step-tip success">
+        <span class="tip-icon">✅</span>
+        <span class="tip-text">把摘要接到 Write File 節點，生成一個 <span class="ic">重命名日誌_日期.txt</span> 存在資料夾中，日後稽核時可以追蹤哪些檔案被改過。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verify-box">
+    <div class="verify-label">完成驗證 CHECKPOINT</div>
+    <div class="verify-title">5 個 PDF 批次重命名成功</div>
+    <p class="verify-desc">準備 5 個測試 PDF（任意內容），執行批次流程。完成後資料夾內應出現 5 個已重命名的 PDF（格式：日期_類型_廠商_金額.pdf），且原始檔名消失。Done 輸出的摘要顯示「成功 5 個，失敗 0 個」。</p>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m3-2-naming.html" class="nav-btn">← 命名規則設計</a>
+  <a href="m3-3-generate.html" class="nav-btn primary">3.3 定時彙整日報 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

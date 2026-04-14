@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.2 任務分流協作設計｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:580px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.section-head{font-family:'Shippori Mincho',serif;font-size:1.15rem;font-weight:700;color:var(--c-text);margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--c-border);}
+.body-text{font-size:.92rem;color:var(--c-text);line-height:1.9;margin-bottom:14px;}
+.ref-table{width:100%;border-collapse:collapse;margin:16px 0 28px;font-size:.87rem;}
+.ref-table th{background:var(--c-surface);padding:10px 14px;text-align:left;font-weight:700;font-size:.78rem;letter-spacing:.5px;color:var(--c-muted);border:1px solid var(--c-border);}
+.ref-table td{padding:10px 14px;border:1px solid var(--c-border);vertical-align:top;line-height:1.7;}
+.ref-table tr:nth-child(even) td{background:rgba(245,243,238,.5);}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:14px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.step-tip.warning{background:rgba(201,150,58,.06);border:1px solid rgba(201,150,58,.25);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0 28px;}
+.decision-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:20px 22px;}
+.decision-badge{display:inline-block;font-size:.68rem;letter-spacing:1px;font-weight:700;padding:2px 10px;border-radius:99px;margin-bottom:10px;}
+.badge-make{background:rgba(201,150,58,.12);color:#b8862a;}
+.badge-n8n{background:rgba(107,127,163,.12);color:var(--c-a4);}
+.decision-name{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-text);margin-bottom:10px;}
+.decision-list{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.decision-list li{font-size:.82rem;color:var(--c-muted);padding-left:14px;position:relative;line-height:1.5;}
+.decision-list li::before{content:'·';position:absolute;left:0;color:var(--c-a4);}
+.scenario-block{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);padding:22px 26px;margin:16px 0 28px;}
+.scenario-label{font-size:.68rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;}
+.scenario-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-text);margin-bottom:10px;}
+.scenario-steps{display:flex;flex-direction:column;gap:6px;}
+.scenario-step{font-size:.85rem;color:var(--c-text);line-height:1.6;padding-left:20px;position:relative;}
+.scenario-step::before{content:attr(data-n);position:absolute;left:0;color:var(--c-a4);font-weight:700;font-size:.8rem;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">4.2 任務分流設計</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module4.html" class="back-link">← 返回 Module 4</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 04</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 4.2 · 補充參考</span>
+  </div>
+  <h1 class="step-title">任務分流協作設計</h1>
+  <p class="step-subtitle">什麼任務交給 Make？什麼任務讓 n8n 處理？設計雙平台協作架構的決策框架，以及三種常見的混合自動化情境。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>📖</span><span>補充參考</span></div>
+    <div class="meta-item"><span>⏱</span><span>閱讀約 8 分鐘</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="section-head">任務分配框架</div>
+  <p class="body-text">Make 和 n8n 各有擅長的場景。設計協作架構時，根據任務特性選擇正確的平台，可以最大化兩者的優勢。</p>
+  <div class="decision-grid">
+    <div class="decision-card">
+      <span class="decision-badge badge-make">MAKE.COM</span>
+      <div class="decision-name">交給 Make 的任務</div>
+      <ul class="decision-list">
+        <li>接收 Gmail、Line、Slack 等雲端事件</li>
+        <li>向第三方 API 查資料（天氣、匯率、股價）</li>
+        <li>更新 Google Sheet、Airtable 等雲端資料庫</li>
+        <li>發送 Email、Line 通知、Slack 訊息</li>
+        <li>接收 Webhook 並做簡單過濾轉發</li>
+        <li>需要 1000+ 種 SaaS 服務連接時</li>
+      </ul>
+    </div>
+    <div class="decision-card">
+      <span class="decision-badge badge-n8n">N8N DESKTOP</span>
+      <div class="decision-name">交給 n8n 的任務</div>
+      <ul class="decision-list">
+        <li>讀寫本機檔案（PDF、Excel、文字檔）</li>
+        <li>大量迴圈處理（100 個檔案批次改名）</li>
+        <li>呼叫 Gemini API 做 AI 分析（省費用）</li>
+        <li>複雜的資料轉換與計算邏輯</li>
+        <li>敏感資料不想上雲端的任務</li>
+        <li>需要無限次數執行的排程任務</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-head">決策問題清單</div>
+  <p class="body-text">每次設計新自動化流程時，問自己這幾個問題：</p>
+  <table class="ref-table">
+    <tr><th>問題</th><th>是 → 用 Make</th><th>否 → 考慮 n8n</th></tr>
+    <tr><td>需要連接 Gmail / Line / Slack 等 SaaS？</td><td>Make 有現成模組</td><td>n8n 可用 HTTP Request 自行串</td></tr>
+    <tr><td>需要讀寫本機檔案？</td><td>—</td><td>n8n 有 File System 節點</td></tr>
+    <tr><td>需要迴圈處理大量資料（100+）？</td><td>Make 有次數限制</td><td>n8n 無限次數</td></tr>
+    <tr><td>資料敏感，不能上雲端？</td><td>—</td><td>n8n 全程在本機處理</td></tr>
+    <tr><td>一次性設定，不需要維護？</td><td>Make 介面更直覺</td><td>—</td></tr>
+    <tr><td>需要複雜 JavaScript 邏輯？</td><td>—</td><td>n8n Code 節點更強大</td></tr>
+  </table>
+
+  <div class="section-head">三種協作情境</div>
+
+  <div class="scenario-block">
+    <div class="scenario-label">SCENARIO 1</div>
+    <div class="scenario-title">Gmail 收發票 → n8n AI 辨識 → 歸檔並回報</div>
+    <div class="scenario-steps">
+      <div class="scenario-step" data-n="①">Make 監控 Gmail，收到含「發票」附件的郵件觸發</div>
+      <div class="scenario-step" data-n="②">Make 下載 PDF 附件，POST 到 n8n Webhook（含 base64 PDF）</div>
+      <div class="scenario-step" data-n="③">n8n 呼叫 Gemini Vision 辨識發票內容，生成規範檔名</div>
+      <div class="scenario-step" data-n="④">n8n 將 PDF 存入本機並重命名，回傳辨識結果給 Make</div>
+      <div class="scenario-step" data-n="⑤">Make 發送完成通知到 Line，附上辨識到的廠商與金額</div>
+    </div>
+  </div>
+
+  <div class="scenario-block">
+    <div class="scenario-label">SCENARIO 2</div>
+    <div class="scenario-title">Google Sheet 新增資料 → n8n 批次處理 → 更新回 Sheet</div>
+    <div class="scenario-steps">
+      <div class="scenario-step" data-n="①">Make 監控 Google Sheet，有新列時觸發（Google Sheets Watch rows）</div>
+      <div class="scenario-step" data-n="②">Make 取得新列資料，POST 到 n8n（含所有欄位）</div>
+      <div class="scenario-step" data-n="③">n8n 執行複雜計算（如從本機資料庫查詢補充資料），生成結果</div>
+      <div class="scenario-step" data-n="④">n8n 回傳結果給 Make</div>
+      <div class="scenario-step" data-n="⑤">Make 將結果寫回 Google Sheet 對應列（Google Sheets Update row）</div>
+    </div>
+  </div>
+
+  <div class="scenario-block">
+    <div class="scenario-label">SCENARIO 3</div>
+    <div class="scenario-title">定時任務 → n8n 生成日報 → Make 多管道發送</div>
+    <div class="scenario-steps">
+      <div class="scenario-step" data-n="①">n8n Schedule Trigger 每天 17:30 觸發（不用 Make）</div>
+      <div class="scenario-step" data-n="②">n8n 讀取本機工作記錄，呼叫 Gemini 生成日報</div>
+      <div class="scenario-step" data-n="③">n8n 完成後，HTTP Request 主動 POST 到 Make Webhook</div>
+      <div class="scenario-step" data-n="④">Make 接收日報內容，同時發送到 Gmail、Line 群組、Slack 頻道</div>
+    </div>
+  </div>
+
+  <div class="step-tip info">
+    <span class="tip-icon">💡</span>
+    <span class="tip-text"><strong>設計原則：</strong>Make 做「聯絡官」，n8n 做「執行官」。Make 負責對外（雲端 SaaS 的串接與通知），n8n 負責對內（本機的高強度運算與檔案處理）。兩者之間只用 Webhook + HTTP 溝通。</span>
+  </div>
+
+  <div class="step-tip warning">
+    <span class="tip-icon">⚠️</span>
+    <span class="tip-text"><strong>避免過度設計：</strong>不是每個流程都需要 Make + n8n 雙平台。如果任務不需要本機檔案系統、不需要大量迴圈、不需要保護隱私，直接在 Make 完成即可。雙平台架構增加了複雜度，只在真正需要時使用。</span>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m4-2-api.html" class="nav-btn">← API 串接詳解</a>
+  <a href="m4-3-ai.html" class="nav-btn primary">4.3 AI 計劃生成器 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

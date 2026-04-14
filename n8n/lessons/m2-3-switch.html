@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.3 Switch 節點多路分支｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:720px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:560px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.step-block{display:flex;gap:24px;margin-bottom:44px;position:relative;}
+.step-block:not(:last-child)::after{content:'';position:absolute;left:19px;top:48px;width:2px;height:calc(100% - 16px);background:var(--c-border);}
+.step-num-col{flex-shrink:0;}
+.step-circle{width:40px;height:40px;border-radius:50%;background:rgba(107,127,163,.1);border:2px solid var(--c-a4);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-a4);flex-shrink:0;}
+.step-content{flex:1;padding-top:6px;}
+.step-label{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--c-text);margin-bottom:8px;line-height:1.3;}
+.step-desc{font-size:.9rem;color:var(--c-text);line-height:1.9;margin-bottom:12px;}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:12px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.warning{background:rgba(201,150,58,.06);border:1px solid rgba(201,150,58,.25);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.screenshot{background:var(--c-surface);border:1.5px dashed var(--c-border);border-radius:var(--radius);padding:28px 24px;margin:14px 0;text-align:center;}
+.screenshot-icon{font-size:1.6rem;margin-bottom:8px;opacity:.5;}
+.screenshot-cap{font-size:.78rem;color:var(--c-muted);line-height:1.6;}
+.flow-diagram{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:24px 28px;margin:14px 0;}
+.flow-label{font-size:.7rem;color:var(--c-muted);letter-spacing:1.5px;font-weight:500;margin-bottom:16px;}
+.flow-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:.85rem;}
+.flow-node-box{background:var(--c-surface);border:1px solid var(--c-border);border-radius:4px;padding:4px 12px;font-size:.82rem;white-space:nowrap;}
+.flow-arrow{color:var(--c-muted);font-size:.8rem;}
+.flow-tag{font-size:.72rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);padding:2px 8px;border-radius:99px;}
+.verify-box{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.25);border-left:4px solid #5a7a5a;border-radius:var(--radius);padding:22px 26px;margin:8px 0 32px;}
+.verify-label{font-size:.68rem;color:#5a7a5a;letter-spacing:1.5px;font-weight:500;margin-bottom:10px;}
+.verify-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-text);margin-bottom:8px;}
+.verify-desc{font-size:.88rem;color:var(--c-text);line-height:1.8;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">2.3 Switch 節點</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module2.html" class="back-link">← 返回 Module 2</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 02</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 2.3 · 延伸實作</span>
+  </div>
+  <h1 class="step-title">Switch 節點：多路分支處理</h1>
+  <p class="step-subtitle">當任務類型超過兩種，If 節點要層層巢狀才能處理。Switch 節點讓你根據一個欄位的值，把資料分流到不同的處理路徑，設定更直覺。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>⏱</span><span>預估時間：20 分鐘</span></div>
+    <div class="meta-item"><span>📋</span><span>4 個步驟</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">1</div></div>
+    <div class="step-content">
+      <div class="step-label">If vs Switch：選擇時機</div>
+      <p class="step-desc"><strong>If 節點</strong>只有兩條出口（True / False），適合「是/否」的二元判斷。<strong>Switch 節點</strong>可以設定任意數量的出口，每個出口對應一個條件，適合「多種類型分流」的場景。</p>
+      <div class="flow-diagram">
+        <div class="flow-label">If 節點 — 只適合兩路</div>
+        <div class="flow-row"><div class="flow-node-box">If：金額 &gt; 1000</div><div class="flow-arrow">→ True</div><div class="flow-node-box">大額處理</div></div>
+        <div class="flow-row" style="margin-left:0;"><div style="width:165px;"></div><div class="flow-arrow">→ False</div><div class="flow-node-box">一般處理</div></div>
+      </div>
+      <div class="flow-diagram">
+        <div class="flow-label">Switch 節點 — 適合多路</div>
+        <div class="flow-row"><div class="flow-node-box">Switch：任務類型</div><div class="flow-arrow">→ "報告"</div><div class="flow-node-box">生成報告</div></div>
+        <div class="flow-row"><div style="width:154px;"></div><div class="flow-arrow">→ "通知"</div><div class="flow-node-box">發送通知</div></div>
+        <div class="flow-row"><div style="width:154px;"></div><div class="flow-arrow">→ "備份"</div><div class="flow-node-box">執行備份</div></div>
+        <div class="flow-row"><div style="width:154px;"></div><div class="flow-arrow">→ 其他</div><div class="flow-node-box">記錄未知任務</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">2</div></div>
+    <div class="step-content">
+      <div class="step-label">新增 Switch 節點並設定路徑</div>
+      <p class="step-desc">在畫布搜尋「Switch」加入節點。開啟設定後，選擇判斷模式「Rules」（規則模式），然後為每個分支新增一條規則：</p>
+      <p class="step-desc">每條規則設定三個部分：<strong>輸入欄位</strong>（如 <span class="ic">任務類型</span>）→ <strong>條件</strong>（如 Equal to）→ <strong>比對值</strong>（如 <span class="ic">報告</span>）。符合條件的 Item 從對應的出口輸出。</p>
+      <div class="screenshot">
+        <div class="screenshot-icon">🔀</div>
+        <div class="screenshot-cap">Switch 節點設定介面，左側為判斷欄位，中間為條件，右側為比對值。每條規則對應一個輸出連線。</div>
+      </div>
+      <div class="step-tip info">
+        <span class="tip-icon">💡</span>
+        <span class="tip-text"><strong>一定要加「其他」分支（Fallback）：</strong>在規則列表最下方有「Fallback Output」選項，啟用後會多一條輸出線，讓不符合任何規則的 Item 也有出路，而不是靜默丟掉。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">3</div></div>
+    <div class="step-content">
+      <div class="step-label">連接各分支的下游節點</div>
+      <p class="step-desc">Switch 節點的每個出口都可以連接不同的後續節點。從 Switch 節點的右側，你會看到對應每條規則的輸出點（Output 0, 1, 2…）。把每個輸出點連接到對應的處理節點，形成多路流程。</p>
+      <div class="step-tip warning">
+        <span class="tip-icon">⚠️</span>
+        <span class="tip-text"><strong>多個分支最後要匯合：</strong>各分支最終若要執行同一個節點（如「記錄完成」），需要把所有分支的輸出都連線到該節點。n8n 允許一個節點有多個輸入連線——所有輸入的 Items 會合併後一起處理。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">4</div></div>
+    <div class="step-content">
+      <div class="step-label">實際應用：Google 表單任務分流</div>
+      <p class="step-desc">在 Module 4 的 Google Forms 遠端遙控場景中，表單有一個「任務類型」欄位，值可能是「生成日報」、「PDF 改名」或「發送通知」。用 Switch 節點分流後，各類型走各自的處理邏輯，最後統一回傳完成訊息。</p>
+      <div class="flow-diagram">
+        <div class="flow-label">實際流程示意</div>
+        <div class="flow-row"><div class="flow-node-box">Webhook（接收表單）</div><div class="flow-arrow">→</div><div class="flow-node-box">Switch（任務類型）</div></div>
+        <div class="flow-row"><div style="width:200px;"></div><div class="flow-arrow">→ 日報</div><div class="flow-node-box">Schedule + AI 摘要</div></div>
+        <div class="flow-row"><div style="width:200px;"></div><div class="flow-arrow">→ 改名</div><div class="flow-node-box">讀取資料夾 + 改名</div></div>
+        <div class="flow-row"><div style="width:200px;"></div><div class="flow-arrow">→ 通知</div><div class="flow-node-box">HTTP → Gmail</div></div>
+        <div class="flow-row"><div style="width:200px;"></div><div class="flow-arrow">→ 其他</div><div class="flow-node-box">記錄到 log 檔案</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verify-box">
+    <div class="verify-label">完成驗證 CHECKPOINT</div>
+    <div class="verify-title">三路 Switch 分流測試</div>
+    <p class="verify-desc">建立 Switch 節點，根據 <span class="ic">$json.type</span> 分三路（A/B/C）加一個 Fallback。用 Set 節點輸出三筆不同 type 的測試資料，執行後確認每筆資料都流到對應的正確分支，Fallback 分支在輸入不存在的 type 時正確觸發。</p>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m2-3-logic.html" class="nav-btn">← 2.3 If/Switch 邏輯</a>
+  <a href="m2-3-complex.html" class="nav-btn primary">AND/OR 複合條件 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

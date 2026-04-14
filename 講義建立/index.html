@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>講義建立工具｜弄一下工作室</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--c-a3:#5a7a5a;--c-a1:#b5703a;--radius:6px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);min-height:100vh;}
+
+/* Topbar */
+.topbar{height:56px;background:rgba(245,243,238,.96);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;}
+.topbar-div{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.server-dot{width:7px;height:7px;border-radius:50%;background:var(--c-a3);margin-left:auto;flex-shrink:0;}
+.server-label{font-size:.72rem;color:var(--c-muted);}
+
+/* Layout */
+.main{max-width:680px;margin:0 auto;padding:40px 24px 80px;}
+
+/* Card */
+.card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;transition:opacity .2s,filter .2s;}
+.card.locked{opacity:.45;pointer-events:none;filter:grayscale(.3);}
+.card-head{padding:18px 24px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--c-border);}
+.step-badge{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--c-a4);background:rgba(107,127,163,.08);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:var(--c-a4);flex-shrink:0;transition:background .2s,border-color .2s;}
+.step-badge.done{background:var(--c-a3);border-color:var(--c-a3);color:#fff;}
+.card-title{font-family:'Shippori Mincho',serif;font-size:.92rem;font-weight:700;color:var(--c-text);}
+.card-body{padding:22px 24px;}
+
+/* Fields */
+.field{margin-bottom:18px;}
+.field:last-child{margin-bottom:0;}
+.field-label{display:block;font-size:.72rem;color:var(--c-muted);letter-spacing:.5px;font-weight:500;margin-bottom:7px;}
+.row{display:flex;gap:10px;}
+.row .field{flex:1;margin-bottom:0;}
+select,input[type=text]{width:100%;padding:9px 12px;border:1px solid var(--c-border);border-radius:var(--radius);background:var(--c-bg);font-family:'Noto Sans TC',sans-serif;font-size:.86rem;color:var(--c-text);outline:none;transition:border-color .15s;}
+select:focus,input:focus{border-color:var(--c-a4);}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238c8880'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+
+/* Status pill */
+.status-pill{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;padding:5px 12px;border-radius:99px;margin-top:8px;}
+.status-pill.ok{background:rgba(90,122,90,.08);border:1px solid rgba(90,122,90,.2);color:var(--c-a3);}
+.status-pill.info{background:rgba(107,127,163,.08);border:1px solid rgba(107,127,163,.2);color:var(--c-a4);}
+.status-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
+
+/* Radio options */
+.radio-group{display:flex;flex-direction:column;gap:8px;}
+.radio-opt{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--c-border);border-radius:var(--radius);cursor:pointer;transition:border-color .15s,background .15s;user-select:none;}
+.radio-opt:hover{border-color:rgba(107,127,163,.45);background:rgba(107,127,163,.03);}
+.radio-opt.active{border-color:var(--c-a4);background:rgba(107,127,163,.05);}
+.radio-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--c-border);flex-shrink:0;transition:all .15s;}
+.radio-opt.active .radio-dot{border-color:var(--c-a4);background:var(--c-a4);box-shadow:inset 0 0 0 3px var(--c-card);}
+.radio-text{font-size:.86rem;color:var(--c-text);}
+.radio-hint{font-size:.73rem;color:var(--c-muted);margin-left:auto;}
+
+/* Upload zone */
+.upload-zone{border:2px dashed var(--c-border);border-radius:var(--radius);padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--c-a4);background:rgba(107,127,163,.04);}
+.upload-zone input{display:none;}
+.upload-icon{font-size:1.5rem;color:var(--c-muted);margin-bottom:8px;}
+.upload-text{font-size:.82rem;color:var(--c-muted);line-height:1.7;}
+.upload-text strong{color:var(--c-a4);}
+.file-result{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(90,122,90,.05);border:1px solid rgba(90,122,90,.2);border-radius:var(--radius);margin-top:10px;}
+.file-name{font-size:.83rem;color:var(--c-text);flex:1;}
+.file-status{font-size:.73rem;white-space:nowrap;}
+
+/* Outline preview (in converter) */
+.raw-preview{background:var(--c-surface);border-radius:var(--radius);padding:14px 18px;font-size:.76rem;font-family:'Courier New',monospace;color:var(--c-muted);white-space:pre-wrap;max-height:180px;overflow-y:auto;margin-top:10px;line-height:1.7;}
+
+/* Save btn */
+.save-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;background:var(--c-a3);color:#fff;border:none;border-radius:var(--radius);font-family:'Noto Sans TC',sans-serif;font-size:.82rem;cursor:pointer;margin-top:12px;transition:background .15s;}
+.save-btn:hover{background:#4a6a4a;}
+
+/* Outline structure (sidebar-like) */
+.outline-tree{background:var(--c-surface);border-radius:var(--radius);padding:14px 18px;max-height:200px;overflow-y:auto;margin-top:10px;}
+.ot-part{margin-bottom:12px;}
+.ot-part-title{font-size:.75rem;font-weight:700;color:var(--c-a4);margin-bottom:6px;letter-spacing:.3px;}
+.ot-ch{font-size:.76rem;color:var(--c-muted);padding:3px 0 3px 12px;border-left:2px solid var(--c-border);margin-bottom:2px;cursor:pointer;transition:color .1s,border-color .1s;}
+.ot-ch:hover{color:var(--c-text);border-left-color:var(--c-a4);}
+.ot-ch.target{border-left-color:var(--c-a4);color:var(--c-text);font-weight:500;}
+
+/* Command preview */
+.cmd-wrap{background:#2c2b28;border-radius:var(--radius);padding:16px 20px;}
+.cmd-eyebrow{font-size:.65rem;color:#6b7fa3;letter-spacing:1.5px;margin-bottom:8px;}
+.cmd-text{font-family:'Courier New',monospace;font-size:.85rem;color:#e8e4dc;line-height:1.5;word-break:break-all;}
+.cmd-text.empty{color:#8c8880;font-style:italic;}
+
+/* Launch button */
+.launch-btn{width:100%;padding:15px;background:var(--c-a4);color:#fff;border:none;border-radius:var(--radius);font-family:'Noto Sans TC',sans-serif;font-size:.92rem;font-weight:500;cursor:pointer;margin-top:14px;transition:background .15s,opacity .15s;}
+.launch-btn:hover:not(:disabled){background:#5c6f91;}
+.launch-btn:disabled{opacity:.5;cursor:not-allowed;}
+.launch-msg{text-align:center;font-size:.8rem;margin-top:8px;min-height:1.2em;}
+.launch-msg.ok{color:var(--c-a3);}
+.launch-msg.err{color:#b5503a;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="logo">弄一下工作室</span>
+  <div class="topbar-div"></div>
+  <span class="topbar-sub">講義建立工具</span>
+  <div class="server-dot" style="margin-left:auto"></div>
+  <span class="server-label">localhost:8765</span>
+</header>
+
+<div class="main">
+
+  <!-- ① 課程 -->
+  <div class="card" id="card-course">
+    <div class="card-head">
+      <div class="step-badge" id="badge-1">1</div>
+      <span class="card-title">選擇課程</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <label class="field-label">課程</label>
+        <select id="course-select" onchange="onCourseChange()">
+          <option value="">載入中…</option>
+        </select>
+      </div>
+      <div id="course-status"></div>
+
+      <!-- 新課程 panel -->
+      <div id="new-course-panel" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--c-border)">
+        <div class="field">
+          <label class="field-label">課程識別名稱（英文連字號，如 make-com）</label>
+          <input type="text" id="new-slug" placeholder="make-com" oninput="onNewSlugInput()">
+        </div>
+        <div class="field">
+          <label class="field-label">上傳課程大綱（.docx）— 將自動轉換</label>
+          <div class="upload-zone" id="drop-zone"
+               onclick="document.getElementById('file-input').click()"
+               ondragover="onDragOver(event)" ondragleave="onDragLeave()" ondrop="onDrop(event)">
+            <input type="file" id="file-input" accept=".docx" onchange="onFileChange(this)">
+            <div class="upload-icon">↑</div>
+            <div class="upload-text"><strong>點擊選擇</strong>或拖入 .docx 檔案</div>
+          </div>
+          <div id="file-result" class="file-result" style="display:none">
+            <span class="file-name" id="file-name"></span>
+            <span class="file-status" id="file-status"></span>
+          </div>
+        </div>
+        <div id="converted-panel" style="display:none">
+          <label class="field-label">轉換結果預覽</label>
+          <div class="raw-preview" id="raw-preview"></div>
+          <button class="save-btn" onclick="saveOutline()">儲存大綱並繼續 →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 操作類型 -->
+  <div class="card locked" id="card-action">
+    <div class="card-head">
+      <div class="step-badge" id="badge-2">2</div>
+      <span class="card-title">操作類型</span>
+    </div>
+    <div class="card-body">
+      <div class="radio-group">
+        <div class="radio-opt" id="opt-step" onclick="selectAction('step')">
+          <div class="radio-dot"></div>
+          <span class="radio-text">新增步驟頁</span>
+          <span class="radio-hint">CH{章}-{節}.html</span>
+        </div>
+        <div class="radio-opt" id="opt-overview" onclick="selectAction('overview')">
+          <div class="radio-dot"></div>
+          <span class="radio-text">新增模組總覽</span>
+          <span class="radio-hint">module{N}.html</span>
+        </div>
+        <div class="radio-opt" id="opt-update" onclick="selectAction('update-cards')">
+          <div class="radio-dot"></div>
+          <span class="radio-text">更新 Concept Cards</span>
+          <span class="radio-hint">更新既有模組頁連結</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 頁面設定 -->
+  <div class="card locked" id="card-detail">
+    <div class="card-head">
+      <div class="step-badge" id="badge-3">3</div>
+      <span class="card-title">頁面設定</span>
+    </div>
+    <div class="card-body">
+
+      <!-- step fields -->
+      <div id="fields-step" style="display:none">
+        <div class="row">
+          <div class="field">
+            <label class="field-label">Part</label>
+            <select id="step-part" onchange="onPartChange()">
+              <option value="">選擇 Part</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">章節</label>
+            <select id="step-ch" onchange="onChChange()">
+              <option value="">選擇章節</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-top:10px">
+          <label class="field-label">頁面標題</label>
+          <input type="text" id="step-title" placeholder="從大綱自動填入，或手動輸入" oninput="updatePreview()">
+        </div>
+        <div id="outline-tree-wrap" style="display:none">
+          <label class="field-label" style="margin-top:14px;display:block">大綱結構</label>
+          <div class="outline-tree" id="outline-tree"></div>
+        </div>
+      </div>
+
+      <!-- overview fields -->
+      <div id="fields-overview" style="display:none">
+        <div class="field">
+          <label class="field-label">Module 編號</label>
+          <select id="overview-module" onchange="updatePreview()">
+            <option value="">選擇 Module</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- update-cards fields -->
+      <div id="fields-update" style="display:none">
+        <div class="field">
+          <label class="field-label">目標 HTML（相對於課程資料夾）</label>
+          <input type="text" id="update-target" placeholder="module1.html" oninput="updatePreview()">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ④ 確認 & 啟動 -->
+  <div class="card locked" id="card-launch">
+    <div class="card-head">
+      <div class="step-badge" id="badge-4">4</div>
+      <span class="card-title">確認 &amp; 啟動</span>
+    </div>
+    <div class="card-body">
+      <div class="cmd-wrap">
+        <div class="cmd-eyebrow">CLAUDE CODE 指令</div>
+        <div class="cmd-text empty" id="cmd-text">— 請完成上方設定 —</div>
+      </div>
+      <button class="launch-btn" id="launch-btn" onclick="launch()" disabled>開啟 Claude Code</button>
+      <div class="launch-msg" id="launch-msg"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const S = { slug:'', isNew:false, action:'', outline:null, convertedMd:'' };
+
+// ── init ──────────────────────────────────────────────────────────────────
+
+async function init() {
+  try {
+    const r = await fetch('/api/courses');
+    const courses = await r.json();
+    const sel = document.getElementById('course-select');
+    sel.innerHTML = '<option value="">— 選擇課程 —</option>';
+    courses.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.slug;
+      o.textContent = c.has_outline ? `${c.slug}  ✓` : c.slug;
+      sel.appendChild(o);
+    });
+    const newO = document.createElement('option');
+    newO.value = '__new__';
+    newO.textContent = '＋ 建立新課程';
+    sel.appendChild(newO);
+  } catch(e) {
+    document.getElementById('course-select').innerHTML = '<option value="">無法連線伺服器</option>';
+  }
+}
+
+// ── course ────────────────────────────────────────────────────────────────
+
+async function onCourseChange() {
+  const val = document.getElementById('course-select').value;
+  S.isNew = val === '__new__';
+  S.slug = S.isNew ? '' : val;
+  S.outline = null;
+
+  document.getElementById('new-course-panel').style.display = S.isNew ? 'block' : 'none';
+  document.getElementById('course-status').innerHTML = '';
+  resetFrom('card-action');
+
+  if (!val || S.isNew) return;
+
+  try {
+    const r = await fetch(`/api/outline/${val}`);
+    if (r.ok) {
+      S.outline = await r.json();
+      const m = S.outline.meta;
+      setCourseStatus(`已找到大綱 · ${m.name || val} · ${S.outline.parts.length} Parts · 主題色 ${m.color || '—'}`, 'ok');
+    } else {
+      setCourseStatus('尚無大綱，Claude 將逐一詢問課程資訊', 'info');
+    }
+  } catch(e) {
+    setCourseStatus('無法讀取大綱', 'info');
+  }
+
+  unlock('card-action');
+  done('badge-1');
+}
+
+function setCourseStatus(msg, type) {
+  document.getElementById('course-status').innerHTML =
+    `<div class="status-pill ${type}">${msg}</div>`;
+}
+
+function onNewSlugInput() {
+  S.slug = document.getElementById('new-slug').value.trim();
+}
+
+// ── file upload ───────────────────────────────────────────────────────────
+
+function onDragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('drag'); }
+function onDragLeave()  { document.getElementById('drop-zone').classList.remove('drag'); }
+function onDrop(e)      { e.preventDefault(); document.getElementById('drop-zone').classList.remove('drag'); const f=e.dataTransfer.files[0]; if(f) processFile(f); }
+function onFileChange(input) { if(input.files[0]) processFile(input.files[0]); }
+
+async function processFile(file) {
+  const res  = document.getElementById('file-result');
+  const name = document.getElementById('file-name');
+  const stat = document.getElementById('file-status');
+  res.style.display = 'flex';
+  name.textContent = file.name;
+  stat.textContent = '轉換中…';
+  stat.style.color = 'var(--c-muted)';
+
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const bytes = new Uint8Array(e.target.result);
+    let b64 = '';
+    for (let i=0; i<bytes.length; i+=8192)
+      b64 += btoa(String.fromCharCode(...bytes.subarray(i, i+8192)));
+    try {
+      const r = await fetch('/api/convert', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({file: b64})
+      });
+      const d = await r.json();
+      if (d.markdown) {
+        S.convertedMd = d.markdown;
+        stat.textContent = '轉換完成';
+        stat.style.color = 'var(--c-a3)';
+        document.getElementById('raw-preview').textContent = d.markdown.slice(0, 1000) + (d.markdown.length > 1000 ? '\n…' : '');
+        document.getElementById('converted-panel').style.display = 'block';
+      } else {
+        stat.textContent = '失敗：' + (d.error || '未知');
+        stat.style.color = '#b5503a';
+      }
+    } catch(err) {
+      stat.textContent = '連線失敗';
+      stat.style.color = '#b5503a';
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+async function saveOutline() {
+  const slug = document.getElementById('new-slug').value.trim().replace(/[^a-z0-9\-]/g, '');
+  if (!slug) { alert('請先填寫課程識別名稱'); return; }
+  const fm = `---\nslug: ${slug}\nname: ${slug}\ncolor: "#6b7fa3"\naudience: \ninstitution: 弄一下工作室\nduration: \ntools: \nprac: true\n---\n\n`;
+  const content = fm + S.convertedMd;
+  const r = await fetch('/api/save-outline', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({slug, content})
+  });
+  const d = await r.json();
+  if (d.ok) {
+    S.slug = slug;
+    try {
+      const or = await fetch(`/api/outline/${slug}`);
+      if (or.ok) S.outline = await or.json();
+    } catch(e) {}
+    setCourseStatus(`大綱已儲存 · _outlines/${slug}.md`, 'ok');
+    unlock('card-action');
+    done('badge-1');
+  }
+}
+
+// ── action ────────────────────────────────────────────────────────────────
+
+function selectAction(action) {
+  S.action = action;
+  ['step','overview','update'].forEach(a => document.getElementById(`opt-${a}`).classList.remove('active'));
+  document.getElementById(`opt-${action === 'update-cards' ? 'update' : action}`).classList.add('active');
+
+  document.getElementById('fields-step').style.display     = action === 'step'         ? 'block' : 'none';
+  document.getElementById('fields-overview').style.display = action === 'overview'     ? 'block' : 'none';
+  document.getElementById('fields-update').style.display   = action === 'update-cards' ? 'block' : 'none';
+
+  unlock('card-detail');
+  unlock('card-launch');
+  done('badge-2');
+
+  if (action === 'step')          populatePartSelect();
+  if (action === 'overview')      populateModuleSelect();
+  if (action === 'update-cards')  populateModuleSelect();
+
+  updatePreview();
+}
+
+// ── outline fields ────────────────────────────────────────────────────────
+
+function populatePartSelect() {
+  const sel = document.getElementById('step-part');
+  sel.innerHTML = '<option value="">選擇 Part</option>';
+  if (S.outline) {
+    S.outline.parts.forEach((p, i) => {
+      const o = document.createElement('option');
+      o.value = i + 1;
+      o.textContent = `Part ${i+1}：${p.title}`;
+      sel.appendChild(o);
+    });
+  } else {
+    [1,2,3,4].forEach(n => { const o=document.createElement('option'); o.value=n; o.textContent=`Part ${n}`; sel.appendChild(o); });
+  }
+}
+
+function populateModuleSelect() {
+  const sel = document.getElementById('overview-module');
+  sel.innerHTML = '<option value="">選擇 Module</option>';
+  if (S.outline) {
+    S.outline.parts.forEach((p, i) => {
+      const o = document.createElement('option');
+      o.value = i + 1;
+      o.textContent = `Module ${i+1}：${p.title}`;
+      sel.appendChild(o);
+    });
+  } else {
+    [1,2,3,4].forEach(n => { const o=document.createElement('option'); o.value=n; o.textContent=`Module ${n}`; sel.appendChild(o); });
+  }
+}
+
+function onPartChange() {
+  const partNum = parseInt(document.getElementById('step-part').value);
+  const chSel = document.getElementById('step-ch');
+  chSel.innerHTML = '<option value="">選擇章節</option>';
+
+  if (!partNum) { updatePreview(); return; }
+
+  if (S.outline) {
+    const part = S.outline.parts[partNum - 1];
+    if (part) {
+      part.chapters.forEach(ch => {
+        const o = document.createElement('option');
+        o.value = ch.id;
+        o.textContent = `${ch.id}：${ch.title}`;
+        chSel.appendChild(o);
+      });
+      renderOutlineTree(partNum);
+    }
+  } else {
+    ['1','2','3'].forEach(n => {
+      const o = document.createElement('option');
+      o.value = `CH${partNum}-${n}`;
+      o.textContent = `CH${partNum}-${n}`;
+      chSel.appendChild(o);
+    });
+  }
+  updatePreview();
+}
+
+function onChChange() {
+  const chVal = document.getElementById('step-ch').value;
+  if (!chVal || !S.outline) { updatePreview(); return; }
+  const partNum = parseInt(document.getElementById('step-part').value);
+  const part = S.outline.parts[partNum - 1];
+  if (part) {
+    const ch = part.chapters.find(c => c.id === chVal);
+    if (ch) document.getElementById('step-title').value = ch.title;
+    renderOutlineTree(partNum, chVal);
+  }
+  updatePreview();
+}
+
+function renderOutlineTree(activePart, activeCh) {
+  if (!S.outline) return;
+  const wrap = document.getElementById('outline-tree-wrap');
+  const tree = document.getElementById('outline-tree');
+  wrap.style.display = 'block';
+  tree.innerHTML = '';
+  S.outline.parts.forEach((p, i) => {
+    const pNum = i + 1;
+    const div = document.createElement('div');
+    div.className = 'ot-part';
+    div.innerHTML = `<div class="ot-part-title">Part ${pNum}：${p.title}</div>`;
+    p.chapters.forEach(ch => {
+      const el = document.createElement('div');
+      el.className = 'ot-ch' + (ch.id === activeCh ? ' target' : '');
+      el.textContent = `${ch.id}：${ch.title}`;
+      el.onclick = () => {
+        document.getElementById('step-ch').value = ch.id;
+        document.getElementById('step-title').value = ch.title;
+        onChChange();
+      };
+      div.appendChild(el);
+    });
+    tree.appendChild(div);
+  });
+}
+
+// ── preview ───────────────────────────────────────────────────────────────
+
+function updatePreview() {
+  const slug = S.slug;
+  let cmd = '', ready = false;
+
+  if (!slug) {
+    cmd = '— 請先選擇課程 —';
+  } else if (!S.action) {
+    cmd = '— 請選擇操作類型 —';
+  } else if (S.action === 'step') {
+    const ch = document.getElementById('step-ch').value;
+    const title = document.getElementById('step-title').value.trim();
+    if (ch) { cmd = `/build-course-page step ${slug} ${ch}${title ? ` "${title}"` : ''}`; ready = true; }
+    else cmd = '— 請選擇章節 —';
+  } else if (S.action === 'overview') {
+    const m = document.getElementById('overview-module').value;
+    if (m) { cmd = `/build-course-page overview ${slug} module${m}`; ready = true; }
+    else cmd = '— 請選擇 Module —';
+  } else if (S.action === 'update-cards') {
+    const t = document.getElementById('update-target').value.trim();
+    if (t) { cmd = `/build-course-page update-cards ${slug}/${t}`; ready = true; }
+    else cmd = '— 請填入目標檔案名稱 —';
+  }
+
+  const el = document.getElementById('cmd-text');
+  el.textContent = cmd;
+  el.className = 'cmd-text' + (ready ? '' : ' empty');
+  document.getElementById('launch-btn').disabled = !ready;
+  if (ready) done('badge-3');
+}
+
+// ── launch ────────────────────────────────────────────────────────────────
+
+async function launch() {
+  const btn = document.getElementById('launch-btn');
+  const msg = document.getElementById('launch-msg');
+  btn.disabled = true;
+  btn.textContent = '啟動中…';
+  msg.textContent = '';
+  msg.className = 'launch-msg';
+
+  const payload = { action: S.action, slug: S.slug };
+  if (S.action === 'step') {
+    payload.ch = document.getElementById('step-ch').value;
+    payload.title = document.getElementById('step-title').value;
+  } else if (S.action === 'overview') {
+    payload.module = document.getElementById('overview-module').value;
+  } else if (S.action === 'update-cards') {
+    payload.target = document.getElementById('update-target').value;
+  }
+
+  try {
+    const r = await fetch('/api/launch', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const d = await r.json();
+    if (d.ok) {
+      msg.textContent = 'Terminal 已開啟，Claude Code 正在啟動';
+      msg.className = 'launch-msg ok';
+      done('badge-4');
+    } else {
+      msg.textContent = '啟動失敗：' + (d.error || '');
+      msg.className = 'launch-msg err';
+    }
+  } catch(e) {
+    msg.textContent = '無法連線伺服器，請確認 server.py 執行中';
+    msg.className = 'launch-msg err';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '開啟 Claude Code';
+}
+
+// ── helpers ───────────────────────────────────────────────────────────────
+
+function unlock(id) { document.getElementById(id).classList.remove('locked'); }
+function done(id)   { document.getElementById(id).classList.add('done'); }
+
+function resetFrom(cardId) {
+  const order = ['card-action','card-detail','card-launch'];
+  const idx = order.indexOf(cardId);
+  if (idx === -1) return;
+  order.slice(idx).forEach(id => {
+    document.getElementById(id).classList.add('locked');
+  });
+  const badgeMap = {'card-action':'badge-2','card-detail':'badge-3','card-launch':'badge-4'};
+  order.slice(idx).forEach(id => {
+    if (badgeMap[id]) document.getElementById(badgeMap[id]).classList.remove('done');
+  });
+  S.action = '';
+  ['opt-step','opt-overview','opt-update'].forEach(id => document.getElementById(id).classList.remove('active'));
+  document.getElementById('cmd-text').textContent = '— 請完成上方設定 —';
+  document.getElementById('cmd-text').className = 'cmd-text empty';
+  document.getElementById('launch-btn').disabled = true;
+  document.getElementById('launch-msg').textContent = '';
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.3 AI JSON Prompt 範本集｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:580px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.section-head{font-family:'Shippori Mincho',serif;font-size:1.15rem;font-weight:700;color:var(--c-text);margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--c-border);}
+.body-text{font-size:.92rem;color:var(--c-text);line-height:1.9;margin-bottom:14px;}
+.prompt-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);margin:0 0 24px;overflow:hidden;}
+.prompt-card-head{background:var(--c-surface);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+.prompt-card-title{font-family:'Shippori Mincho',serif;font-size:.95rem;font-weight:700;color:var(--c-text);}
+.prompt-card-tag{font-size:.72rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);padding:2px 10px;border-radius:99px;}
+.prompt-body{padding:20px 24px;}
+.prompt-desc{font-size:.85rem;color:var(--c-muted);margin-bottom:14px;line-height:1.7;}
+.code-block{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.82rem;padding:18px 20px;border-radius:var(--radius);margin:0;line-height:1.8;overflow-x:auto;white-space:pre;}
+.code-block .cm{color:#6b9b8a;}
+.code-block .ky{color:#9bb4d4;}
+.code-block .st{color:#b8d4a0;}
+.code-block .expr{color:#d4a0c8;}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:14px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.rule-list{margin:12px 0 24px;display:flex;flex-direction:column;gap:8px;}
+.rule-item{display:flex;gap:12px;font-size:.88rem;color:var(--c-text);line-height:1.7;}
+.rule-num{font-family:'Shippori Mincho',serif;font-weight:700;color:var(--c-a4);width:22px;flex-shrink:0;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">1.3 AI Prompt 範本</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module1.html" class="back-link">← 返回 Module 1</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 01</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 1.3 · 補充參考</span>
+  </div>
+  <h1 class="step-title">讓 AI 穩定輸出 JSON 的 Prompt 範本集</h1>
+  <p class="step-subtitle">合約、發票、會議記錄、郵件分類——四種常見文件的 Prompt 範本，直接複製貼入 n8n HTTP Request 節點即可使用。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>📋</span><span>4 個可直接使用的 Prompt 範本</span></div>
+    <div class="meta-item"><span>📖</span><span>參考頁面，可收藏備用</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="section-head">讓 AI 穩定輸出 JSON 的五個規則</div>
+  <div class="rule-list">
+    <div class="rule-item"><span class="rule-num">①</span><span>明確宣告「以純 JSON 格式回覆」，並加上「不要包含任何說明文字」</span></div>
+    <div class="rule-item"><span class="rule-num">②</span><span>提供完整的格式範例（不只說明欄位名稱，要給出資料型別，如字串/數字/陣列）</span></div>
+    <div class="rule-item"><span class="rule-num">③</span><span>說明每個欄位在找不到資料時應填什麼（如 null 或 ""），避免 AI 亂猜</span></div>
+    <div class="rule-item"><span class="rule-num">④</span><span>把文件內容放在 Prompt 最後，用明確的分隔線（如 ---）隔開指令與內容</span></div>
+    <div class="rule-item"><span class="rule-num">⑤</span><span>若 JSON Parse 仍偶爾出錯，在 Code 節點用 <span class="ic">raw.match(/\{[\s\S]*\}/)[0]</span> 先截取 JSON 部分再 parse</span></div>
+  </div>
+
+  <div class="section-head">範本一：合約關鍵資訊提取</div>
+  <div class="prompt-card">
+    <div class="prompt-card-head">
+      <span class="prompt-card-title">合約解析 Prompt</span>
+      <span class="prompt-card-tag">適用：服務合約、採購合約</span>
+    </div>
+    <div class="prompt-body">
+      <p class="prompt-desc">提取合約中的廠商、金額、日期、類型等關鍵欄位，輸出標準化 JSON。</p>
+      <div class="code-block">請讀取以下合約文字，提取關鍵資訊，
+以純 JSON 格式回覆，不要包含任何說明文字或 markdown。
+
+JSON 格式如下：
+{
+  <span class="ky">"廠商名稱"</span>: <span class="st">"字串，找不到填 null"</span>,
+  <span class="ky">"合約金額"</span>: <span class="st">數字（不含貨幣符號），找不到填 0</span>,
+  <span class="ky">"貨幣"</span>: <span class="st">"TWD 或 USD 等，找不到填 'TWD'"</span>,
+  <span class="ky">"簽約日期"</span>: <span class="st">"YYYY-MM-DD，找不到填 null"</span>,
+  <span class="ky">"到期日"</span>: <span class="st">"YYYY-MM-DD，找不到填 null"</span>,
+  <span class="ky">"合約類型"</span>: <span class="st">"採購合約｜服務合約｜保密協定｜其他"</span>,
+  <span class="ky">"聯絡人"</span>: <span class="st">"字串，找不到填 null"</span>
+}
+
+---
+合約文字如下：
+<span class="expr">{{ $json.contract_text }}</span></div>
+    </div>
+  </div>
+
+  <div class="section-head">範本二：發票與收據解析</div>
+  <div class="prompt-card">
+    <div class="prompt-card-head">
+      <span class="prompt-card-title">發票解析 Prompt</span>
+      <span class="prompt-card-tag">適用：AI 讀取 PDF 後的文字輸出</span>
+    </div>
+    <div class="prompt-body">
+      <p class="prompt-desc">從 OCR 辨識後的發票文字中提取品項清單與金額資訊。</p>
+      <div class="code-block">請讀取以下發票文字，提取關鍵資訊，
+以純 JSON 格式回覆，不要包含說明文字或 markdown。
+
+JSON 格式如下（品項為陣列）：
+{
+  <span class="ky">"發票號碼"</span>: <span class="st">"字串"</span>,
+  <span class="ky">"開立日期"</span>: <span class="st">"YYYY-MM-DD"</span>,
+  <span class="ky">"賣方名稱"</span>: <span class="st">"字串"</span>,
+  <span class="ky">"買方名稱"</span>: <span class="st">"字串，找不到填 null"</span>,
+  <span class="ky">"品項"</span>: [
+    { <span class="ky">"名稱"</span>: <span class="st">"字串"</span>, <span class="ky">"數量"</span>: 數字, <span class="ky">"單價"</span>: 數字, <span class="ky">"小計"</span>: 數字 }
+  ],
+  <span class="ky">"稅前金額"</span>: 數字,
+  <span class="ky">"稅額"</span>: 數字,
+  <span class="ky">"總金額"</span>: 數字
+}
+
+---
+發票文字如下：
+<span class="expr">{{ $json.invoice_text }}</span></div>
+    </div>
+  </div>
+
+  <div class="section-head">範本三：會議記錄結構化</div>
+  <div class="prompt-card">
+    <div class="prompt-card-head">
+      <span class="prompt-card-title">會議記錄 Prompt</span>
+      <span class="prompt-card-tag">適用：逐字稿或筆記文字</span>
+    </div>
+    <div class="prompt-body">
+      <p class="prompt-desc">從會議記錄中提取決議事項、待辦任務與負責人。</p>
+      <div class="code-block">請讀取以下會議記錄，提取重要資訊，
+以純 JSON 格式回覆，不要包含說明文字或 markdown。
+
+JSON 格式如下：
+{
+  <span class="ky">"會議主題"</span>: <span class="st">"字串"</span>,
+  <span class="ky">"日期"</span>: <span class="st">"YYYY-MM-DD，推斷不到填 null"</span>,
+  <span class="ky">"參與者"</span>: [<span class="st">"姓名1", "姓名2"</span>],
+  <span class="ky">"決議事項"</span>: [<span class="st">"事項1", "事項2"</span>],
+  <span class="ky">"待辦任務"</span>: [
+    { <span class="ky">"任務"</span>: <span class="st">"描述"</span>, <span class="ky">"負責人"</span>: <span class="st">"姓名"</span>, <span class="ky">"截止日"</span>: <span class="st">"YYYY-MM-DD 或 null"</span> }
+  ],
+  <span class="ky">"下次會議"</span>: <span class="st">"YYYY-MM-DD 或 null"</span>
+}
+
+---
+會議記錄如下：
+<span class="expr">{{ $json.meeting_text }}</span></div>
+    </div>
+  </div>
+
+  <div class="section-head">範本四：郵件分類與摘要</div>
+  <div class="prompt-card">
+    <div class="prompt-card-head">
+      <span class="prompt-card-title">郵件分類 Prompt</span>
+      <span class="prompt-card-tag">適用：Gmail 自動分類流程</span>
+    </div>
+    <div class="prompt-body">
+      <p class="prompt-desc">判斷郵件類型、緊急程度，並提取關鍵資訊。</p>
+      <div class="code-block">請讀取以下郵件內容，分析並分類，
+以純 JSON 格式回覆，不要包含說明文字或 markdown。
+
+JSON 格式如下：
+{
+  <span class="ky">"類型"</span>: <span class="st">"詢價｜客訴｜合作邀請｜廣告｜內部通知｜其他"</span>,
+  <span class="ky">"緊急程度"</span>: <span class="st">"高｜中｜低"</span>,
+  <span class="ky">"需要回覆"</span>: true 或 false,
+  <span class="ky">"摘要"</span>: <span class="st">"50字以內的郵件摘要"</span>,
+  <span class="ky">"關鍵資訊"</span>: <span class="st">"金額、日期、產品名稱等重要細節，找不到填 null"</span>,
+  <span class="ky">"建議回覆"</span>: <span class="st">"50字以內的建議回覆方向，不需回覆填 null"</span>
+}
+
+---
+寄件人：<span class="expr">{{ $json.from }}</span>
+主旨：<span class="expr">{{ $json.subject }}</span>
+內容：
+<span class="expr">{{ $json.body }}</span></div>
+    </div>
+  </div>
+
+  <div class="step-tip success">
+    <span class="tip-icon">✅</span>
+    <span class="tip-text"><strong>使用方式：</strong>把 Prompt 貼入 n8n 的 HTTP Request 節點（呼叫 Gemini API）的 Request Body 中，<span class="ic">{{ }}</span> 語法引用的欄位名稱換成你的實際欄位名稱，儲存後執行即可。</span>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m1-3-expression.html" class="nav-btn">← Expression 語法速查</a>
+  <a href="module2.html" class="nav-btn primary">前往 Module 2 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

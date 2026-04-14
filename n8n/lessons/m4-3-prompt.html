@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.3 Prompt Engineering 完整指南｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:580px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.section-head{font-family:'Shippori Mincho',serif;font-size:1.15rem;font-weight:700;color:var(--c-text);margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--c-border);}
+.body-text{font-size:.92rem;color:var(--c-text);line-height:1.9;margin-bottom:14px;}
+.ref-table{width:100%;border-collapse:collapse;margin:16px 0 28px;font-size:.87rem;}
+.ref-table th{background:var(--c-surface);padding:10px 14px;text-align:left;font-weight:700;font-size:.78rem;letter-spacing:.5px;color:var(--c-muted);border:1px solid var(--c-border);}
+.ref-table td{padding:10px 14px;border:1px solid var(--c-border);vertical-align:top;line-height:1.7;}
+.ref-table tr:nth-child(even) td{background:rgba(245,243,238,.5);}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.code-block{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.83rem;padding:20px 22px;border-radius:var(--radius);margin:14px 0;line-height:1.8;overflow-x:auto;white-space:pre;}
+.code-block .cm{color:#6b9b8a;}
+.code-block .ky{color:#9bb4d4;}
+.code-block .str{color:#98c48c;}
+.code-block .expr{color:#d4a0c8;}
+.prompt-box{background:var(--c-card);border:1px solid var(--c-border);border-left:3px solid var(--c-a4);border-radius:var(--radius);padding:20px 24px;margin:14px 0;}
+.prompt-label{font-size:.68rem;color:var(--c-a4);letter-spacing:1.5px;font-weight:500;margin-bottom:10px;}
+.prompt-text{font-family:'Courier New',monospace;font-size:.82rem;color:var(--c-text);line-height:1.9;white-space:pre-wrap;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:14px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.step-tip.warning{background:rgba(201,150,58,.06);border:1px solid rgba(201,150,58,.25);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 24px;}
+.rule-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:var(--radius);padding:16px 18px;}
+.rule-num{font-family:'Shippori Mincho',serif;font-size:1.2rem;font-weight:700;color:var(--c-a4);margin-bottom:6px;}
+.rule-title{font-size:.85rem;font-weight:700;color:var(--c-text);margin-bottom:4px;}
+.rule-desc{font-size:.8rem;color:var(--c-muted);line-height:1.6;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">4.3 Prompt Engineering</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module4.html" class="back-link">← 返回 Module 4</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 04</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 4.3 · 補充參考</span>
+  </div>
+  <h1 class="step-title">Prompt Engineering 完整指南</h1>
+  <p class="step-subtitle">在 n8n 自動化流程中，Prompt 的品質決定 AI 輸出的穩定性。本頁整理讓 Gemini 穩定輸出可解析 JSON 的六大技巧，以及企劃書、郵件、摘要三種任務的完整 Prompt 範本。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>📖</span><span>補充參考</span></div>
+    <div class="meta-item"><span>⏱</span><span>閱讀約 12 分鐘</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="section-head">穩定 JSON 輸出的六大原則</div>
+  <div class="rule-grid">
+    <div class="rule-card">
+      <div class="rule-num">01</div>
+      <div class="rule-title">明確聲明輸出格式</div>
+      <div class="rule-desc">Prompt 開頭直接說「你必須以 JSON 格式回應，不要包含任何其他文字」。不要含糊。</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">02</div>
+      <div class="rule-title">提供 JSON Schema 範例</div>
+      <div class="rule-desc">直接給一個完整的範例 JSON，包含每個欄位的鍵名和值的型別（字串、數字、陣列）。</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">03</div>
+      <div class="rule-title">規定不得省略欄位</div>
+      <div class="rule-desc">明確說「即使沒有資訊也必須包含這個欄位，用空字串 "" 填充」，避免 JSON 結構不完整。</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">04</div>
+      <div class="rule-title">禁止 Markdown 包裝</div>
+      <div class="rule-desc">說「不要用 ``` 或 ```json 包裝，直接輸出純 JSON 文字」。否則 JSON.parse() 會失敗。</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">05</div>
+      <div class="rule-title">指定文字長度範圍</div>
+      <div class="rule-desc">對每個文字欄位說明預期長度（如「50 字以內」），控制輸出成本並提升品質。</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">06</div>
+      <div class="rule-title">用繁體中文提問</div>
+      <div class="rule-desc">如果輸出需要中文，用中文提問。Gemini 在中文 Prompt 下輸出中文更穩定。</div>
+    </div>
+  </div>
+
+  <div class="section-head">企劃書生成 Prompt 範本</div>
+  <p class="body-text">用於 4.3 主流程的 AI 企劃書生成，動態變數用 n8n Expression 填入：</p>
+  <div class="prompt-box">
+    <div class="prompt-label">企劃書 PROMPT TEMPLATE</div>
+    <div class="prompt-text">你是一位專業的企劃書撰寫助理。請根據以下資訊生成一份完整的活動企劃書。
+
+活動名稱：{{ $json.taskName }}
+活動類型：{{ $json.taskType }}
+截止日期：{{ $json.deadline }}
+備註：{{ $json.notes || '無' }}
+
+你必須以純 JSON 格式回應，不要包含任何說明文字，不要用 ``` 包裝。
+
+JSON 結構如下（所有欄位必須存在，不可省略）：
+{
+  "title": "企劃書標題（20字以內）",
+  "summary": "活動簡介（100字以內）",
+  "objectives": ["目標1", "目標2", "目標3"],
+  "schedule": [
+    {"phase": "階段名稱", "duration": "時間長度", "tasks": "主要工作"},
+    {"phase": "階段名稱", "duration": "時間長度", "tasks": "主要工作"}
+  ],
+  "budget_estimate": "預算估算說明（50字以內）",
+  "expected_outcome": "預期成效（80字以內）",
+  "risks": ["風險1", "風險2"],
+  "marketing_tagline": "行銷標語（15字以內）"
+}</div>
+  </div>
+
+  <div class="section-head">n8n 中安全解析 Gemini 回應</div>
+  <p class="body-text">即使 Prompt 已限制輸出格式，仍要在 Code 節點加入防禦性解析，避免偶發的格式錯誤讓整條流程崩潰：</p>
+  <div class="code-block"><span class="cm">// Code 節點：安全解析 Gemini JSON 回應</span>
+const raw = $input.item.json;
+
+<span class="cm">// 取出 Gemini 回應文字（安全讀取）</span>
+const text = raw.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+<span class="cm">// 嘗試清理並解析 JSON</span>
+let plan;
+<span class="ky">try</span> {
+  <span class="cm">// 移除可能殘留的 markdown 包裝</span>
+  const cleaned = text
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/\s*```$/, '')
+    .trim();
+
+  plan = JSON.parse(cleaned);
+} <span class="ky">catch</span> (e) {
+  <span class="cm">// 解析失敗：回傳錯誤，不讓流程繼續</span>
+  return [{
+    json: {
+      success: false,
+      error: 'JSON 解析失敗',
+      rawText: text.slice(0, 200)  <span class="cm">// 截取前 200 字方便 debug</span>
+    }
+  }];
+}
+
+<span class="cm">// 解析成功</span>
+return [{ json: { success: true, plan, taskName: raw.taskName } }];</div>
+
+  <div class="section-head">其他常用 Prompt 範本</div>
+  <table class="ref-table">
+    <tr><th>任務</th><th>系統角色</th><th>關鍵 Prompt 元素</th></tr>
+    <tr>
+      <td><strong>郵件摘要</strong></td>
+      <td>「你是一位專業的文書助理」</td>
+      <td>輸入郵件全文，要求輸出 JSON：<span class="ic">{"subject_summary", "key_actions", "urgency_level", "reply_needed"}</span></td>
+    </tr>
+    <tr>
+      <td><strong>會議記錄整理</strong></td>
+      <td>「你是一位會議記錄整理專家」</td>
+      <td>輸入會議逐字稿，要求輸出 JSON：<span class="ic">{"participants", "decisions", "action_items", "next_meeting"}</span></td>
+    </tr>
+    <tr>
+      <td><strong>行銷文案生成</strong></td>
+      <td>「你是一位熟悉台灣市場的行銷顧問」</td>
+      <td>輸入產品資訊，輸出 JSON：<span class="ic">{"headline", "body_copy", "cta_text", "hashtags"}</span></td>
+    </tr>
+    <tr>
+      <td><strong>PDF 文件摘要</strong></td>
+      <td>「你是一位文件分析師」</td>
+      <td>輸入 PDF base64，要求輸出 JSON：<span class="ic">{"document_type", "key_points", "dates", "parties_involved"}</span></td>
+    </tr>
+  </table>
+
+  <div class="step-tip success">
+    <span class="tip-icon">✅</span>
+    <span class="tip-text"><strong>測試 Prompt 的最快方法：</strong>先在 Google AI Studio 的 Prompt 編輯器測試，確認輸出穩定後，再把 Prompt 複製到 n8n 的 HTTP Request Body 中。不要直接在 n8n 裡摸索——AI Studio 的即時反饋比 n8n 的執行日誌快很多。</span>
+  </div>
+
+  <div class="step-tip warning">
+    <span class="tip-icon">⚠️</span>
+    <span class="tip-text"><strong>溫度參數 (temperature)：</strong>企劃書等創意任務可設 0.7–1.0；JSON 結構化輸出建議設 0.2–0.4，讓輸出更穩定可預測，減少格式錯誤率。在 HTTP Request Body 加上 <span class="ic">"generationConfig": {"temperature": 0.3}</span>。</span>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m4-3-ai.html" class="nav-btn">← 4.3 AI 計劃生成器</a>
+  <a href="m4-3-docs.html" class="nav-btn primary">Google Docs 輸出 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

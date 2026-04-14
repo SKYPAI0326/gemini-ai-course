@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.1 絕對路徑精準引用｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:720px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:560px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.step-block{display:flex;gap:24px;margin-bottom:44px;position:relative;}
+.step-block:not(:last-child)::after{content:'';position:absolute;left:19px;top:48px;width:2px;height:calc(100% - 16px);background:var(--c-border);}
+.step-num-col{flex-shrink:0;}
+.step-circle{width:40px;height:40px;border-radius:50%;background:rgba(107,127,163,.1);border:2px solid var(--c-a4);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-a4);flex-shrink:0;}
+.step-content{flex:1;padding-top:6px;}
+.step-label{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--c-text);margin-bottom:8px;line-height:1.3;}
+.step-desc{font-size:.9rem;color:var(--c-text);line-height:1.9;margin-bottom:12px;}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.code-block{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.83rem;padding:20px 22px;border-radius:var(--radius);margin:14px 0;line-height:1.8;overflow-x:auto;white-space:pre;}
+.code-block .cm{color:#6b9b8a;}
+.code-block .ky{color:#9bb4d4;}
+.code-block .expr{color:#d4a0c8;}
+.code-block .str{color:#98c48c;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:12px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.warning{background:rgba(201,150,58,.06);border:1px solid rgba(201,150,58,.25);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.compare-box{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
+.compare-card{border-radius:var(--radius);padding:16px 18px;}
+.compare-card.bad{background:rgba(201,150,58,.06);border:1px solid rgba(201,150,58,.25);}
+.compare-card.good{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.compare-label{font-size:.7rem;font-weight:700;letter-spacing:1px;margin-bottom:8px;}
+.compare-card.bad .compare-label{color:#b8862a;}
+.compare-card.good .compare-label{color:#5a7a5a;}
+.compare-code{font-family:'Courier New',monospace;font-size:.82rem;line-height:1.7;}
+.verify-box{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.25);border-left:4px solid #5a7a5a;border-radius:var(--radius);padding:22px 26px;margin:8px 0 32px;}
+.verify-label{font-size:.68rem;color:#5a7a5a;letter-spacing:1.5px;font-weight:500;margin-bottom:10px;}
+.verify-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-text);margin-bottom:8px;}
+.verify-desc{font-size:.88rem;color:var(--c-text);line-height:1.8;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">2.1 絕對路徑引用</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module2.html" class="back-link">← 返回 Module 2</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 02</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 2.1 · 延伸實作</span>
+  </div>
+  <h1 class="step-title">絕對路徑：精準定位跨節點資料</h1>
+  <p class="step-subtitle">用 <code style="font-size:.9em;background:rgba(107,127,163,.1);padding:2px 8px;border-radius:3px;">${'節點名稱'}.item.json</code> 語法，從任意節點直接取資料，不受迭代或節點順序影響。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>⏱</span><span>預估時間：15 分鐘</span></div>
+    <div class="meta-item"><span>📋</span><span>3 個步驟</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">1</div></div>
+    <div class="step-content">
+      <div class="step-label">相對引用 vs 絕對引用的差別</div>
+      <p class="step-desc">在 n8n 中，<span class="ic">$json.欄位</span> 讀取的是「上一個節點」的輸出——這叫相對引用。當流程有 Loop 迭代，或你需要跨越多個節點取得某個早期節點的資料時，相對引用會失效，因為 <span class="ic">$json</span> 的內容隨節點位置改變。</p>
+      <div class="compare-box">
+        <div class="compare-card bad">
+          <div class="compare-label">❌ 相對引用（可能出問題）</div>
+          <div class="compare-code">{{ $json.原始標題 }}<br><br>在 Loop 內的節點，<br>$json 指的是當前<br>迭代的 item，<br>不是最初的資料</div>
+        </div>
+        <div class="compare-card good">
+          <div class="compare-label">✅ 絕對引用（精準可靠）</div>
+          <div class="compare-code">{{ $('讀取 PDF').item.json.標題 }}<br><br>不管在哪個節點，<br>永遠讀取名為<br>「讀取 PDF」的節點<br>輸出的標題欄位</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">2</div></div>
+    <div class="step-content">
+      <div class="step-label">絕對引用語法與常見模式</div>
+      <p class="step-desc">絕對引用語法固定格式：<span class="ic">{{ $('節點名稱').item.json.欄位名稱 }}</span>。括號內的節點名稱必須與畫布上的節點完全一致（包括空格和大小寫）。</p>
+      <div class="code-block"><span class="cm">// 基本語法：讀取指定節點的欄位</span>
+<span class="expr">{{ $('讀取設定檔').item.json.api_key }}</span>
+
+<span class="cm">// 讀取巢狀欄位</span>
+<span class="expr">{{ $('解析 JSON').item.json.結果.廠商名稱 }}</span>
+
+<span class="cm">// 讀取陣列第一筆</span>
+<span class="expr">{{ $('AI 輸出').item.json.任務列表[0].標題 }}</span>
+
+<span class="cm">// 在 Loop 內引用 Loop 外的原始資料</span>
+<span class="expr">{{ $('Webhook').item.json.用戶ID }}</span>
+
+<span class="cm">// 搭配 ?? 給預設值</span>
+<span class="expr">{{ $('表單').item.json.備註 ?? '無備註' }}</span></div>
+      <div class="step-tip info">
+        <span class="tip-icon">💡</span>
+        <span class="tip-text"><strong>節點命名決定引用難易度：</strong>如果節點叫「HTTP Request 3」，引用時就得寫 <span class="ic">${'HTTP Request 3'}</span>，容易搞混。建議給節點取有意義的中文名，如「呼叫 Gemini」、「解析發票」。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">3</div></div>
+    <div class="step-content">
+      <div class="step-label">實際應用：在 Loop 內保留原始表單資料</div>
+      <p class="step-desc">最常見的場景：Loop Over Items 處理多個 PDF 時，每次迭代都要帶入表單傳來的「用戶 ID」或「任務名稱」。由於 <span class="ic">$json</span> 在 Loop 內指向當前 PDF 的資料，必須用絕對路徑取表單資料。</p>
+      <div class="code-block"><span class="cm">// 情境：Loop 內的 HTTP Request 節點需要同時用到：</span>
+<span class="cm">// 1. 當前 PDF 的 AI 辨識結果（相對引用）</span>
+<span class="cm">// 2. 表單傳來的用戶 ID（絕對引用）</span>
+
+<span class="cm">// 在 HTTP Request 的 Body 欄位中：</span>
+{
+  <span class="ky">"pdf_content"</span>: <span class="expr">{{ $json.ai_result }}</span>,          <span class="cm">← 當前 PDF 的結果</span>
+  <span class="ky">"user_id"</span>: <span class="expr">{{ $('Webhook').item.json.user_id }}</span>,   <span class="cm">← 表單原始資料</span>
+  <span class="ky">"task_name"</span>: <span class="expr">{{ $('Webhook').item.json.task }}</span>      <span class="cm">← 表單原始資料</span>
+}</div>
+      <div class="step-tip warning">
+        <span class="tip-icon">⚠️</span>
+        <span class="tip-text"><strong>引用不存在的節點名稱：</strong>如果節點名稱拼錯，n8n 會在執行時報「The node '...' does not exist」錯誤。建議在 Expression 編輯器用左側的節點清單點選，避免手打錯誤。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verify-box">
+    <div class="verify-label">完成驗證 CHECKPOINT</div>
+    <div class="verify-title">在 Loop 內成功引用 Loop 外的節點資料</div>
+    <p class="verify-desc">建立一個簡單測試：Webhook → Set（設定一個 user_id 欄位）→ Loop Over Items（設定 3 筆測試資料）→ Set（在 Loop 內的 Set 節點，同時引用 <span class="ic">$json.loop資料</span> 和 <span class="ic">${'第一個Set'}.item.json.user_id</span>）。若兩個欄位都能正確讀取，代表絕對引用成功。</p>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m2-1-reference.html" class="nav-btn">← 2.1 相對與絕對參考</a>
+  <a href="m2-1-dynamic.html" class="nav-btn primary">動態引用技巧 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

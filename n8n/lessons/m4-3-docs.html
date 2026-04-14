@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4.3 Google Docs 自動輸出｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:720px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:560px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.step-block{display:flex;gap:24px;margin-bottom:44px;position:relative;}
+.step-block:not(:last-child)::after{content:'';position:absolute;left:19px;top:48px;width:2px;height:calc(100% - 16px);background:var(--c-border);}
+.step-num-col{flex-shrink:0;}
+.step-circle{width:40px;height:40px;border-radius:50%;background:rgba(107,127,163,.1);border:2px solid var(--c-a4);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-a4);flex-shrink:0;}
+.step-content{flex:1;padding-top:6px;}
+.step-label{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--c-text);margin-bottom:8px;line-height:1.3;}
+.step-desc{font-size:.9rem;color:var(--c-text);line-height:1.9;margin-bottom:12px;}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.code-block{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.83rem;padding:20px 22px;border-radius:var(--radius);margin:14px 0;line-height:1.8;overflow-x:auto;white-space:pre;}
+.code-block .cm{color:#6b9b8a;}
+.code-block .ky{color:#9bb4d4;}
+.code-block .str{color:#98c48c;}
+.code-block .expr{color:#d4a0c8;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:12px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.step-tip.warning{background:rgba(201,150,58,.06);border:1px solid rgba(201,150,58,.25);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.verify-box{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.25);border-left:4px solid #5a7a5a;border-radius:var(--radius);padding:22px 26px;margin:8px 0 32px;}
+.verify-label{font-size:.68rem;color:#5a7a5a;letter-spacing:1.5px;font-weight:500;margin-bottom:10px;}
+.verify-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-text);margin-bottom:8px;}
+.verify-desc{font-size:.88rem;color:var(--c-text);line-height:1.8;}
+.final-banner{max-width:var(--content-w);margin:0 auto;padding:0 48px 40px;}
+.banner-inner{background:rgba(107,127,163,.06);border:1px solid rgba(107,127,163,.2);border-radius:var(--radius);padding:28px 32px;text-align:center;}
+.banner-title{font-family:'Shippori Mincho',serif;font-size:1.3rem;font-weight:700;color:var(--c-text);margin-bottom:8px;}
+.banner-desc{font-size:.88rem;color:var(--c-muted);line-height:1.8;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">4.3 Google Docs 輸出</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module4.html" class="back-link">← 返回 Module 4</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 04</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 4.3 · 延伸實作</span>
+  </div>
+  <h1 class="step-title">Google Docs 自動輸出</h1>
+  <p class="step-subtitle">AI 生成企劃書 JSON 後，如何自動建立 Google Docs、填入格式化內容、並分享給指定成員？用 n8n 的 Google Docs 節點，一鍵完成整份文件。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>⏱</span><span>預估時間：30 分鐘</span></div>
+    <div class="meta-item"><span>📋</span><span>4 個步驟</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">1</div></div>
+    <div class="step-content">
+      <div class="step-label">設定 Google Docs 憑證</div>
+      <p class="step-desc">n8n 內建 Google Docs 節點，使用 OAuth2 連接 Google 帳號。在 n8n 設定憑證後，即可透過節點操作 Google Docs。</p>
+      <p class="step-desc">設定步驟：</p>
+      <div class="code-block"><span class="cm">// 設定流程（一次性設定）</span>
+1. n8n 介面 → Settings → Credentials → Add Credential
+2. 選擇「Google OAuth2 API」
+3. 複製 OAuth Redirect URL（n8n 提供的）
+4. 到 Google Cloud Console：
+   - 建立專案 → API & Services → Enable APIs
+   - 啟用：Google Docs API、Google Drive API
+   - OAuth consent screen → External → 填入基本資訊
+   - Credentials → OAuth client ID → Web application
+   - 填入 Authorized redirect URIs（貼入 n8n 的 URL）
+   - 複製 Client ID 和 Client Secret 貼回 n8n
+5. 點 Connect → 授權 Google 帳號 → 完成</div>
+      <div class="step-tip info">
+        <span class="tip-icon">💡</span>
+        <span class="tip-text"><strong>只需設定一次：</strong>憑證設定完成後，後續所有 Google Docs / Google Drive 節點都可以使用同一組 OAuth 憑證，不需要重複設定。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">2</div></div>
+    <div class="step-content">
+      <div class="step-label">建立新 Google Docs 文件</div>
+      <p class="step-desc">加入「Google Docs」節點，操作選「Create」，自動建立一個新文件並取得文件 ID。</p>
+      <div class="code-block"><span class="cm">// Google Docs 節點設定（Create）</span>
+Resource: Document
+Operation: Create
+Title: <span class="expr">{{ $json.plan.title }}｜企劃書_{{ $now.format('YYYYMMDD') }}</span>
+
+<span class="cm">// 節點輸出會包含新文件的 documentId</span>
+<span class="cm">// 後面的節點用 {{ $('Create Doc').item.json.documentId }} 引用</span></div>
+      <div class="step-tip info">
+        <span class="tip-icon">💡</span>
+        <span class="tip-text">Google Docs 節點建立的文件預設放在 Google Drive 根目錄。如需放到指定資料夾，後面再加「Google Drive」節點的 Move 操作。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">3</div></div>
+    <div class="step-content">
+      <div class="step-label">用 Code 節點組合文件內容</div>
+      <p class="step-desc">Google Docs API 的 batchUpdate 操作需要結構化的 requests 陣列。用 Code 節點把 AI 生成的企劃 JSON 轉換為 Google Docs 支援的格式：</p>
+      <div class="code-block"><span class="cm">// Code 節點：將企劃 JSON 轉換為 Google Docs 插入請求</span>
+const plan = $input.item.json.plan;
+const docId = $('Create Doc').item.json.documentId;
+
+<span class="cm">// 組合文件文字（純文字，後面再用 batchUpdate 格式化）</span>
+const lines = [
+  plan.title,
+  '',
+  '【活動簡介】',
+  plan.summary,
+  '',
+  '【活動目標】',
+  ...plan.objectives.map((o, i) => `${i + 1}. ${o}`),
+  '',
+  '【執行時程】',
+  ...plan.schedule.map(s => `・${s.phase}（${s.duration}）：${s.tasks}`),
+  '',
+  '【預算估算】',
+  plan.budget_estimate,
+  '',
+  '【預期成效】',
+  plan.expected_outcome,
+  '',
+  '【風險評估】',
+  ...plan.risks.map((r, i) => `${i + 1}. ${r}`),
+  '',
+  '【行銷標語】',
+  plan.marketing_tagline,
+  '',
+  `生成時間：${new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})}`
+];
+
+const fullText = lines.join('\n');
+
+return [{
+  json: {
+    docId,
+    fullText,
+    plan,
+    docTitle: plan.title
+  }
+}];</div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">4</div></div>
+    <div class="step-content">
+      <div class="step-label">寫入內容並取得分享連結</div>
+      <p class="step-desc">使用「Google Docs」節點的 Update 操作，將組合好的文字插入文件。接著用「Google Drive」節點取得可分享連結。</p>
+      <div class="code-block"><span class="cm">// Google Docs 節點（Update）</span>
+Resource: Document
+Operation: Update
+Document ID: <span class="expr">{{ $json.docId }}</span>
+Actions:
+  - Action: Insert Text
+    Text: <span class="expr">{{ $json.fullText }}</span>
+    Location: Body Start
+
+<span class="cm">// 接著加一個 HTTP Request 節點取得文件連結</span>
+<span class="cm">// Google Drive API 設定分享並取得連結</span>
+Method: POST
+URL: https://www.googleapis.com/drive/v3/files/<span class="expr">{{ $json.docId }}</span>/permissions
+Authentication: Google OAuth2（同一組憑證）
+Body:
+{
+  <span class="ky">"role"</span>: <span class="str">"reader"</span>,
+  <span class="ky">"type"</span>: <span class="str">"anyone"</span>   <span class="cm">← 任何人可檢視（不需登入）</span>
+}
+
+<span class="cm">// 最後組合可分享的文件 URL</span>
+<span class="cm">// https://docs.google.com/document/d/{docId}/edit</span></div>
+      <div class="step-tip success">
+        <span class="tip-icon">✅</span>
+        <span class="tip-text"><strong>完成後發送通知：</strong>將文件連結加入 Gmail 通知或 Make 的 Line 訊息。收件人點連結就能直接開啟 Google Docs，看到 AI 生成的完整企劃書。</span>
+      </div>
+      <div class="code-block"><span class="cm">// 最後的 Code 節點：組合通知訊息</span>
+const data = $input.item.json;
+const docUrl = `https://docs.google.com/document/d/${data.docId}/edit`;
+
+return [{
+  json: {
+    ...data,
+    docUrl,
+    notifyMessage: [
+      `企劃書已自動生成完成！`,
+      ``,
+      `標題：${data.docTitle}`,
+      `連結：${docUrl}`,
+      `生成時間：${new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'})}`
+    ].join('\n')
+  }
+}];</div>
+    </div>
+  </div>
+
+  <div class="verify-box">
+    <div class="verify-label">完成驗證 CHECKPOINT</div>
+    <div class="verify-title">Google Docs 企劃書自動生成成功</div>
+    <p class="verify-desc">填寫 Google Forms 輸入活動名稱，提交後約 30-60 秒，Gmail 應收到通知郵件，內含 Google Docs 連結。點開連結確認：① 標題正確 ② 企劃書內容完整（目標、時程、預算等） ③ 文件格式可讀。</p>
+  </div>
+
+</div>
+
+<div class="final-banner">
+  <div class="banner-inner">
+    <div class="banner-title">課程完成</div>
+    <p class="banner-desc">你已完成 AI 資料工廠的全部課程。<br>從 Webhook 接收、資料解析、條件路由，到 AI 生成、自動建立 Google Docs——<br>這條從「點子」到「成品」的全自動流水線，現在屬於你。</p>
+  </div>
+</div>
+
+<div class="step-nav">
+  <a href="m4-3-prompt.html" class="nav-btn">← Prompt Engineering</a>
+  <a href="index.html" class="nav-btn primary">返回課程總覽 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

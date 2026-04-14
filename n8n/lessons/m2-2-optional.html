@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.2 Optional Chaining 安全存取｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:720px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:560px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.step-block{display:flex;gap:24px;margin-bottom:44px;position:relative;}
+.step-block:not(:last-child)::after{content:'';position:absolute;left:19px;top:48px;width:2px;height:calc(100% - 16px);background:var(--c-border);}
+.step-num-col{flex-shrink:0;}
+.step-circle{width:40px;height:40px;border-radius:50%;background:rgba(107,127,163,.1);border:2px solid var(--c-a4);display:flex;align-items:center;justify-content:center;font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-a4);flex-shrink:0;}
+.step-content{flex:1;padding-top:6px;}
+.step-label{font-family:'Shippori Mincho',serif;font-size:1.05rem;font-weight:700;color:var(--c-text);margin-bottom:8px;line-height:1.3;}
+.step-desc{font-size:.9rem;color:var(--c-text);line-height:1.9;margin-bottom:12px;}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.code-block{background:#2c2b28;color:#e8e4dc;font-family:'Courier New',monospace;font-size:.83rem;padding:20px 22px;border-radius:var(--radius);margin:14px 0;line-height:1.8;overflow-x:auto;white-space:pre;}
+.code-block .cm{color:#6b9b8a;}
+.code-block .ky{color:#9bb4d4;}
+.code-block .expr{color:#d4a0c8;}
+.code-block .str{color:#98c48c;}
+.code-block .err{color:#d4706a;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:12px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.step-tip.success{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.2);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.verify-box{background:rgba(90,122,90,.06);border:1px solid rgba(90,122,90,.25);border-left:4px solid #5a7a5a;border-radius:var(--radius);padding:22px 26px;margin:8px 0 32px;}
+.verify-label{font-size:.68rem;color:#5a7a5a;letter-spacing:1.5px;font-weight:500;margin-bottom:10px;}
+.verify-title{font-family:'Shippori Mincho',serif;font-size:1rem;font-weight:700;color:var(--c-text);margin-bottom:8px;}
+.verify-desc{font-size:.88rem;color:var(--c-text);line-height:1.8;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">2.2 Optional Chaining</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module2.html" class="back-link">← 返回 Module 2</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 02</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 2.2 · 延伸實作</span>
+  </div>
+  <h1 class="step-title">Optional Chaining：安全存取巢狀資料</h1>
+  <p class="step-subtitle">用 <code style="font-size:.9em;background:rgba(107,127,163,.1);padding:2px 8px;border-radius:3px;">?.</code> 語法讓你的流程在遇到 null 或不存在的欄位時優雅地回傳 undefined，而不是直接崩潰報錯。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>⏱</span><span>預估時間：15 分鐘</span></div>
+    <div class="meta-item"><span>📋</span><span>3 個步驟</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">1</div></div>
+    <div class="step-content">
+      <div class="step-label">為什麼需要 ?. ——從一個報錯場景開始</div>
+      <p class="step-desc">假設你在處理 Google Forms 回傳的資料，有個欄位「公司地址」是選填的。有些人填了，有些人沒填。沒填的時候，JSON 結構中這個欄位可能根本不存在，或者其值是 null。</p>
+      <div class="code-block"><span class="cm">// 問題情境：地址是選填欄位</span>
+<span class="cm">// 有人填：</span>
+{ <span class="ky">"姓名"</span>: <span class="str">"王小明"</span>, <span class="ky">"地址"</span>: { <span class="ky">"縣市"</span>: <span class="str">"台北市"</span>, <span class="ky">"區"</span>: <span class="str">"中正區"</span> } }
+
+<span class="cm">// 沒填的人：</span>
+{ <span class="ky">"姓名"</span>: <span class="str">"陳小華"</span> }   <span class="cm">← 根本沒有 "地址" 這個 key</span>
+
+<span class="cm">// 用普通語法讀地址的縣市：</span>
+<span class="expr">{{ $json.地址.縣市 }}</span>   <span class="cm">← ❌ 陳小華的資料會報錯！</span>
+                         <span class="cm">   TypeError: Cannot read properties of undefined</span>
+
+<span class="cm">// 用 ?. 安全讀取：</span>
+<span class="expr">{{ $json.地址?.縣市 }}</span>  <span class="cm">← ✅ 沒有地址時回傳 undefined，流程繼續執行</span></div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">2</div></div>
+    <div class="step-content">
+      <div class="step-label">?. 的使用模式</div>
+      <p class="step-desc"><span class="ic">?.</span> 可以用在物件存取、陣列存取、方法呼叫等各種場景。核心概念是：若問號前的值是 null 或 undefined，整個表達式立即回傳 undefined，不繼續執行後面的存取。</p>
+      <div class="code-block"><span class="cm">// 物件欄位存取（最常用）</span>
+<span class="expr">{{ $json.聯絡人?.電話 }}</span>
+<span class="expr">{{ $json.地址?.縣市?.郵遞區號 }}</span>   <span class="cm">← 可以連用多個 ?.</span>
+
+<span class="cm">// 陣列元素存取</span>
+<span class="expr">{{ $json.商品列表?.[0]?.名稱 }}</span>    <span class="cm">← 陣列用 ?.[索引]</span>
+
+<span class="cm">// 在 Code 節點中</span>
+const phone = $input.item.json.聯絡人?.電話;
+const city = $input.item.json.地址?.縣市;
+const firstItem = $input.item.json.商品列表?.[0]?.名稱;
+
+<span class="cm">// AI 回傳的巢狀結構（Gemini 回應格式）</span>
+<span class="expr">{{ $json.candidates?.[0]?.content?.parts?.[0]?.text }}</span></div>
+      <div class="step-tip info">
+        <span class="tip-icon">💡</span>
+        <span class="tip-text"><strong>AI 回應格式一定要用 ?.：</strong>Gemini API 的回傳結構層次很深（<span class="ic">candidates[0].content.parts[0].text</span>），如果某層為 null（例如 AI 安全過濾擋掉了請求），不用 <span class="ic">?.</span> 會整個 Workflow 報錯中斷。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-num-col"><div class="step-circle">3</div></div>
+    <div class="step-content">
+      <div class="step-label">?. 與 ?? 搭配使用</div>
+      <p class="step-desc"><span class="ic">?.</span> 讓你安全存取可能不存在的欄位；<span class="ic">??</span>（Nullish Coalescing）讓你在值為 null 或 undefined 時提供預設值。兩者搭配，就能同時解決「欄位不存在」和「找不到時給預設值」兩個問題。</p>
+      <div class="code-block"><span class="cm">// 模式：安全存取 + 預設值</span>
+<span class="expr">{{ $json.地址?.縣市 ?? '地址未填寫' }}</span>
+
+<span class="cm">// 實際應用：產出通知郵件時組合收件資訊</span>
+const name = $input.item.json.姓名 ?? '使用者';
+const phone = $input.item.json.聯絡人?.電話 ?? '未提供電話';
+const city = $input.item.json.地址?.縣市 ?? '地址未填';
+
+const message = `${name} 的聯絡電話：${phone}，所在縣市：${city}`;
+return [{ json: { message } }];
+
+<span class="cm">// 讀取 AI 輸出，有安全保護的完整寫法</span>
+const raw = $input.item.json.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+if (!raw) {
+  return [{ json: { error: 'AI 未回傳內容' } }];
+}</div>
+      <div class="step-tip success">
+        <span class="tip-icon">✅</span>
+        <span class="tip-text"><strong>養成習慣：</strong>只要讀取 AI 回傳、表單選填欄位、或任何來自外部 API 的巢狀資料，都用 <span class="ic">?.</span>。這個 10 秒的習慣，能避免 90% 的「流程某天突然崩潰但找不到原因」。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verify-box">
+    <div class="verify-label">完成驗證 CHECKPOINT</div>
+    <div class="verify-title">測試 ?. 對 null 欄位的保護</div>
+    <p class="verify-desc">建立測試 Workflow：Set 節點輸出 <span class="ic">{"name": "測試", "address": null}</span>，在下一個 Set 節點用 Expression <span class="ic">{{ $json.address?.city ?? '未填' }}</span> 讀取城市。執行後應顯示「未填」而非報錯。再把 address 改成有值的物件，應正確顯示城市名稱。</p>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m2-2-chaining.html" class="nav-btn">← 2.2 ?. 與 ?? 語法</a>
+  <a href="m2-2-default.html" class="nav-btn primary">預設值處理進階 →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>

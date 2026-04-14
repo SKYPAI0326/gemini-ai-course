@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1 n8n 術語 × Make 對照｜AI 資料工廠</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--c-bg:#f5f3ee;--c-surface:#edeae3;--c-card:#ffffff;--c-border:#d8d4cb;--c-text:#2c2b28;--c-muted:#8c8880;--c-a4:#6b7fa3;--radius:6px;--content-w:780px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.8;}
+.topbar{position:sticky;top:0;z-index:50;height:56px;background:rgba(245,243,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 48px;gap:16px;}
+.logo{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.05rem;color:var(--c-text);letter-spacing:.05em;text-decoration:none;}
+.topbar-divider{width:1px;height:18px;background:var(--c-border);}
+.topbar-sub{font-size:.8rem;color:var(--c-muted);}
+.spacer{flex:1;}
+.topbar-tag{font-size:.75rem;color:var(--c-a4);border:1px solid rgba(107,127,163,.3);background:rgba(107,127,163,.08);padding:3px 12px;border-radius:99px;font-weight:500;}
+.progress-strip{height:3px;background:var(--c-surface);position:sticky;top:56px;z-index:49;}
+.progress-fill{height:100%;background:var(--c-a4);width:0%;transition:width .1s;}
+.step-hero{max-width:var(--content-w);margin:0 auto;padding:56px 48px 40px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--c-muted);text-decoration:none;margin-bottom:28px;}
+.back-link:hover{color:var(--c-a4);}
+.hero-meta{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.hero-section{font-size:.7rem;color:var(--c-muted);letter-spacing:1px;font-weight:500;}
+.hero-sep{width:1px;height:12px;background:var(--c-border);}
+.hero-num{font-size:.7rem;color:var(--c-a4);letter-spacing:1px;font-weight:500;}
+.step-title{font-family:'Shippori Mincho',serif;font-size:1.9rem;font-weight:700;line-height:1.3;color:var(--c-text);margin-bottom:12px;}
+.step-subtitle{font-size:.93rem;color:var(--c-muted);line-height:1.8;max-width:580px;margin-bottom:20px;}
+.meta-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-muted);}
+.step-body{max-width:var(--content-w);margin:0 auto;padding:0 48px 32px;}
+.section-head{font-family:'Shippori Mincho',serif;font-size:1.15rem;font-weight:700;color:var(--c-text);margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--c-border);}
+.ref-table{width:100%;border-collapse:collapse;margin:16px 0 28px;font-size:.87rem;}
+.ref-table th{background:var(--c-surface);padding:10px 14px;text-align:left;font-weight:700;font-size:.78rem;letter-spacing:.5px;color:var(--c-muted);border:1px solid var(--c-border);}
+.ref-table td{padding:10px 14px;border:1px solid var(--c-border);vertical-align:top;line-height:1.7;}
+.ref-table tr:nth-child(even) td{background:rgba(245,243,238,.5);}
+.ref-table td strong{font-weight:700;color:var(--c-a4);}
+.ic{font-family:'Courier New',monospace;font-size:.82em;background:rgba(107,127,163,.1);padding:1px 6px;border-radius:3px;}
+.step-tip{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius);margin:14px 0;font-size:.85rem;line-height:1.75;}
+.step-tip.info{background:rgba(107,127,163,.07);border:1px solid rgba(107,127,163,.22);}
+.tip-icon{flex-shrink:0;}
+.tip-text strong{font-weight:700;}
+.step-nav{max-width:var(--content-w);margin:0 auto;padding:28px 48px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--c-border);}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-a4);text-decoration:none;padding:10px 20px;border:1px solid rgba(107,127,163,.3);border-radius:var(--radius);transition:background .2s;}
+.nav-btn:hover{background:rgba(107,127,163,.07);}
+.nav-btn.primary{background:var(--c-a4);color:#fff;border-color:var(--c-a4);}
+.nav-btn.primary:hover{opacity:.85;}
+.footer{border-top:1px solid var(--c-border);padding:24px 48px;display:flex;align-items:center;gap:16px;}
+.footer-logo{font-family:'Shippori Mincho',serif;font-size:.9rem;font-weight:700;color:var(--c-muted);}
+.footer-div{width:1px;height:14px;background:var(--c-border);}
+.footer-note{font-size:.75rem;color:var(--c-muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../index.html" class="logo">弄一下工作室</a>
+  <div class="topbar-divider"></div>
+  <span class="topbar-sub">AI 資料工廠</span>
+  <div class="spacer"></div>
+  <span class="topbar-tag">1.1 術語速查</span>
+</header>
+<div class="progress-strip"><div class="progress-fill" id="prog"></div></div>
+
+<div class="step-hero">
+  <a href="module1.html" class="back-link">← 返回 Module 1</a>
+  <div class="hero-meta">
+    <span class="hero-section">Module 01</span>
+    <div class="hero-sep"></div>
+    <span class="hero-num">SECTION 1.1 · 補充參考</span>
+  </div>
+  <h1 class="step-title">n8n 術語 × Make 概念速查</h1>
+  <p class="step-subtitle">已熟悉 Make？這頁幫你把 Make 的術語直接對應到 n8n，加速上手。每個 n8n 概念都有對應的 Make 等價物和差異說明。</p>
+  <div class="meta-bar">
+    <div class="meta-item"><span>📖</span><span>參考頁面，可隨時查閱</span></div>
+    <div class="meta-item"><span>⏱</span><span>閱讀約 5 分鐘</span></div>
+  </div>
+</div>
+
+<div class="step-body">
+
+  <div class="section-head">核心概念對照</div>
+  <table class="ref-table">
+    <tr><th>n8n 術語</th><th>Make 對應術語</th><th>說明與差異</th></tr>
+    <tr>
+      <td><strong>Workflow</strong></td>
+      <td>Scenario（場景）</td>
+      <td>都是一條自動化流程的容器。n8n Workflow 儲存在本機，Make Scenario 儲存在雲端。</td>
+    </tr>
+    <tr>
+      <td><strong>Node（節點）</strong></td>
+      <td>Module（模組）</td>
+      <td>都是流程中的一個步驟。n8n 節點可自由拖曳排列在畫布上，Make 模組是線性排列。</td>
+    </tr>
+    <tr>
+      <td><strong>Trigger Node（觸發節點）</strong></td>
+      <td>Trigger Module（第一個模組）</td>
+      <td>啟動流程的起點。n8n Trigger 節點有閃電⚡圖示，啟動 Workflow 才開始監聽。</td>
+    </tr>
+    <tr>
+      <td><strong>Connection（連線）</strong></td>
+      <td>Route（路由）</td>
+      <td>節點間的資料傳遞路徑。n8n 需手動拖曳連線，一個輸出可同時連多個下游節點。</td>
+    </tr>
+    <tr>
+      <td><strong>Execution（執行記錄）</strong></td>
+      <td>Run（執行紀錄）</td>
+      <td>每次流程跑完的記錄。n8n 免費版保留最近 200 筆；Make 依方案限制。</td>
+    </tr>
+    <tr>
+      <td><strong>Credential（憑證）</strong></td>
+      <td>Connection（連線）</td>
+      <td>儲存 API Key、帳號密碼的安全容器。可跨 Workflow 共用。</td>
+    </tr>
+    <tr>
+      <td><strong>Expression <span class="ic">{{ }}</span></strong></td>
+      <td>Dynamic Variable（變數引用）</td>
+      <td>在欄位中引用其他節點的資料。n8n 用雙大括號語法，Make 用點擊選取。</td>
+    </tr>
+    <tr>
+      <td><strong>Item（項目）</strong></td>
+      <td>Bundle（捆）</td>
+      <td>一筆資料的單位。n8n 用 <span class="ic">$json</span> 讀取當前 Item，Make 用 <span class="ic">{{1.欄位}}</span>。</td>
+    </tr>
+    <tr>
+      <td><strong>Loop Over Items</strong></td>
+      <td>Iterator + Aggregator</td>
+      <td>批次處理多筆資料。n8n 的 Loop Over Items 節點整合了 Iterator 和 Aggregator 的功能。</td>
+    </tr>
+    <tr>
+      <td><strong>Code Node</strong></td>
+      <td>Tools → Custom Function</td>
+      <td>執行 JavaScript 自訂邏輯。n8n Code 節點支援完整 Node.js，可 require 模組。</td>
+    </tr>
+    <tr>
+      <td><strong>HTTP Request Node</strong></td>
+      <td>HTTP Module</td>
+      <td>呼叫任意 API。功能相近，n8n 支援更多認證方式。</td>
+    </tr>
+    <tr>
+      <td><strong>Webhook Trigger</strong></td>
+      <td>Webhooks Module（接收）</td>
+      <td>接收 HTTP 請求來觸發流程。n8n 需搭配 Cloudflare Tunnel 才能從外部呼叫。</td>
+    </tr>
+    <tr>
+      <td><strong>Schedule Trigger</strong></td>
+      <td>Scheduling（定時執行）</td>
+      <td>定時觸發流程。n8n 支援 Cron 語法，Make 也有類似設定。</td>
+    </tr>
+    <tr>
+      <td><strong>If / Switch Node</strong></td>
+      <td>Filter / Router</td>
+      <td>條件判斷分支。n8n If = 兩路分支；Switch = 多路分支（相當於 Make 的 Router）。</td>
+    </tr>
+  </table>
+
+  <div class="section-head">資料引用語法對照</div>
+  <table class="ref-table">
+    <tr><th>目的</th><th>n8n 語法</th><th>Make 等價寫法</th></tr>
+    <tr><td>讀取當前節點的欄位</td><td><span class="ic">{{ $json.欄位名稱 }}</span></td><td><span class="ic">{{模組編號.欄位名稱}}</span></td></tr>
+    <tr><td>讀取指定節點的欄位</td><td><span class="ic">{{ $('節點名稱').item.json.欄位 }}</span></td><td>需用 Router 或直接引用上游模組編號</td></tr>
+    <tr><td>讀取陣列第一筆</td><td><span class="ic">{{ $json.陣列[0].欄位 }}</span></td><td><span class="ic">{{模組.陣列[].欄位}}</span>（迭代）</td></tr>
+    <tr><td>字串拼接</td><td><span class="ic">{{ '你好，' + $json.姓名 }}</span></td><td><span class="ic">你好，{{1.姓名}}</span></td></tr>
+    <tr><td>現在時間</td><td><span class="ic">{{ $now }}</span></td><td><span class="ic">{{now}}</span></td></tr>
+    <tr><td>格式化日期</td><td><span class="ic">{{ $now.toFormat('yyyy-MM-dd') }}</span></td><td><span class="ic">{{formatDate(now; 'YYYY-MM-DD')}}</span></td></tr>
+  </table>
+
+  <div class="step-tip info">
+    <span class="tip-icon">💡</span>
+    <span class="tip-text"><strong>最大不同點：</strong>Make 的操作次數有上限（免費 1,000 次/月），n8n Desktop 執行次數完全無限制。這是為什麼批次處理任務（如 PDF 批次改名、大量 AI 呼叫）適合放在 n8n 而非 Make。</span>
+  </div>
+
+</div>
+
+<div class="step-nav">
+  <a href="m1-1-nodes.html" class="nav-btn">← 節點操作</a>
+  <a href="m1-2-tunnel.html" class="nav-btn primary">1.2 Cloudflare Tunnel →</a>
+</div>
+
+<footer class="footer">
+  <span class="footer-logo">弄一下工作室</span>
+  <div class="footer-div"></div>
+  <span class="footer-note">淡江大學 · 生成式AI工作坊</span>
+</footer>
+
+<script>
+const fill = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+});
+</script>
+</body>
+</html>
